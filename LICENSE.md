@@ -1,10 +1,37 @@
-**Elastic License 2.0 (ELv2)**
+
+Castled Data will be using multiple licenses for our mono repo. Either the MIT License or the Elastic License 2.0 will be applicable for the files under **castled** repo.
+
+The applicable license for a particular file will be determined by the below mentioned rules in the same order
+1. License mentioned in the file 
+2. License present in the directory containing the file
+3. First License file found while traversing the directory tree bottom-up
+4. Defaults to Elastic License 2.0 (ELv2)
+
+At a high level Castled Data Licensing Overview is as follows
+* **Castled Data Connectors** are open sourced and available under the MIT License.
+* **Castled Data Commons** is open sourced and available under the MIT License.
+* **Castled Data Container** is licensed under the Elastic License 2.0 (ELv2).
+* **Castled Data Jarvis** is licensed under the Elastic License 2.0 (ELv2).
+* **Castled Data Cloud & Castled Data Enterprise** are both closed source and require a commercial license from Castled Data.
+
+## MIT License
+
+Copyright 2021 Castled Data
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+## Elastic License 2.0 (ELv2)
 
 **Acceptance**
 By using the software, you agree to all of the terms and conditions below.
 
 **Copyright License**
-The licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software, in each case subject to the limitations and conditions below
+The licensor grants you a non-exclusive, royalty-free, worldwide, non-sub licensable, non-transferable license to use, copy, distribute, make available, and prepare derivative works of the software, in each case subject to the limitations and conditions below
 
 **Limitations**
 You may not provide the software to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software.
