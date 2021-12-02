@@ -11,4 +11,8 @@ public class FieldMapping {
     private String warehouseField;
     private String appField;
     private boolean skipped;
+
+    public static void main(String[] args) {
+
+    }
 }
