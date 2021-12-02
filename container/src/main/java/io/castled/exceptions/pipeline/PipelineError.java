@@ -12,6 +12,5 @@ public enum PipelineError {
 
     PipelineError(PipelineErrorType pipelineErrorType) {
         this.pipelineErrorType = pipelineErrorType;
-
     }
 }

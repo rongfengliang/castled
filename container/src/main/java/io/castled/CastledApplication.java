@@ -86,6 +86,7 @@ public class CastledApplication extends Application<CastledConfiguration> {
         // Feature feature = new LoggingFeature(Logger.getGlobal(), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, 1000000);
         // client.register(feature);
 
+        new CastledHealthValidator(castledConfiguration.getKafkaConfig()).validateAppHealth();
         Injector injector = Guice.createInjector(new CastledModule(jdbi, client, castledConfiguration),
                 new JarvisModule());
         Guice.createInjector(Modules.override(new ConnectorsModule(castledConfiguration.getWarehouseConnectorConfig()))
@@ -106,6 +107,8 @@ public class CastledApplication extends Application<CastledConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> appShutdownHandler.handleShutdown()));
+
+
     }
 
     private void enableCors(Environment environment) {
