@@ -17,7 +17,7 @@ module.exports = {
       title: "Castled",
       logo: {
         alt: "Castled Logo",
-        src: "img/castled_original.png",
+        src: "img/castled_original.png"
       },
       items: [
         // {
@@ -26,12 +26,12 @@ module.exports = {
         //   position: "left",
         //   label: "Docs",
         // },
-      ],
+      ]
     },
     prism: {
       theme: lightCodeTheme,
-      darkTheme: darkCodeTheme,
-    },
+      darkTheme: darkCodeTheme
+    }
   },
   presets: [
     [
@@ -46,9 +46,15 @@ module.exports = {
         },
 
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
-        },
-      },
-    ],
+          customCss: require.resolve("./src/css/custom.css")
+        }
+      }
+    ]
   ],
+  customFields: {
+    markdownPlugins: [
+      // Highlight admonitions.
+      require("remarkable-admonitions")({ icon: "svg-inline" })
+    ]
+  }
 };
