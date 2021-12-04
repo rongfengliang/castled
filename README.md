@@ -27,7 +27,7 @@ The throughput/latency of a data pipeline depends mostly on the destination api 
 
 ## Contribute to us
 
-We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework in such a way, so as to reduce the amount of time required for you, to build a connector with zero changes required on the UI front. Heres all you need to do to add your own connector.
+We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework to reduce the amount of time required to built a new connector. Here is all you need to do to add your own custom connector.
 
 1) Implement java interfaces([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
 
