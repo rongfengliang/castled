@@ -4,7 +4,7 @@ Castled is a **Reverse ETL** solution which enables you to make the valuable cus
 
 Some of our key offerings include
 
-* Incremental data syncs from your cloud data warehouse
+* Incremental/Complete data syncs from your cloud data warehouse
 * Automated failure handling and recovery.
 * Reliability and Resiliance at scale.
 * Java Annotated based UI framework to support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
