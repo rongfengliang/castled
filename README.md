@@ -29,9 +29,10 @@ The throughput/latency of a data pipeline depends mostly on the destination api 
 
 We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework in such a way, so as to reduce the amount of time required for you, to build a connector with zero changes required on the UI front. Heres all you need to do to add your own connector.
 
-1) We understand that each connector requires a totally different set of input for it to have the flexibility, you need to  cover all our usecases and hence we have build a java annotation based framework, which can drive any kind of forms that you need in the connector configuration. You can refer the customerio configuration [here](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java).
+1) Implement java interfaces([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
 
-2) Implement a couple of interfaces([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
+2) Customize the mapping configuration and app configuration on the UI using our java annotation based framework. A sample configuration for customerio is mentioned [here](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java).
+
 
 ## License
 
