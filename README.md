@@ -14,7 +14,7 @@ You can access castled app at http://localhost:3000. Happy castling!!
 
 ## Performance
 
-The throughput/latency of a data pipeline depends mostly on the destination api limitations/rate limits. But to give an indication of the throughput we support, publishing a bench mark we did to transfer upto 100 million records from BigQuery to Apache Kafka.
+The throughput/latency of a data pipeline depends mostly on the destination api limitations and/or rate limits. We do make the best effort to tune it to provide the most optimal throughput possible. But to give an indication of the throughput we support, publishing a bench mark we did to transfer upto 100 million records from BigQuery to Apache Kafka.
 
 ![kafka benchmark](https://cdn.castled.io/content/kafka_benchmark.png)
 
