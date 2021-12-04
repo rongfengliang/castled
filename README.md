@@ -4,7 +4,7 @@ Castled is a **Reverse ETL** solution which enables you to make the valuable cus
 
 Some of our key offerings include
 
-* Incremental/Complete data syncs from your cloud data warehouse
+* Incremental/Complete data syncs from your cloud data warehouse.
 * Automated failure handling and recovery.
 * Reliability and Resiliance at scale.
 * Java Annotated based UI framework to support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
@@ -29,7 +29,7 @@ The throughput/latency of a data pipeline depends mostly on the destination api 
 
 We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework in such a way, so as to reduce the amount of time required for you, to build a connector with zero changes required on the UI front. Heres all you need to do to add your own connector.
 
-1) We understand that each connector requires a totally different set of input for it to have the flexibility, you need to  cover all our usecases and hence we have build a java annotation based framework, which can drive any kind of forms that you need in the connector configuration. You can refer the customerio configuration [here](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java)
+1) We understand that each connector requires a totally different set of input for it to have the flexibility, you need to  cover all our usecases and hence we have build a java annotation based framework, which can drive any kind of forms that you need in the connector configuration. You can refer the customerio configuration [here](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java).
 
 2) Implement a couple of interfaces([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
 
