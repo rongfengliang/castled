@@ -25,7 +25,7 @@ The throughput/latency of a data pipeline depends mostly on the destination api 
 
 ![kafka benchmark](https://cdn.castled.io/content/kafka_benchmark.png)
 
-## Contribute to us.
+## Contribute to us
 
 We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework in such a way, so as to reduce the amount of time required for you, to build a connector with zero changes required on the UI front. Heres all you need to do to add your own connector.
 
