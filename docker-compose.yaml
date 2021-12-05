@@ -90,6 +90,8 @@ services:
     container_name: castled-redis
     logging: *default-logging
     restart: unless-stopped
+    volumes:
+      - redis_vol:/data/redis
 
   webapp:
     image: castled/webapp:${VERSION}
@@ -112,3 +114,5 @@ volumes:
     name: ${ZK_LOG_DOCKER_MOUNT}
   zk_data:
     name: ${ZK_DATA_DOCKER_MOUNT}
+  redis_vol:
+    name: ${REDIS_DOCKER_MOUNT}
