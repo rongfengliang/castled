@@ -28,7 +28,7 @@ interface serverSideProps {
   apiBase: string;
 }
 
-function Register(context: GetServerSidePropsContext, props: serverSideProps) {
+function Register(props: serverSideProps) {
   const { setUser } = useSession();
   const router = useRouter();
   const formSchema = Yup.object().shape({
@@ -88,7 +88,7 @@ function Register(context: GetServerSidePropsContext, props: serverSideProps) {
           <ButtonSubmit className="form-control" />
         </Form>
       </Formik>
-      {/* <div className="mt-3 text-center">
+      <div className="mt-3 text-center">
         <Button
           href={authUtils.getExternalLoginUrl(
             props.appBaseUrl,
@@ -99,7 +99,7 @@ function Register(context: GetServerSidePropsContext, props: serverSideProps) {
         >
           Sign up with Google
         </Button>
-      </div> */}
+      </div>
     </GuestLayout>
   );
 }
