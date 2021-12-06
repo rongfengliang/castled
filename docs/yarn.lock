@@ -7117,6 +7117,11 @@ remark-squeeze-paragraphs@4.0.0:
   dependencies:
     mdast-squeeze-paragraphs "^4.0.0"
 
+remarkable-admonitions@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/remarkable-admonitions/-/remarkable-admonitions-0.2.2.tgz#8765f9ec66be4f4c651a4e1cfb559dd7f920819c"
+  integrity sha512-CcMTEcLYmJLXX3IVMk4LyW4oFD2NQxh5FeLzn4k89TAPpyWIeVix/B/g/gDbZAUpCNY9l6heovR5NNIktf8X5A==
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
