@@ -29,7 +29,7 @@ The throughput/latency of a data pipeline depends mostly on the destination api 
 
 We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework to reduce the amount of time required to built a new connector. Here is all you need to do to add your own custom connector.
 
-1) Implement java interfaces([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
+1) Implement java interfaces ([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
 
 2) Customize the mapping configuration and app configuration on the UI using our java annotation based framework. Refer the [mapping configuration](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java) and [app configuration](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppConfig.java) of our *CustomerIO* connector for more info.
 
