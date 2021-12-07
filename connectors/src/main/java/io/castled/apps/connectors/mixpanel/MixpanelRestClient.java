@@ -91,7 +91,7 @@ public class MixpanelRestClient {
         List<EventAndError> eventAndErrors = new ArrayList<>();
         try {
             EventBulkInsertResponse bulkImportResponse = invokeBulkEventInsert(userProfileDetails);
-            log.info("Response for Event Bulk inserts : "+bulkImportResponse.getCode());
+            log.info("Response for Event Bulk inserts : "+bulkImportResponse.getCode() + "SIZE :"+bulkImportResponse.getNum_records_imported());
 
             if(!"200".equalsIgnoreCase(bulkImportResponse.getCode())) {
                 handleFailure(bulkImportResponse,eventAndErrors,userProfileDetails);

@@ -5,14 +5,25 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
+import io.castled.apps.connectors.hubspot.HubspotErrorParser;
+import io.castled.apps.connectors.hubspot.client.dtos.BatchUpdateRequest;
+import io.castled.apps.connectors.hubspot.client.dtos.ObjectUpdateRequest;
+import io.castled.apps.connectors.hubspot.client.exception.BatchObjectException;
+import io.castled.apps.connectors.hubspot.objectsinks.HubspotObjectSink;
 import io.castled.apps.connectors.mixpanel.dto.EventAndError;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.apps.models.GenericSyncObject;
+import io.castled.commons.errors.CastledError;
+import io.castled.commons.errors.errorclassifications.UnclassifiedError;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.commons.models.MessageSyncStats;
+import io.castled.commons.models.ObjectIdAndMessage;
 import io.castled.commons.streams.ErrorOutputStream;
+import io.castled.core.CastledOffsetListQueue;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,12 +31,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Singleton
+@Slf4j
 public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     private final MixpanelRestClient mixpanelRestClient;
@@ -42,6 +57,9 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     private final AtomicLong failedRecords = new AtomicLong(0);
 
+    private final CastledOffsetListQueue<Message> requestsBuffer =
+            new CastledOffsetListQueue<>(new CreateEventConsumer(), 10, 6000, true);
+
     public MixpanelEventSink(DataSinkRequest dataSinkRequest) {
         this.mixpanelRestClient = new MixpanelRestClient(((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getProjectToken(),
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
@@ -55,10 +73,23 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         this.mixpanelAppConfig = (MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig();
     }
 
+    private class CreateEventConsumer implements Consumer<List<Message>> {
 
-    @Override
-    protected void writeRecords(List<Message> messages) {
+        @Override
+        public void accept(List<Message> records) {
+            updateRecords(records);
+            processedRecords.addAndGet(records.size());
+        }
 
+        private void updateRecords(List<Message> messages) {
+            if (CollectionUtils.isEmpty(messages)) {
+                return;
+            }
+            processBulkEventCreation(messages);
+        }
+    }
+
+    private void processBulkEventCreation(List<Message> messages){
         List<EventAndError> failedRecords = this.mixpanelRestClient.insertEventDetails(
                 messages.stream().map(Message::getRecord).map(this::constructEventDetails).collect(Collectors.toList()));
 
@@ -71,6 +102,20 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
         this.processedRecords.addAndGet(messages.size());
         this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
+    }
+
+
+    @Override
+    protected void writeRecords(List<Message> messages) {
+        try {
+            requestsBuffer.writePayload(Lists.newArrayList(messages), 5, TimeUnit.MINUTES);
+        } catch (TimeoutException e) {
+            log.error("Unable to publish records to records queue", e);
+            for (Message record : messages) {
+                errorOutputStream.writeFailedRecord(record,
+                        new UnclassifiedError("Internal error!! Unable to publish records to records queue. Please contact support"));
+            }
+        }
     }
 
     private String getEventID(Tuple record)
