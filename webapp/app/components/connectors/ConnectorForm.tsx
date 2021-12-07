@@ -18,6 +18,7 @@ import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
 import { GetServerSidePropsContext } from "next";
 
 import stringUtils from "@/app/common/utils/stringUtils";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -40,7 +41,7 @@ const ConnectorForm = ({
   docUrl,
   accessType,
   oauthCallback,
-  onFinish
+  onFinish,
 }: ConnectorFormProps) => {
   const router = useRouter();
   const { pipelineWizContext } = usePipelineWizContext();
@@ -85,7 +86,7 @@ const ConnectorForm = ({
     {
       id: "connector_form",
       pickFieldsForEvent: ["name", "config.type"],
-      dataLayer: { connectorCategory: category }
+      dataLayer: { connectorCategory: category },
     },
     fetcher,
     (res: any) => {
@@ -121,7 +122,7 @@ const ConnectorForm = ({
             values.config.type +
             "&failed=1"
           }`,
-          serverUrl: `${appBaseUrl}${API_BASE}`
+          serverUrl: `${appBaseUrl}${API_BASE}`,
         };
       }
       return values;
@@ -164,14 +165,15 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
+      validationSchema={dynamicFormUtils.getValidation(formFields)}
       onSubmit={onSubmit}
     >
-      {({ values, setFieldValue, setFieldTouched, isSubmitting }) => (
+      {({ values, setFieldValue, setFieldTouched, setFieldError, isSubmitting }) => (
         <Form>
           <InputField
             type="text"
             name="name"
-            title="Name"
+            title="Name*"
             placeholder="Enter name"
           />
           <InputField type="hidden" name="config.type" title="Type" />
@@ -183,6 +185,7 @@ const ConnectorForm = ({
               values={values}
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
+              setFieldError={setFieldError}
               dataFetcher={(optionsRef) =>
                 warehouseService.configOptions(optionsRef, values)
               }

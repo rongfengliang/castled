@@ -31,6 +31,7 @@ export interface InputSelectOptions extends InputBaseProps {
 
 const InputSelect = ({
   title,
+  required,
   description,
   options,
   onChange,
@@ -48,7 +49,7 @@ const InputSelect = ({
 
   const [optionsLoading, setOptionsLoading] = useState(false);
 
-  const depValues = dValues? dValues : [];
+  const depValues = dValues ? dValues : [];
 
   useEffect(() => {
     if (optionsRef) {
@@ -72,6 +73,7 @@ const InputSelect = ({
       {title && (
         <label htmlFor={props.id || props.name} className="form-label">
           {title}
+          {required && "*"}
         </label>
       )}
       <Select
@@ -80,9 +82,9 @@ const InputSelect = ({
           !optionsDynamic
             ? [{ label: "Loading.." }]
             : optionsDynamic.map((o) => ({
-              value: o.value,
-              label: o.title,
-            }))
+                value: o.value,
+                label: o.title,
+              }))
         }
         onChange={(v) => setFieldValue?.(field.name, v?.value)}
         onBlur={() => setFieldTouched?.(field.name, true)}
@@ -90,11 +92,11 @@ const InputSelect = ({
           optionsLoading || !optionsDynamic
             ? { label: "Loading..." }
             : {
-              value: field.value,
-              label: optionsDynamic
-                .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
-                .map((o) => o.title),
-            }
+                value: field.value,
+                label: optionsDynamic
+                  .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
+                  .map((o) => o.title),
+              }
         }
       />
       {meta.touched && meta.error ? (

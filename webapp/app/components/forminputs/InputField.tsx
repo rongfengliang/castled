@@ -17,6 +17,7 @@ export interface InputFieldProps extends InputBaseProps {
 
 const InputField = ({
   title,
+  required,
   description,
   className,
   onChange,
@@ -28,29 +29,29 @@ const InputField = ({
 }: InputFieldProps) => {
   const [field, meta] = useField(props);
   const isHidden = props.type === "hidden";
-
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     if (optionsRef) {
       setLoading(true);
-      dataFetcher?.(optionsRef).then(({ data }) => {    
+      dataFetcher?.(optionsRef).then(({ data }) => {
         setFieldValue(field.name, data.options[0].value);
         setLoading(false);
       });
-
     }
   }, [optionsRef]);
-
   return (
     <div className={className ? className : cn({ "mb-3": !isHidden })}>
       {title && !isHidden && (
         <label htmlFor={props.id || props.name} className="form-label">
           {title}
+          {required && "*"}
         </label>
       )}
       {getInput(field, onChange, props, optionsRef)}
-      <div className={cn({'spinner-border spinner-border-sm': loading && !isHidden})}></div>
+      {loading && !isHidden && (
+        <div className="spinner-border spinner-border-sm"></div>
+      )}
+      {/* {`Meta: ${JSON.stringify(meta)}`} */}
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
@@ -62,7 +63,7 @@ function getInput(
   field: FieldInputProps<any>,
   onChange: ((value: string) => void) | undefined,
   props: any,
-  optionsRef?: string,
+  optionsRef?: string
 ) {
   if (props.type === "textarea") {
     return (
@@ -87,7 +88,7 @@ function getInput(
         className={cn(props.className, "form-control")}
         value={field.value}
         defaultValue={field.value}
-        disabled = {optionsRef}
+        disabled={optionsRef}
       />
     );
   }

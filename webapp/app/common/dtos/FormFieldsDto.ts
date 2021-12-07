@@ -3,26 +3,37 @@ import { CodeBlock } from "./CodeBlock";
 
 export interface FormFieldsDto {
   fields: {
-    [key: string]: {
-      group: string;
-      fieldProps: {
-        type: FormFieldType;
-        title: string;
-        description: string;
-        placeholder?: string;
-        optionsRef?: string;
-      };
-      validations: {
-        required: boolean;
-      };
-    };
+    [key: string]: FormFieldMeta;
   };
-  helpText? : string,
-  codeBlock? : CodeBlock,
+  helpText?: string;
+  codeBlock?: CodeBlock;
   groupActivators: {
     [key: string]: {
       dependencies: string[];
-      condition? : string;
+      condition?: string;
     };
+  };
+}
+
+export interface FormFieldMeta {
+  group: string;
+  fieldProps: {
+    type: FormFieldType;
+    title: string;
+    description: string;
+    placeholder?: string;
+    optionsRef?: string;
+  };
+  validations: {
+    required: boolean;
+    min: number;
+    max: number;
+    regex: string;
+  };
+  errorMessages?: {
+    required: string;
+    min: string;
+    max: string;
+    regex: string;
   };
 }
