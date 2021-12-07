@@ -7,7 +7,7 @@ Some of our key offerings include
 * Incremental/Complete data syncs from your cloud data warehouse.
 * Automated failure handling and recovery.
 * Reliability and Resiliance at scale.
-* Java Annotated based UI framework to support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
+* CFL(Castled Form Language) is a Java Annotated based UI framework, which can support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
 
 
 ## Getting Started
