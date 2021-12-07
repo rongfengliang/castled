@@ -121,6 +121,10 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         {
             return (String) object;
         }
+        else if(object instanceof Boolean)
+        {
+            return Boolean.toString((Boolean) object);
+        }
         return null;
     }
 
@@ -150,6 +154,6 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     @Override
     public long getMaxBufferedObjects() {
-        return 1000;
+        return 2000;
     }
 }
