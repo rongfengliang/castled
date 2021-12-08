@@ -74,14 +74,8 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
     }
 
     private class CreateEventConsumer implements Consumer<List<Message>> {
-
         @Override
-        public void accept(List<Message> records) {
-            updateRecords(records);
-           // processedRecords.addAndGet(records.size());
-        }
-
-        private void updateRecords(List<Message> messages) {
+        public void accept(List<Message> messages) {
             if (CollectionUtils.isEmpty(messages)) {
                 return;
             }
@@ -118,13 +112,11 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         }
     }
 
-    private String getEventID(Tuple record)
-    {
+    private String getEventID(Tuple record) {
         return (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName());
     }
 
     private Map<String,Object> constructEventDetails(Tuple record) {
-
         String eventName = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.EVENT_NAME.getFieldName());
         String insertId = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName());
         String distinctId = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.DISTINCT_ID.getFieldName());
@@ -173,8 +165,7 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         return null;
     }
 
-    private Long convertTimeStampToEpoch(Object timestamp)
-    {
+    private Long convertTimeStampToEpoch(Object timestamp) {
         if(timestamp instanceof LocalDateTime)
         {
             return ((LocalDateTime) timestamp).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();  // 1055545912454
