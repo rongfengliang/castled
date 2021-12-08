@@ -91,7 +91,7 @@ public class MixpanelRestClient {
         List<EventAndError> eventAndErrors = new ArrayList<>();
         try {
             EventBulkInsertResponse bulkImportResponse = invokeBulkEventInsert(userProfileDetails);
-            log.info("Response for Event Bulk inserts : "+bulkImportResponse.getCode());
+            log.info("Response for Event Bulk inserts : "+bulkImportResponse.getCode() + "SIZE :"+bulkImportResponse.getNum_records_imported());
 
             if(!"200".equalsIgnoreCase(bulkImportResponse.getCode())) {
                 handleFailure(bulkImportResponse,eventAndErrors,userProfileDetails);
@@ -100,12 +100,12 @@ public class MixpanelRestClient {
         catch (BadRequestException badRequestException) {
             log.error("Event bulk insert failed because of BAD REQUEST : ", badRequestException);
             eventAndErrors.addAll(userProfileDetails.stream().map(userDetail -> new EventAndError(0,
-                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID), Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
+                    (String) ((HashMap) userDetail.get("properties")).get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName()), Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
         }
         catch (Exception e) {
             log.error("Event bulk insert failed : ", e);
             eventAndErrors.addAll(userProfileDetails.stream().map(userDetail -> new EventAndError(0,
-                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID), Collections.singletonList(e.getMessage()))).collect(Collectors.toList()));
+                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName()), Collections.singletonList(e.getMessage()))).collect(Collectors.toList()));
             throw new CastledRuntimeException(e);
         }
         return eventAndErrors;

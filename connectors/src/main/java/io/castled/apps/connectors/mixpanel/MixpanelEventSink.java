@@ -8,11 +8,15 @@ import io.castled.ObjectRegistry;
 import io.castled.apps.connectors.mixpanel.dto.EventAndError;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.apps.models.GenericSyncObject;
+import io.castled.commons.errors.errorclassifications.UnclassifiedError;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.commons.models.MessageSyncStats;
 import io.castled.commons.streams.ErrorOutputStream;
+import io.castled.core.CastledOffsetListQueue;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,12 +24,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Singleton
+@Slf4j
 public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     private final MixpanelRestClient mixpanelRestClient;
@@ -42,6 +50,9 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     private final AtomicLong failedRecords = new AtomicLong(0);
 
+    private final CastledOffsetListQueue<Message> requestsBuffer =
+            new CastledOffsetListQueue<>(new CreateEventConsumer(), 10, 6000, true);
+
     public MixpanelEventSink(DataSinkRequest dataSinkRequest) {
         this.mixpanelRestClient = new MixpanelRestClient(((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getProjectToken(),
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
@@ -55,10 +66,17 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         this.mixpanelAppConfig = (MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig();
     }
 
+    private class CreateEventConsumer implements Consumer<List<Message>> {
+        @Override
+        public void accept(List<Message> messages) {
+            if (CollectionUtils.isEmpty(messages)) {
+                return;
+            }
+            processBulkEventCreation(messages);
+        }
+    }
 
-    @Override
-    protected void writeRecords(List<Message> messages) {
-
+    private void processBulkEventCreation(List<Message> messages){
         List<EventAndError> failedRecords = this.mixpanelRestClient.insertEventDetails(
                 messages.stream().map(Message::getRecord).map(this::constructEventDetails).collect(Collectors.toList()));
 
@@ -73,13 +91,25 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
     }
 
-    private String getEventID(Tuple record)
-    {
+
+    @Override
+    protected void writeRecords(List<Message> messages) {
+        try {
+            requestsBuffer.writePayload(Lists.newArrayList(messages), 5, TimeUnit.MINUTES);
+        } catch (TimeoutException e) {
+            log.error("Unable to publish records to records queue", e);
+            for (Message record : messages) {
+                errorOutputStream.writeFailedRecord(record,
+                        new UnclassifiedError("Internal error!! Unable to publish records to records queue. Please contact support"));
+            }
+        }
+    }
+
+    private String getEventID(Tuple record) {
         return (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName());
     }
 
     private Map<String,Object> constructEventDetails(Tuple record) {
-
         String eventName = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.EVENT_NAME.getFieldName());
         String insertId = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName());
         String distinctId = (String) record.getValue(MixpanelObjectFields.EVENT_FIELDS.DISTINCT_ID.getFieldName());
@@ -121,11 +151,14 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         {
             return (String) object;
         }
+        else if(object instanceof Boolean)
+        {
+            return Boolean.toString((Boolean) object);
+        }
         return null;
     }
 
-    private Long convertTimeStampToEpoch(Object timestamp)
-    {
+    private Long convertTimeStampToEpoch(Object timestamp) {
         if(timestamp instanceof LocalDateTime)
         {
             return ((LocalDateTime) timestamp).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();  // 1055545912454
@@ -150,6 +183,6 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
 
     @Override
     public long getMaxBufferedObjects() {
-        return 1000;
+        return 2000;
     }
 }
