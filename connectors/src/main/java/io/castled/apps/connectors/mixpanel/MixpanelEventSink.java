@@ -15,6 +15,7 @@ import io.castled.commons.streams.ErrorOutputStream;
 import io.castled.core.CastledOffsetListQueue;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
+import io.castled.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -174,6 +175,11 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
     private List<String> getReservedKeywords()
     {
         return Lists.newArrayList("event","time","distinct_id","insert_id","ip");
+    }
+
+    public void flushRecords() throws Exception {
+        super.flushRecords();
+        requestsBuffer.flush(TimeUtils.minutesToMillis(10));
     }
 
     @Override
