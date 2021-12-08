@@ -78,7 +78,7 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
         @Override
         public void accept(List<Message> records) {
             updateRecords(records);
-            processedRecords.addAndGet(records.size());
+           // processedRecords.addAndGet(records.size());
         }
 
         private void updateRecords(List<Message> messages) {
