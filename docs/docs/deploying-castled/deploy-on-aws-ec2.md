@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Deploy on AWS EC2 Instance
+# On AWS EC2 Instance
 
 ---
 
@@ -74,6 +74,7 @@ Here we will setup a basic environment on the new EC2 instance to get Castled st
    # In your local workstation
    # Replace ~/Downloads/castled-node-key.pem with the location of the downloaded private key.
    chmod 400 ~/Downloads/castled-node-key.pem
+
    # <public_ip_of_ec2> (Public IPv4 address) can be found once you select your instance in AWS web console.
    ssh -i ~/Downloads/castled-node-key.pem ec2_user@<public_ip_of_ec2>
    ```
@@ -94,22 +95,24 @@ Here we will setup a basic environment on the new EC2 instance to get Castled st
    logout
    ```
 
-4. Make sure to logout so that the group modification takes effect.
+4. Make sure to logout so that the user group modification done by the script takes effect.
 
 ---
 
 ## 3. Running Castled
 
-This is probably the easiest of all
+1. This is probably the easiest of all
 
-```jsx title="Running Castled"
-# In your local workstation
-ssh -i ~/Downloads/castled-node-key.pem ec2_user@<public_ip_of_ec2>
-# You should be in the ec2 instance now
-cd castled
-docker-compose up -d
-logout
-```
+   ```jsx title="Running Castled"
+   # In your local workstation
+   ssh -i ~/Downloads/castled-node-key.pem ec2_user@<public_ip_of_ec2>
+
+    # You should be in the ec2 instance now
+
+    cd castled
+    docker-compose up -d
+    logout
+   ```
 
 This will pull all the Castled docker images and runs them. Once the command is complete logout.
 
@@ -117,11 +120,11 @@ This will pull all the Castled docker images and runs them. Once the command is 
 
 ## 4. Setup Access
 
-Setup a SSH tunnel for local port forwarding requests to the Castled webapp from your local machine.
+1. Setup a SSH tunnel for local port forwarding requests to the Castled webapp from your local machine.
 
-```jsx title="Setting up ssh tunnel"
-# In your local workstation
-ssh -i  ~/Downloads/castled-node-key.pem -L 3000:localhost:3000 -N -f ec2-user@<public_ip_of_ec2>
-```
+   ```jsx title="Setting up ssh tunnel"
+   # In your local workstation
+   ssh -i  ~/Downloads/castled-node-key.pem -L 3000:localhost:3000 -N -f ec2-user@<public_ip_of_ec2>
+   ```
 
-You should be able to access Castled UI at [http://localhost:3000](http://localhost:3000) from your local machine.
+You should be able to access Castled UI at [http://localhost:3000](http://localhost:3000) from your local workstation.

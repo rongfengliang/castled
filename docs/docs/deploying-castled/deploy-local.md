@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Local Deployment
+# On Local Workstation
 
 ---
 
@@ -24,4 +24,4 @@ docker-compose up
 ```
 
 3. Once all the services are up, Castled UI should be available at [http://localhost:3000/](http://localhost:3000/)
-4. Let your data activation begin!
+4. Happy castling!
