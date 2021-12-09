@@ -25,6 +25,7 @@ services:
 
   app:
     image: castled/app:${VERSION}
+    platform: linux/amd64
     container_name: castled-app
     restart: unless-stopped
     logging: *default-logging
