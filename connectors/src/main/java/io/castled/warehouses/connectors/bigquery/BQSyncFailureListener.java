@@ -48,7 +48,7 @@ public class BQSyncFailureListener extends WarehouseSyncFailureListener {
                 () -> UUID.randomUUID().toString());
         this.warehouseConfig = (BigQueryWarehouseConfig) warehousePollContext.getWarehouseConfig();
 
-        this.gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(warehouseConfig.getServiceAccount().getClientEmail(),
+        this.gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(warehouseConfig.getServiceAccount(),
                 warehouseConfig.getProjectId());
         this.gcsUploadDirectory = GcsClient.constructObjectKey(Lists.newArrayList(FileStorageNamespace.PIPELINE_FAILED_RECORDS.getNamespace(),
                 warehousePollContext.getPipelineUUID(), String.valueOf(warehousePollContext.getPipelineRunId())));
@@ -59,7 +59,7 @@ public class BQSyncFailureListener extends WarehouseSyncFailureListener {
     @Override
     public void cleanupResources(String pipelineUUID, Long pipelineRunId, WarehouseConfig warehouseConfig) {
         BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehouseConfig;
-        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
+        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount(),
                 bigQueryWarehouseConfig.getProjectId());
         gcsClient.deleteDirectory(bigQueryWarehouseConfig.getBucketName(), gcsUploadDirectory);
         FileUtils.deleteDirectory(failureRecordsDirectory);
@@ -76,7 +76,7 @@ public class BQSyncFailureListener extends WarehouseSyncFailureListener {
         }
 
         BigQuery bigQuery = ObjectRegistry.getInstance(GcpClientFactory.class)
-                .getBigQuery(warehouseConfig.getServiceAccount().getClientEmail(), warehouseConfig.getProjectId());
+                .getBigQuery(warehouseConfig.getServiceAccount(), warehouseConfig.getProjectId());
         BQSnapshotTracker bqSnapshotTracker = bqSnapshotTrackerDAO.getSnapshotTracker(warehousePollContext.getPipelineUUID());
         if (failedRecords > 0) {
             removeFailedRecordsFromSnapshot(bigQuery, bqSnapshotTracker);
