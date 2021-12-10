@@ -52,7 +52,7 @@ public class BigQueryDataPoller implements WarehouseDataPoller {
         try {
 
             BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehousePollContext.getWarehouseConfig();
-            BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount(),
+            BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                     bigQueryWarehouseConfig.getProjectId());
             if (warehousePollContext.getQueryMode() == QueryMode.FULL_LOAD) {
                 return doFullLoad(bigQuery, warehousePollContext);
@@ -93,7 +93,7 @@ public class BigQueryDataPoller implements WarehouseDataPoller {
     public WarehousePollResult resumePoll(WarehousePollContext warehousePollContext) {
         try {
             BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehousePollContext.getWarehouseConfig();
-            GcsClient gcsClient = gcpClientFactory.getGcsClient(bigQueryWarehouseConfig.getServiceAccount(),
+            GcsClient gcsClient = gcpClientFactory.getGcsClient(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                     bigQueryWarehouseConfig.getProjectId());
 
             List<Blob> blobs = gcsClient.listObjects(bigQueryWarehouseConfig.getBucketName(),
@@ -154,7 +154,7 @@ public class BigQueryDataPoller implements WarehouseDataPoller {
     private RecordInputStream createRecordStream(BigQuery bigQuery, BigQueryWarehouseConfig bigQueryWarehouseConfig,
                                                  WarehousePollContext warehousePollContext, String dataFetchQuery, RecordSchema querySchema) throws Exception {
 
-        GcsClient gcsClient = gcpClientFactory.getGcsClient(bigQueryWarehouseConfig.getServiceAccount(),
+        GcsClient gcsClient = gcpClientFactory.getGcsClient(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
         String unloadDirectoryPath = GcsClient.constructGcsPath(bigQueryWarehouseConfig.getBucketName(),
                 Lists.newArrayList(FileStorageNamespace.PIPELINE_UNLOADS.getNamespace(), warehousePollContext.getPipelineUUID(),
@@ -188,7 +188,7 @@ public class BigQueryDataPoller implements WarehouseDataPoller {
     public void cleanupPipelineRunResources(WarehousePollContext warehousePollContext) {
 
         BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehousePollContext.getWarehouseConfig();
-        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount(),
+        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
         gcsClient.deleteDirectory(bigQueryWarehouseConfig.getBucketName(), getPipelineRunGcsUnloadDir
                 (warehousePollContext.getPipelineUUID(), warehousePollContext.getPipelineRunId()));
@@ -208,10 +208,10 @@ public class BigQueryDataPoller implements WarehouseDataPoller {
     @Override
     public void cleanupPipelineResources(String pipelineUUID, WarehouseConfig warehouseConfig) {
         BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehouseConfig;
-        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount(),
+        GcsClient gcsClient = ObjectRegistry.getInstance(GcpClientFactory.class).getGcsClient(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
         gcsClient.deleteDirectory(bigQueryWarehouseConfig.getBucketName(), getPipelineGcsUnloadDir(pipelineUUID));
-        BigQuery bigQuery = ObjectRegistry.getInstance(GcpClientFactory.class).getBigQuery(bigQueryWarehouseConfig.getServiceAccount(),
+        BigQuery bigQuery = ObjectRegistry.getInstance(GcpClientFactory.class).getBigQuery(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
         for (String internalTable : BigQueryUtils.listTables(ConnectorExecutionConstants.CASTLED_CONTAINER, bigQuery)) {
             bigQuery.delete(TableId.of(ConnectorExecutionConstants.CASTLED_CONTAINER, internalTable));

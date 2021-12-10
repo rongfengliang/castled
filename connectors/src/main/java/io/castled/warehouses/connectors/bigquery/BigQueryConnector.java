@@ -40,13 +40,13 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
 
     @Override
     public void testConnectionForDataPoll(BigQueryWarehouseConfig config) throws ConnectException {
-        BigQuery bigQuery = this.gcpClientFactory.getBigQuery(config.getServiceAccount(),
+        BigQuery bigQuery = this.gcpClientFactory.getBigQuery(config.getServiceAccount().getClientEmail(),
                 config.getProjectId());
 
         try {
             BigQueryUtils.getOrCreateDataset(ConnectorExecutionConstants.CASTLED_CONTAINER, bigQuery, config.getLocation());
             BigQueryUtils.listTables(ConnectorExecutionConstants.CASTLED_CONTAINER, bigQuery);
-            Storage storage = this.gcpClientFactory.getGcsClient(config.getServiceAccount(),
+            Storage storage = this.gcpClientFactory.getGcsClient(config.getServiceAccount().getClientEmail(),
                             config.getProjectId())
                     .getStorage();
             Bucket bucket = storage.get(config.getBucketName());
@@ -73,7 +73,7 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
     @Override
     public RecordSchema getQuerySchema(BigQueryWarehouseConfig bigQueryWarehouseConfig, String query) throws Exception {
         String limitedQuery = String.format("select * from (%s) limit 0", query);
-        BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount(),
+        BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
         TableResult tableResult = bigQuery.query(QueryJobConfiguration.newBuilder(limitedQuery).build());
         return BigQueryUtils.bqSchemaToConnectSchema(tableResult.getSchema());
@@ -91,7 +91,7 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
 
     @Override
     public void restartPoll(String pipelineUUID, BigQueryWarehouseConfig config) {
-        BigQuery bigQuery = gcpClientFactory.getBigQuery(config.getServiceAccount(),
+        BigQuery bigQuery = gcpClientFactory.getBigQuery(config.getServiceAccount().getClientEmail(),
                 config.getProjectId());
         BQSnapshotTracker bqSnapshotTracker = bqSnapshotTrackerDAO.getSnapshotTracker(pipelineUUID);
         if (bqSnapshotTracker.getCommittedSnapshot() != null) {
@@ -102,7 +102,7 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
     @Override
     public QueryResults previewQuery(String query, BigQueryWarehouseConfig bigQueryWarehouseConfig, int maxRows) throws Exception {
         String limitedQuery = String.format("select * from (%s) limit %d", query, maxRows);
-        BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount(),
+        BigQuery bigQuery = gcpClientFactory.getBigQuery(bigQueryWarehouseConfig.getServiceAccount().getClientEmail(),
                 bigQueryWarehouseConfig.getProjectId());
 
         TableResult tableResult = bigQuery.query(QueryJobConfiguration.newBuilder(limitedQuery).build());

@@ -1,6 +1,7 @@
 package io.castled.warehouses.connectors.bigquery;
 
 import io.castled.OptionsReferences;
+import io.castled.commons.models.ServiceAccountDetails;
 import io.castled.forms.*;
 import io.castled.warehouses.WarehouseConfig;
 import lombok.Getter;
@@ -25,7 +26,6 @@ public class BigQueryWarehouseConfig extends WarehouseConfig {
             optionsRef = @OptionsRef(value = OptionsReferences.BQ_LOCATIONS, type = OptionsRefType.STATIC))
     private String location;
 
-    @FormField(type = FormFieldType.TEXT_BOX, description = "Service Account", title = "Service Account (Auto Generated)",
-            optionsRef = @OptionsRef(value = OptionsReferences.BQ_SERVICE_ACCOUNT, type = OptionsRefType.DYNAMIC))
-    private String serviceAccount;
+    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account", title = "Service Account")
+    private ServiceAccountDetails serviceAccount;
 }
