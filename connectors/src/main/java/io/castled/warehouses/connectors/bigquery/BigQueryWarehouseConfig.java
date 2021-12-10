@@ -13,7 +13,7 @@ import lombok.Setter;
         dependencies = {"projectId", "bucketName", "serviceAccount"}
         , snippets = {@CodeSnippet(title = "BQ Data Viewer Role", ref = "bq_data_viewer_access"),
         @CodeSnippet(title = "BQ User Role", ref = "bq_data_user_access"),
-@CodeSnippet(title = "GCP Storage Admin Role", ref = "gcp_storage_admin_access")})
+        @CodeSnippet(title = "GCP Storage Admin Role", ref = "gcp_storage_admin_access")})
 public class BigQueryWarehouseConfig extends WarehouseConfig {
 
     @FormField(description = "Project Id", title = "Project Id", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
@@ -27,5 +27,8 @@ public class BigQueryWarehouseConfig extends WarehouseConfig {
     private String location;
 
     @FormField(type = FormFieldType.JSON_FILE, description = "Service Account", title = "Service Account")
-    private ServiceAccountDetails serviceAccount;
+    private ServiceAccountDetails serviceAccountDetails;
+
+
+    private String serviceAccount;
 }
