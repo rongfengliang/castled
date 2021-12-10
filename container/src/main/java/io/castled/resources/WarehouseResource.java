@@ -8,6 +8,7 @@ import io.castled.dtos.EntityCreateResponse;
 import io.castled.dtos.WarehouseDTO;
 import io.castled.dtos.WarehouseQueryPreviewRequest;
 import io.castled.exceptions.CastledException;
+import io.castled.forms.dtos.FieldOptionsDTO;
 import io.castled.forms.dtos.FormFieldsDTO;
 import io.castled.models.QueryId;
 import io.castled.models.QueryStatusAndResults;
@@ -124,5 +125,11 @@ public class WarehouseResource {
     @Path("/types")
     public List<WarehouseTypeDTO> getWarehouseTypes(@Auth User user) throws Exception {
         return this.warehouseService.listWarehouseTypes(user);
+    }
+
+    @POST
+    @Path("/config-options")
+    public FieldOptionsDTO getWarehouseConfigOptions(WarehouseAttributes warehouseAttributes, @QueryParam("optionsRef") String optionsReference) {
+        return this.warehouseService.getConfigOptions(warehouseAttributes.getConfig(), optionsReference);
     }
 }
