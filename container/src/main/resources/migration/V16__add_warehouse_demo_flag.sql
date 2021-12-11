@@ -1,0 +1,1 @@
+alter table warehouses add column demo boolean not null default false;
