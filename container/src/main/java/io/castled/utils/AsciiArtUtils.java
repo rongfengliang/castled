@@ -1,17 +1,14 @@
 package io.castled.utils;
 
-import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-@Slf4j
 public class AsciiArtUtils {
 
-    public static void printCastled() {
+    public static void drawCastled() {
         int width = 200;
         int height = 50;
-
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
         g.setFont(new Font("SansSerif", Font.BOLD, 24));
