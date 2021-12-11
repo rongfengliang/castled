@@ -11,6 +11,7 @@ import io.castled.commands.CastledServerCommand;
 import io.castled.jarvis.JarvisModule;
 import io.castled.models.users.User;
 import io.castled.resources.*;
+import io.castled.utils.AsciiArtUtils;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -107,7 +108,7 @@ public class CastledApplication extends Application<CastledConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> appShutdownHandler.handleShutdown()));
-
+        AsciiArtUtils.printCastled();
 
     }
 
