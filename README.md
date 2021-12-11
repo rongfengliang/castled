@@ -16,7 +16,7 @@ Some of our key offerings include
 ```
 git clone https://github.com/castledio/castled.git
 cd castled
-docker-compose up
+docker compose up
 ```
 
 You can access castled app at http://localhost:3000. Happy castling!!
