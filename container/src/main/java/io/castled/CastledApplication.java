@@ -108,7 +108,6 @@ public class CastledApplication extends Application<CastledConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> appShutdownHandler.handleShutdown()));
-        AsciiArtUtils.drawCastled();
 
     }
 
