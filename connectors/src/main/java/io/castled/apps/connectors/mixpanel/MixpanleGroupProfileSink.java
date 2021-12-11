@@ -49,7 +49,7 @@ public class MixpanleGroupProfileSink extends MixpanelObjectSink<Message> {
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.mixpanelErrorParser = ObjectRegistry.getInstance(MixpanelErrorParser.class);
-        this.userProfileSyncObject = (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject();
+        this.userProfileSyncObject = ((MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getObject();
         this.syncConfig = (MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig();
         this.primaryKeys = dataSinkRequest.getPrimaryKeys();
         this.syncStats = new AppSyncStats(0, 0, 0);
@@ -79,55 +79,48 @@ public class MixpanleGroupProfileSink extends MixpanelObjectSink<Message> {
         return (String) record.getValue(MixpanelObjectFields.GROUP_PROFILE_FIELDS.GROUP_ID.getFieldName());
     }
 
-    private Map<String,Object> constructGroupProfileDetails(Tuple record) {
+    private Map<String, Object> constructGroupProfileDetails(Tuple record) {
 
         String groupID = (String) record.getValue(MixpanelObjectFields.GROUP_PROFILE_FIELDS.GROUP_ID.getFieldName());
 
-        Map<String,Object> groupProfileInfo = Maps.newHashMap();
-        groupProfileInfo.put("$group_key",syncConfig.getGroupKey());
-        groupProfileInfo.put("$group_id",groupID);
-        groupProfileInfo.put("$set",Maps.newHashMap());
-        Map<String,Object> nonReservedPropertyMap = record.getFields().stream().
-                filter(field -> !isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> field.getName() ,field-> field.getValue()));
-        if(!nonReservedPropertyMap.isEmpty()) {
-            ((Map<String,Object>)groupProfileInfo.get("$set")).putAll(nonReservedPropertyMap);
+        Map<String, Object> groupProfileInfo = Maps.newHashMap();
+        groupProfileInfo.put("$group_key", syncConfig.getGroupKey());
+        groupProfileInfo.put("$group_id", groupID);
+        groupProfileInfo.put("$set", Maps.newHashMap());
+        Map<String, Object> nonReservedPropertyMap = record.getFields().stream().
+                filter(field -> !isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> field.getName(), field -> field.getValue()));
+        if (!nonReservedPropertyMap.isEmpty()) {
+            ((Map<String, Object>) groupProfileInfo.get("$set")).putAll(nonReservedPropertyMap);
         }
 
         return groupProfileInfo;
     }
 
-    private Integer transformFieldId(Field field)
-    {
+    private Integer transformFieldId(Field field) {
         return (Integer) Optional.ofNullable(field.getParams().get(ActiveCampaignConstants.CUSTOM_FIELD_ID))
                 .filter(objectRef -> objectRef instanceof Integer).orElse(null);
     }
 
-    private String transformFieldValue(Field field)
-    {
+    private String transformFieldValue(Field field) {
         Object object = field.getValue();
-        if(object instanceof Integer) {
+        if (object instanceof Integer) {
             return String.valueOf(object);
-        }
-        else if(object instanceof String) {
+        } else if (object instanceof String) {
             return (String) object;
-        }
-        else if (object instanceof LocalDate) {
+        } else if (object instanceof LocalDate) {
             return ((LocalDate) object).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
-        else if (object instanceof LocalDateTime) {
+        } else if (object instanceof LocalDateTime) {
             return ((LocalDateTime) object).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
         }
         return null;
     }
 
-    private boolean isMixpanelReservedKeyword(String fieldName)
-    {
+    private boolean isMixpanelReservedKeyword(String fieldName) {
         return getReservedKeywords().contains(fieldName);
     }
 
-    private List<String> getReservedKeywords()
-    {
-        return Lists.newArrayList("group_id","group_key");
+    private List<String> getReservedKeywords() {
+        return Lists.newArrayList("group_id", "group_key");
     }
 
     @Override

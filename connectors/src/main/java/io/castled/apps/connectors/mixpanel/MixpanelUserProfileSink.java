@@ -43,7 +43,7 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.mixpanelErrorParser = ObjectRegistry.getInstance(MixpanelErrorParser.class);
-        this.userProfileSyncObject = (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject();
+        this.userProfileSyncObject = ((MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getObject();
         this.syncConfig = (MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig();
         this.primaryKeys = dataSinkRequest.getPrimaryKeys();
         this.syncStats = new AppSyncStats(0, 0, 0);

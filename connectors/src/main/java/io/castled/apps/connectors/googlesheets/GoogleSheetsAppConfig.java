@@ -1,0 +1,22 @@
+package io.castled.apps.connectors.googlesheets;
+
+import io.castled.OptionsReferences;
+import io.castled.apps.AppConfig;
+import io.castled.commons.models.ServiceAccountDetails;
+import io.castled.forms.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@GroupActivator(dependencies = {"serviceAccountDetails"}, group = "serviceAccount")
+public class GoogleSheetsAppConfig extends AppConfig {
+
+    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account Json File", title = "Service Account Json File")
+    private ServiceAccountDetails serviceAccountDetails;
+
+    @FormField(type = FormFieldType.TEXT_BOX, description = "Service Account", title = "Service Account", group = "serviceAccount",
+            optionsRef = @OptionsRef(value = OptionsReferences.BQ_SERVICE_ACCOUNT, type = OptionsRefType.DYNAMIC))
+    private String serviceAccount;
+
+}

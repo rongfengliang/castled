@@ -32,7 +32,7 @@ public class CustomerIODataSink implements DataSink {
     private CustomerIOObjectSink<String> getObjectSink(DataSinkRequest dataSinkRequest) {
         CustomerIOObjectSink<String> customerIOObjectSink = null;
         CustomerIOObject customerIOObject = CustomerIOObject
-                .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
+                .getObjectByName(((CustomerIOAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getObject().getObjectName());
         switch (customerIOObject) {
             case EVENT:
                 customerIOObjectSink = new CustomerIOEventSink(dataSinkRequest);

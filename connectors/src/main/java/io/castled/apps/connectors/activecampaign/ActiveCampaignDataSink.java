@@ -16,7 +16,7 @@ public class ActiveCampaignDataSink implements DataSink {
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
         Message message;
         this.activeCampaignAudienceSink = new ActiveCampaignAudienceSink((ActiveCampaignAppConfig) dataSinkRequest.getExternalApp().getConfig(),
-                dataSinkRequest.getErrorOutputStream(), (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject());
+                dataSinkRequest.getErrorOutputStream(), ((ActiveCampaignAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getObject());
         while ((message = dataSinkRequest.getMessageInputStream().readMessage()) != null) {
             this.activeCampaignAudienceSink.writeRecord(message);
         }

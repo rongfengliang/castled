@@ -11,6 +11,7 @@ import io.castled.apps.connectors.salesforce.client.dtos.*;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.apps.models.GenericSyncObject;
 import io.castled.apps.syncconfigs.AppSyncConfig;
+import io.castled.apps.syncconfigs.GenericObjectRadioGroupConfig;
 import io.castled.commons.models.AppSyncMode;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.commons.streams.ErrorOutputStream;
@@ -124,7 +125,7 @@ public class SalesforceDataSink implements DataSink {
     private void computeExistingPrimaryKeysIfReqd(OAuthAppConfig salesforceAppConfig, List<String> primaryKeys,
                                                   AppSyncConfig appSyncConfig) throws Exception {
 
-        GenericSyncObject sfdcSyncObject = (GenericSyncObject) appSyncConfig.getObject();
+        GenericSyncObject sfdcSyncObject = ((GenericObjectRadioGroupConfig) appSyncConfig).getObject();
         if (appSyncConfig.getMode() == AppSyncMode.UPDATE) {
             String primaryKey = primaryKeys.get(0);
             SFDCBulkClient sfdcBulkClient = new SFDCBulkClient(salesforceAppConfig.getOAuthToken(),
@@ -194,7 +195,7 @@ public class SalesforceDataSink implements DataSink {
 
     private JobRequest createJobRequest(AppSyncConfig appSyncConfig, String primaryKey) {
 
-        GenericSyncObject sfdcSyncObject = (GenericSyncObject) appSyncConfig.getObject();
+        GenericSyncObject sfdcSyncObject = ((GenericObjectRadioGroupConfig) appSyncConfig).getObject();
         switch (appSyncConfig.getMode()) {
             case UPSERT:
                 return new UpsertJobRequest(sfdcSyncObject.getObjectName(), ContentType.CSV, primaryKey);

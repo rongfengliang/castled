@@ -13,7 +13,7 @@ public class MailchimpAudienceSyncObject extends SyncObject {
     private String audienceId;
 
     public MailchimpAudienceSyncObject(String audienceId, String audienceName) {
-        super(audienceName, ExternalAppType.MAILCHIMP);
+        super(audienceName);
         this.audienceId = audienceId;
     }
 }

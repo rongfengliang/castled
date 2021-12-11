@@ -1,6 +1,7 @@
 package io.castled.apps.connectors.mixpanel;
 
 import io.castled.apps.DataSink;
+import io.castled.apps.connectors.mailchimp.MailchimpAppSyncConfig;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.exceptions.CastledRuntimeException;
@@ -29,7 +30,7 @@ public class MixpanelDataSink implements DataSink {
     private MixpanelObjectSink getObjectSink(DataSinkRequest dataSinkRequest) {
         MixpanelObjectSink bufferedObjectSink = null;
         MixpanelObject customerIOObject = MixpanelObject
-                .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
+                .getObjectByName(((MailchimpAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getObject().getObjectName());
         switch (customerIOObject) {
             case USER_PROFILE:
                 bufferedObjectSink = new MixpanelUserProfileSink(dataSinkRequest);
