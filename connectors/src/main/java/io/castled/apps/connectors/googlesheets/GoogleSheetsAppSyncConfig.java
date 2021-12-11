@@ -13,7 +13,7 @@ import lombok.Setter;
 public class GoogleSheetsAppSyncConfig extends AppSyncConfig {
 
     @FormField(title = "Select the sheet to sync", type = FormFieldType.DROP_DOWN, group = MappingFormGroups.OBJECT, optionsRef = @OptionsRef(value = OptionsReferences.OBJECT, type = OptionsRefType.DYNAMIC))
-    private GenericSyncObject object;
+    private GoogleSheetsSyncObject object;
 
 
 }

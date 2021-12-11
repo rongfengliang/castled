@@ -37,6 +37,28 @@
             <version>4.11</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-sheets -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-sheets</artifactId>
+            <version>v4-rev612-1.25.0</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.32.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-gson -->
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-gson</artifactId>
+            <version>1.40.1</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>

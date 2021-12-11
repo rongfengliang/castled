@@ -5,14 +5,23 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;
 import io.castled.OptionsReferences;
+import io.castled.apps.connectors.activecampaign.ActiveCampaignAppConnector;
 import io.castled.apps.connectors.customerio.CIOEventTypeFetcher;
 import io.castled.apps.connectors.customerio.CIOPrimaryKeyOptionsFetcher;
+import io.castled.apps.connectors.customerio.CustomerIOAppConnector;
 import io.castled.apps.connectors.googleads.GadAccountOptionsFetcher;
 import io.castled.apps.connectors.googleads.GadsLoginCustomerOptionsFetcher;
-import io.castled.apps.connectors.intercom.IntercomCompanySink;
-import io.castled.apps.connectors.intercom.IntercomContactSink;
-import io.castled.apps.connectors.intercom.IntercomObject;
-import io.castled.apps.connectors.intercom.IntercomObjectSink;
+import io.castled.apps.connectors.googleads.GoogleAdsAppConnector;
+import io.castled.apps.connectors.googlepubsub.GooglePubSubAppConnector;
+import io.castled.apps.connectors.googlesheets.GoogleSheetsAppConnector;
+import io.castled.apps.connectors.hubspot.HubspotAppConnector;
+import io.castled.apps.connectors.intercom.*;
+import io.castled.apps.connectors.kafka.KafkaAppConnector;
+import io.castled.apps.connectors.mailchimp.MailchimpAppConnector;
+import io.castled.apps.connectors.marketo.MarketoAppConnector;
+import io.castled.apps.connectors.mixpanel.MixpanelAppConnector;
+import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
+import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridListsOptionsFetcher;
 import io.castled.forms.StaticOptionsFetcher;
 import io.castled.jdbc.JdbcConnectionType;
@@ -52,7 +61,28 @@ public class ConnectorsModule extends AbstractModule {
         bindJdbcQueryHelpers();
         bindStaticOptionFetchers();
         bindWarehouseOptionFetchers();
+        bindAppConnectors();
     }
+
+
+    private void bindAppConnectors() {
+        MapBinder<ExternalAppType, ExternalAppConnector> externalAppConnectorMapping = MapBinder.newMapBinder(binder(),
+                ExternalAppType.class, ExternalAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.SALESFORCE).to(SalesforceAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.HUBSPOT).to(HubspotAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.INTERCOM).to(IntercomAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLEADS).to(GoogleAdsAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.MAILCHIMP).to(MailchimpAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.SENDGRID).to(SendgridAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.ACTIVECAMPAIGN).to(ActiveCampaignAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.MARKETO).to(MarketoAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.KAFKA).to(KafkaAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.CUSTOMERIO).to(CustomerIOAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLEPUBSUB).to(GooglePubSubAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.MIXPANEL).to(MixpanelAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLE_SHEETS).to(GoogleSheetsAppConnector.class);
+    }
+
 
     private void bindWarehouseOptionFetchers() {
         MapBinder<String, WarehouseOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
