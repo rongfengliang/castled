@@ -22,6 +22,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -160,20 +161,20 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
     }
 
     private Long convertTimeStampToEpoch(Object timestamp) {
-        if(timestamp instanceof LocalDateTime)
-        {
+        if(timestamp instanceof LocalDateTime) {
             return ((LocalDateTime) timestamp).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();  // 1055545912454
+        }
+        if(timestamp instanceof ZonedDateTime) {
+            return ((ZonedDateTime) timestamp).toInstant().toEpochMilli();  // 1055545912454
         }
         return null;
     }
 
-    private boolean isMixpanelReservedKeyword(String fieldName)
-    {
+    private boolean isMixpanelReservedKeyword(String fieldName) {
         return getReservedKeywords().contains(fieldName);
     }
 
-    private List<String> getReservedKeywords()
-    {
+    private List<String> getReservedKeywords() {
         return Lists.newArrayList("event","time","distinct_id","insert_id","ip");
     }
 
