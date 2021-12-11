@@ -1,5 +1,6 @@
 package io.castled.apps.connectors.googlesheets;
 
+import io.castled.ObjectRegistry;
 import io.castled.apps.ExternalAppConnector;
 import io.castled.apps.models.ExternalAppSchema;
 import io.castled.forms.dtos.FormFieldOption;
@@ -16,7 +17,7 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
 
     @Override
     public GoogleSheetsDataSink getDataSink() {
-        return null;
+        return ObjectRegistry.getInstance(GoogleSheetsDataSink.class);
     }
 
     @Override
@@ -26,11 +27,11 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
 
     @Override
     public Class<GoogleSheetsAppSyncConfig> getMappingConfigType() {
-        return null;
+        return GoogleSheetsAppSyncConfig.class;
     }
 
     @Override
     public Class<GoogleSheetsAppConfig> getAppConfigType() {
-        return null;
+        return GoogleSheetsAppConfig.class;
     }
 }
