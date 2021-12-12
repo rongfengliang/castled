@@ -7,10 +7,9 @@ import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
 import io.castled.apps.connectors.mixpanel.dto.UserProfileAndError;
 import io.castled.apps.models.DataSinkRequest;
-import io.castled.apps.models.GenericSyncObject;
-import io.castled.commons.models.AppSyncStats;
 import io.castled.commons.models.MessageSyncStats;
 import io.castled.commons.streams.ErrorOutputStream;
+import io.castled.schema.models.Field;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
 
@@ -27,14 +26,9 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
     private final MixpanelRestClient mixpanelRestClient;
     private final MixpanelErrorParser mixpanelErrorParser;
     private final ErrorOutputStream errorOutputStream;
-    private final GenericSyncObject userProfileSyncObject;
     private final MixpanelAppConfig mixpanelAppConfig;
     private final AtomicLong processedRecords = new AtomicLong(0);
     private long lastProcessedOffset = 0;
-    private final MixpanelAppSyncConfig syncConfig;
-    private final AppSyncStats syncStats;
-    private final List<String> primaryKeys;
-    private final List<String> mappedFields;
 
     private final AtomicLong failedRecords = new AtomicLong(0);
 
@@ -43,18 +37,11 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.mixpanelErrorParser = ObjectRegistry.getInstance(MixpanelErrorParser.class);
-        this.userProfileSyncObject = (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject();
-        this.syncConfig = (MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig();
-        this.primaryKeys = dataSinkRequest.getPrimaryKeys();
-        this.syncStats = new AppSyncStats(0, 0, 0);
-        this.mappedFields = dataSinkRequest.getMappedFields();
         this.mixpanelAppConfig = (MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig();
     }
 
-
     @Override
     protected void writeRecords(List<Message> messages) {
-
         List<UserProfileAndError> failedRecords = this.mixpanelRestClient.upsertUserProfileDetails(
                 messages.stream().map(Message::getRecord).map(this::constructUserProfileDetails).collect(Collectors.toList()));
 
@@ -83,22 +70,25 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
         Map<String,Object> userProfileInfo = Maps.newHashMap();
         userProfileInfo.put("$token",mixpanelAppConfig.getProjectToken());
         userProfileInfo.put("$distinct_id",distinctID);
-        userProfileInfo.put("$set",Maps.newHashMap());
-
-        Map<String,Object> reservedPropertyMap = record.getFields().stream().
-                filter(field -> isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> "$"+field.getName() ,field-> field.getValue()));
-
-        Map<String,Object> nonReservedPropertyMap = record.getFields().stream().
-                filter(field -> !isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> field.getName() ,field-> field.getValue()));
-
-        if(!reservedPropertyMap.isEmpty()) {
-            ((Map<String,Object>)userProfileInfo.get("$set")).putAll(reservedPropertyMap);
-        }
-        if(!nonReservedPropertyMap.isEmpty()) {
-            ((Map<String,Object>)userProfileInfo.get("$set")).putAll(nonReservedPropertyMap);
-        }
+        userProfileInfo.put("$set",constructPropertyMap(record));
 
         return userProfileInfo;
+    }
+
+    private Map<String, Object> constructPropertyMap(Tuple record) {
+        Map<String,Object> propertyMap = Maps.newHashMap();
+        Map<String,Object> reservedPropertyMap = record.getFields().stream().
+                filter(field -> isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> "$"+field.getName() , Field::getValue));
+        if(!reservedPropertyMap.isEmpty()) {
+            propertyMap.putAll(reservedPropertyMap);
+        }
+
+        Map<String,Object> nonReservedPropertyMap = record.getFields().stream().
+                filter(field -> !isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(Field::getName, Field::getValue));
+        if(!nonReservedPropertyMap.isEmpty()) {
+            propertyMap.putAll(nonReservedPropertyMap);
+        }
+        return propertyMap;
     }
 
     private boolean isMixpanelReservedKeyword(String fieldName)
