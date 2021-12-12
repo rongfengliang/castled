@@ -10,10 +10,7 @@ import java.util.Optional;
 
 public class MixpanelDataSink implements DataSink {
 
-
-    private volatile MixpanelObjectSink mixedPanelObjectSink;
-
-    private long skippedRecords = 0;
+    private volatile MixpanelObjectSink<Message> mixedPanelObjectSink;
 
     @Override
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
@@ -26,22 +23,22 @@ public class MixpanelDataSink implements DataSink {
         this.mixedPanelObjectSink.flushRecords();
     }
 
-    private MixpanelObjectSink getObjectSink(DataSinkRequest dataSinkRequest) {
-        MixpanelObjectSink bufferedObjectSink = null;
-        MixpanelObject customerIOObject = MixpanelObject
+    private MixpanelObjectSink<Message> getObjectSink(DataSinkRequest dataSinkRequest) {
+        MixpanelObjectSink<Message> bufferedObjectSink = null;
+        MixpanelObject mixpanelObject = MixpanelObject
                 .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
-        switch (customerIOObject) {
+        switch (mixpanelObject) {
             case USER_PROFILE:
                 bufferedObjectSink = new MixpanelUserProfileSink(dataSinkRequest);
                 break;
             case GROUP_PROFILE:
-                bufferedObjectSink = new MixpanleGroupProfileSink(dataSinkRequest);
+                bufferedObjectSink = new MixpanelGroupProfileSink(dataSinkRequest);
                 break;
             case EVENT:
                 bufferedObjectSink = new MixpanelEventSink(dataSinkRequest);
                 break;
             default:
-                throw new CastledRuntimeException(String.format("Invalid object type %s!", customerIOObject.getName()));
+                throw new CastledRuntimeException(String.format("Invalid object type %s!", mixpanelObject.getName()));
         }
         return bufferedObjectSink;
     }
