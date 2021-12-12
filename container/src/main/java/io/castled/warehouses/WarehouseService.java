@@ -82,7 +82,8 @@ public class WarehouseService {
         try {
             testConnection(warehouseConfig.getType(), warehouseConfig);
             String config = this.encryptionManager.encryptText(JsonUtils.objectToString(warehouseConfig), user.getTeamId());
-            return warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(), config, user.getTeamId());
+            return warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(),
+                    config, user.getTeamId(), false);
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {

@@ -26,4 +26,5 @@ public class WarehouseDTO {
     private String logoUrl;
     private String docUrl;
     private AccessType accessType;
+    private boolean demo;
 }

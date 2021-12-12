@@ -24,9 +24,10 @@ import java.util.List;
 public interface WarehouseDAO {
 
     @GetGeneratedKeys
-    @SqlUpdate("insert into warehouses(name, config, type, team_id, status) values(:name, :config, :type, :teamId, 'OK')")
+    @SqlUpdate("insert into warehouses(name, config, type, team_id, demo, status) " +
+            "values(:name, :config, :type, :teamId, :demo, 'OK')")
     long createWarehouse(@Bind("name") String name, @Bind("type") WarehouseType type,
-                         @Bind("config") String config, @Bind("teamId") Long teamId);
+                         @Bind("config") String config, @Bind("teamId") Long teamId, @Bind("demo") Boolean demo);
 
     @SqlUpdate("update warehouses set name = :name, config = :config where id = :id")
     void updateWarehouse(@Bind("id") Long id, @Bind("name") String name, @Bind("config") String config);
@@ -59,6 +60,7 @@ public interface WarehouseDAO {
                 return Warehouse.builder().id(rs.getLong(TableFields.ID)).name(rs.getString(TableFields.NAME))
                         .config(JsonUtils.jsonStringToObject(configString, WarehouseConfig.class))
                         .status(WarehouseStatus.valueOf(rs.getString(TableFields.STATUS)))
+                        .demo(rs.getBoolean("demo"))
                         .type(warehouseType).teamId(teamId)
                         .build();
             } catch (EncryptionException e) {

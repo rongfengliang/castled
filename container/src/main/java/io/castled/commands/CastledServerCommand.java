@@ -20,7 +20,7 @@ public class CastledServerCommand extends ServerCommand<CastledConfiguration> {
     protected void run(Environment environment, Namespace namespace, CastledConfiguration configuration) throws Exception {
         runMigrations(configuration);
         super.run(environment, namespace, configuration);
-        AsciiArtUtils.drawCastled();
+        //AsciiArtUtils.drawCastled();
     }
 
     private void runMigrations(CastledConfiguration configuration) {
