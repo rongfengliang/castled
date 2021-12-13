@@ -3,6 +3,15 @@
   <p align="center">Open source reverse-ETL platform to operationalize your data warehouse</p>
 </p>
 
+<p align="center">
+  <a href="https://docs.castled.io/deploying-castled/deploy-local">
+    <img src="https://cdn.castled.io/content/readme/deploy_locally.svg" alt="deply locally" />
+  </a>
+  <a href="https://docs.castled.io/deploying-castled/deploy-on-aws-ec2">
+    <img src="https://cdn.castled.io/content/readme/deploy_aws.svg" alt="deploy on aws" />
+  </a>
+</p>
+
 ---
 
 ## Introduction
