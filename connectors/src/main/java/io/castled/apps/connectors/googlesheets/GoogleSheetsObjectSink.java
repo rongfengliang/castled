@@ -3,6 +3,7 @@ package io.castled.apps.connectors.googlesheets;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import io.castled.apps.BufferedObjectSink;
 import io.castled.commons.models.MessageSyncStats;
@@ -40,8 +41,8 @@ public class GoogleSheetsObjectSink extends BufferedObjectSink<Message> {
             }
             valueRange.setValues(values);
             sheetsService.spreadsheets()
-                    .values().append(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName() + "!A1:B2",
-                            valueRange).setValueInputOption("USER_ENTERED").execute();
+                    .values().append(googleSheetsAppConfig.getSpreadSheetId(),
+                            googleSheetsAppSyncConfig.getObject().getObjectName(), valueRange).setValueInputOption("USER_ENTERED").execute();
         } catch (Exception e) {
             log.error("Write records failed", e);
         }

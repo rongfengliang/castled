@@ -15,5 +15,8 @@ public class GoogleSheetsAppSyncConfig extends AppSyncConfig {
     @FormField(title = "Select the sheet to sync", type = FormFieldType.DROP_DOWN, group = MappingFormGroups.OBJECT, optionsRef = @OptionsRef(value = OptionsReferences.OBJECT, type = OptionsRefType.DYNAMIC))
     private GoogleSheetsSyncObject object;
 
+    @FormField(description = "Clear Sheets before every run", title = "Clear Sheets before every run", schema = FormFieldSchema.BOOLEAN, type = FormFieldType.CHECK_BOX)
+    private boolean clearSheets;
+
 
 }

@@ -19,8 +19,10 @@ public class GoogleSheetsDataSink implements DataSink {
         GoogleSheetsAppSyncConfig googleSheetsAppSyncConfig = (GoogleSheetsAppSyncConfig) dataSinkRequest.getAppSyncConfig();
         Sheets sheetsService = GoogleSheetUtils.getSheets(googleSheetsAppConfig.getServiceAccountDetails());
 
-        sheetsService.spreadsheets().values().clear(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName(),
-                new ClearValuesRequest()).execute();
+        if (googleSheetsAppSyncConfig.isClearSheets()) {
+            sheetsService.spreadsheets().values().clear(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName(),
+                    new ClearValuesRequest()).execute();
+        }
         this.googleSheetsObjectSink = new GoogleSheetsObjectSink(googleSheetsAppConfig, googleSheetsAppSyncConfig, sheetsService);
 
         Message message;
