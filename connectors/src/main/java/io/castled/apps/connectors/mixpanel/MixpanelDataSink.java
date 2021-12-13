@@ -5,9 +5,11 @@ import io.castled.apps.models.DataSinkRequest;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.exceptions.CastledRuntimeException;
 import io.castled.schema.models.Message;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class MixpanelDataSink implements DataSink {
 
     private volatile MixpanelObjectSink<Message> mixedPanelObjectSink;
@@ -16,6 +18,7 @@ public class MixpanelDataSink implements DataSink {
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
 
         this.mixedPanelObjectSink = getObjectSink(dataSinkRequest);
+        log.info("Sync started for mix panel");
         Message message;
         while ((message = dataSinkRequest.getMessageInputStream().readMessage()) != null) {
             this.mixedPanelObjectSink.writeRecord(message);
