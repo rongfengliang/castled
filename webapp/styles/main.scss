@@ -296,3 +296,10 @@ form {
     cursor: pointer;
   }
 }
+
+.disable-link {
+  cursor: not-allowed;
+}
+.disable-link:active {
+  pointer-events: none;
+}
