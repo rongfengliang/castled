@@ -48,6 +48,10 @@ export default {
   ): Promise<AxiosResponse<ExecuteQueryResultsDto>> => {
     return http.get(`/v1/warehouses/queries/${queryId}/results`);
   },
+  createDemoWarehouse:(): Promise<any> => {
+    // https://test.castled.io/backend/v1/warehouses/demo
+    return http.post(`/v1/warehouses/demo`);
+  },
 
   configOptions: (
     optionsRef: string,
