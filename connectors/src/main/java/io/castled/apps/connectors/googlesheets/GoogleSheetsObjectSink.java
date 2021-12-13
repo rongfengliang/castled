@@ -40,7 +40,7 @@ public class GoogleSheetsObjectSink extends BufferedObjectSink<Message> {
             }
             valueRange.setValues(values);
             sheetsService.spreadsheets()
-                    .values().append(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName() + "!A1:B1",
+                    .values().append(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName() + "!A1:B2",
                             valueRange).setValueInputOption("USER_ENTERED").execute();
         } catch (Exception e) {
             log.error("Write records failed", e);

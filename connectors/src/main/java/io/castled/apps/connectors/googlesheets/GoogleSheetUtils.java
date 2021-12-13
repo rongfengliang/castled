@@ -21,7 +21,7 @@ public class GoogleSheetUtils {
     public static Sheets getSheets(ServiceAccountDetails serviceAccountDetails) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         GoogleCredentials googleCredentials;
-        List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
+        List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
         try (InputStream serviceAccountStream = new ByteArrayInputStream(JsonUtils.objectToByteArray(serviceAccountDetails))) {
             googleCredentials = GoogleCredentials.fromStream(serviceAccountStream).createScoped(SCOPES);
         }
