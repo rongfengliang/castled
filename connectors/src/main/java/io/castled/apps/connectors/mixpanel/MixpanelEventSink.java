@@ -46,7 +46,7 @@ public class MixpanelEventSink extends MixpanelObjectSink<Message> {
     private final AtomicLong processedRecords = new AtomicLong(0);
     private final AtomicLong failedRecords = new AtomicLong(0);
     private final CastledOffsetListQueue<Message> requestsBuffer =
-            new CastledOffsetListQueue<>(new CreateEventConsumer(), 10, 20, true);
+            new CastledOffsetListQueue<>(new CreateEventConsumer(), 10, 10, true);
     private long lastProcessedOffset = 0;
 
     public MixpanelEventSink(DataSinkRequest dataSinkRequest) {
