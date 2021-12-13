@@ -12,6 +12,7 @@ import io.castled.commons.streams.ErrorOutputStream;
 import io.castled.schema.models.Field;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
+import io.castled.utils.TimeUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -109,5 +110,9 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
     @Override
     public long getMaxBufferedObjects() {
         return 200;
+    }
+
+    public void flushRecords() throws Exception {
+        super.flushRecords();
     }
 }
