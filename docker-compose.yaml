@@ -25,12 +25,14 @@ services:
 
   app:
     image: castled/app:${VERSION}
+    platform: linux/amd64
     container_name: castled-app
     restart: unless-stopped
     logging: *default-logging
     depends_on:
       - kafka
       - db
+      - redis
     environment:
       - APP_KAFKA_HOST=${KAFKA_HOST}
       - APP_REDIS_HOST=${REDIS_HOST}
@@ -39,14 +41,6 @@ services:
       - APP_DATABASE_USER=${DATABASE_USER}
       - APP_DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - APP_LOG_LEVEL=${LOG_LEVEL}
-      - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
-      - OAUTH_GOOGLE_CLIENT_SECRET=${OAUTH_GOOGLE_CLIENT_SECRET}
-      - OAUTH_HUBSPOT_CLIENT_ID=${OAUTH_HUBSPOT_CLIENT_ID}
-      - OAUTH_HUBSPOT_CLIENT_SECRET=${OAUTH_HUBSPOT_CLIENT_SECRET}
-      - OAUTH_SALESFORCE_CLIENT_ID=${OAUTH_SALESFORCE_CLIENT_ID}
-      - OAUTH_SALESFORCE_CLIENT_SECRET=${OAUTH_SALESFORCE_CLIENT_SECRET}
-      - OAUTH_MICROSOFT_CLIENT_ID=${OAUTH_MICROSOFT_CLIENT_ID}
-      - OAUTH_MICROSOFT_CLIENT_SECRET=${OAUTH_MICROSOFT_CLIENT_SECRET}
       - S3_BUCKET=${S3_BUCKET}
       - S3_BUCKET_REGION=${S3_BUCKET_REGION}
     ports:
@@ -60,8 +54,6 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
-    ports:
-      - ${ZOOKEEPER_PORT}:2181
     volumes:
       - zk_data:/var/lib/zookeeper/data
       - zk_log:/var/lib/zookeeper/log
@@ -80,8 +72,6 @@ services:
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-    ports:
-      - 20902:29092
     volumes:
       - kafka_vol:/var/lib/kafka/data
 

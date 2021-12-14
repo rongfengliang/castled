@@ -27,6 +27,7 @@ import io.castled.warehouses.WarehouseConnector;
 import io.castled.warehouses.WarehouseConnectorConfig;
 import io.castled.warehouses.WarehouseType;
 import io.castled.warehouses.connectors.bigquery.BQLocationsFetcher;
+import io.castled.warehouses.connectors.bigquery.BQServiceAccountOptionsFetcher;
 import io.castled.warehouses.connectors.bigquery.BigQueryConnector;
 import io.castled.warehouses.connectors.postgres.PostgresQueryHelper;
 import io.castled.warehouses.connectors.postgres.PostgresWarehouseConnector;
@@ -50,11 +51,13 @@ public class ConnectorsModule extends AbstractModule {
         bindAppSyncOptions();
         bindJdbcQueryHelpers();
         bindStaticOptionFetchers();
+        bindWarehouseOptionFetchers();
     }
 
     private void bindWarehouseOptionFetchers() {
-        MapBinder<WarehouseType, WarehouseOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
-                WarehouseType.class, WarehouseOptionsFetcher.class);
+        MapBinder<String, WarehouseOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
+                String.class, WarehouseOptionsFetcher.class);
+        warehouseOptionFetchers.addBinding(OptionsReferences.BQ_SERVICE_ACCOUNT).to(BQServiceAccountOptionsFetcher.class);
     }
 
     private void bindJdbcQueryHelpers() {

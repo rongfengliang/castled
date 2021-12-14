@@ -14,4 +14,5 @@ export interface ConnectorDto {
   docUrl: string;
   accessType: AccessType;
   pipelines: number;
+  demo?: boolean;
 }

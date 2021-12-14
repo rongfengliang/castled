@@ -28,7 +28,10 @@ public interface WarehouseDTOMapper {
         warehouseDTO.setDocUrl(warehouse.getType().getDocUrl());
         warehouseDTO.setPipelines(pipelines);
         warehouseDTO.setAccessType(warehouse.getType().getAccessType());
-        warehouseDTO.setConfig(warehouse.getConfig());
+        if (warehouse.isDemo()) {
+            warehouseDTO.setConfig(null);
+        }
+        warehouseDTO.setDemo(warehouse.isDemo());
         return warehouseDTO;
     }
 

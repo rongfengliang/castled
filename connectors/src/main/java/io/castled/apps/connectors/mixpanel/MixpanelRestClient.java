@@ -36,7 +36,6 @@ public class MixpanelRestClient {
     public MixpanelRestClient(String projectToken, String apiSecret) {
         this.apiSecret= apiSecret;
         this.projectToken = projectToken;
-
         this.client = ObjectRegistry.getInstance(Client.class);
     }
 
@@ -45,14 +44,14 @@ public class MixpanelRestClient {
         List<UserProfileAndError> userProfileAndErrors = new ArrayList<>();
         try {
             ProfileBulkUpdateResponse profileBulkUpdateResponse = invokeBulkUserProfileUpsert(userProfileDetails);
-            log.info("Userprofile bulk update Response : "+profileBulkUpdateResponse.getStatus());
+            log.info("Userprofile bulk update Response {}",profileBulkUpdateResponse.getStatus());
 
             if("0".equalsIgnoreCase(profileBulkUpdateResponse.getStatus())) {
                 handleUserProfileUpsertFailure(profileBulkUpdateResponse,userProfileAndErrors,userProfileDetails);
             }
         }
         catch (BadRequestException badRequestException) {
-            log.error("Userprofile bulk upsert failed : ", badRequestException);
+            log.error("Userprofile bulk upsert failed ", badRequestException);
             userProfileAndErrors.addAll(userProfileDetails.stream().map(contact -> new UserProfileAndError((String) contact.get("$"+MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName()),
                     Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
         }
@@ -69,18 +68,18 @@ public class MixpanelRestClient {
         List<GroupProfileAndError> groupProfileAndErrors = new ArrayList<>();
         try {
             ProfileBulkUpdateResponse response = invokeBulkGroupProfileUpsert(groupProfileDetails);
-            log.info("Group profile Response : "+ response.getStatus());
+            log.info("Group profile Response {} "+ response.getStatus());
             if("0".equalsIgnoreCase(response.getStatus())) {
                 handleGroupProfileUpsertFailure(response,groupProfileAndErrors,groupProfileDetails);
             }
         }
         catch (BadRequestException badRequestException) {
-            log.error("Group profile bulk update failed: ", badRequestException);
+            log.error("Group profile bulk update failed", badRequestException);
             groupProfileAndErrors.addAll(groupProfileDetails.stream().map(contact -> new GroupProfileAndError((String) contact.get("$"+MixpanelObjectFields.GROUP_PROFILE_FIELDS.GROUP_ID.getFieldName()),
                     Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
         }
         catch (Exception e) {
-            log.error("Group profile bulk update failed: ", e);
+            log.error("Group profile bulk update failed", e);
             throw new CastledRuntimeException(e);
         }
         return groupProfileAndErrors;
@@ -91,21 +90,20 @@ public class MixpanelRestClient {
         List<EventAndError> eventAndErrors = new ArrayList<>();
         try {
             EventBulkInsertResponse bulkImportResponse = invokeBulkEventInsert(userProfileDetails);
-            log.info("Response for Event Bulk inserts : "+bulkImportResponse.getCode());
-
+            log.info("Response for Event Bulk inserts {} , Number of events imported {}",bulkImportResponse.getCode(),bulkImportResponse.getNum_records_imported());
             if(!"200".equalsIgnoreCase(bulkImportResponse.getCode())) {
                 handleFailure(bulkImportResponse,eventAndErrors,userProfileDetails);
             }
         }
         catch (BadRequestException badRequestException) {
-            log.error("Event bulk insert failed because of BAD REQUEST : ", badRequestException);
+            log.error("Event bulk insert failed because of BAD REQUEST ", badRequestException);
             eventAndErrors.addAll(userProfileDetails.stream().map(userDetail -> new EventAndError(0,
-                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID), Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
+                    (String) ((HashMap) userDetail.get("properties")).get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName()), Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
         }
         catch (Exception e) {
             log.error("Event bulk insert failed : ", e);
             eventAndErrors.addAll(userProfileDetails.stream().map(userDetail -> new EventAndError(0,
-                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID), Collections.singletonList(e.getMessage()))).collect(Collectors.toList()));
+                    (String) userDetail.get("$"+MixpanelObjectFields.EVENT_FIELDS.INSERT_ID.getFieldName()), Collections.singletonList(e.getMessage()))).collect(Collectors.toList()));
             throw new CastledRuntimeException(e);
         }
         return eventAndErrors;

@@ -5,6 +5,7 @@ import io.castled.CastledApplication;
 import io.castled.CastledConfiguration;
 import io.castled.ObjectRegistry;
 import io.castled.services.UsersService;
+import io.castled.utils.AsciiArtUtils;
 import io.dropwizard.cli.ServerCommand;
 import io.dropwizard.setup.Environment;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -19,6 +20,7 @@ public class CastledServerCommand extends ServerCommand<CastledConfiguration> {
     protected void run(Environment environment, Namespace namespace, CastledConfiguration configuration) throws Exception {
         runMigrations(configuration);
         super.run(environment, namespace, configuration);
+        //AsciiArtUtils.drawCastled();
     }
 
     private void runMigrations(CastledConfiguration configuration) {

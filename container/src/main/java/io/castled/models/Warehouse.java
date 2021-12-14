@@ -1,4 +1,5 @@
 package io.castled.models;
+
 import io.castled.warehouses.WarehouseConfig;
 import io.castled.warehouses.WarehouseStatus;
 import io.castled.warehouses.WarehouseType;
@@ -18,4 +19,5 @@ public class Warehouse {
     private WarehouseConfig config;
     private WarehouseStatus status;
     private WarehouseType type;
+    private boolean demo;
 }

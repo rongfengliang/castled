@@ -11,6 +11,7 @@ import io.castled.encryption.EncryptionManager;
 import io.castled.exceptions.CastledException;
 import io.castled.exceptions.CastledRuntimeException;
 import io.castled.exceptions.connect.ConnectException;
+import io.castled.forms.dtos.FieldOptionsDTO;
 import io.castled.forms.dtos.FormFieldsDTO;
 import io.castled.jarvis.JarvisTaskGroup;
 import io.castled.jarvis.JarvisTaskType;
@@ -29,15 +30,13 @@ import io.castled.utils.JsonUtils;
 import io.castled.utils.TimeUtils;
 import io.castled.warehouses.dtos.WarehouseAttributes;
 import io.castled.warehouses.dtos.WarehouseTypeDTO;
+import io.castled.warehouses.optionsfetchers.WarehouseOptionsFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.ws.rs.BadRequestException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,11 +51,13 @@ public class WarehouseService {
     private final WarehouseCache warehouseCache;
     private final MessagePublisher messagePublisher;
     private final ResourceAccessController accessController;
+    private final Map<String, WarehouseOptionsFetcher> warehouseOptionsFetchers;
 
     @Inject
     public WarehouseService(Map<WarehouseType, WarehouseConnector> warehouseConnectors,
                             EncryptionManager encryptionManager, Jdbi jdbi, WarehouseCache warehouseCache,
-                            MessagePublisher messagePublisher, ResourceAccessController accessController) {
+                            MessagePublisher messagePublisher, ResourceAccessController accessController,
+                            Map<String, WarehouseOptionsFetcher> warehouseOptionsFetchers) {
         this.warehouseConnectors = warehouseConnectors;
         this.encryptionManager = encryptionManager;
         this.warehouseDAO = jdbi.onDemand(WarehouseDAO.class);
@@ -64,6 +65,7 @@ public class WarehouseService {
         this.warehouseCache = warehouseCache;
         this.messagePublisher = messagePublisher;
         this.accessController = accessController;
+        this.warehouseOptionsFetchers = warehouseOptionsFetchers;
     }
 
     public void testConnection(WarehouseType warehouseType, WarehouseConfig warehouseConfig) throws ConnectException {
@@ -80,7 +82,8 @@ public class WarehouseService {
         try {
             testConnection(warehouseConfig.getType(), warehouseConfig);
             String config = this.encryptionManager.encryptText(JsonUtils.objectToString(warehouseConfig), user.getTeamId());
-            return warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(), config, user.getTeamId());
+            return warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(),
+                    config, user.getTeamId(), false);
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {
@@ -201,5 +204,12 @@ public class WarehouseService {
                         warehouseType.getAccessType(), warehouseType.getLogoUrl(), warehouseType.getDocUrl(),
                         warehouses.stream().filter(warehouse -> warehouse.getType().equals(warehouseType)).count()))
                 .collect(Collectors.toList());
+    }
+
+    public FieldOptionsDTO getConfigOptions(WarehouseConfig warehouseConfig,
+                                            String optionsReference) {
+        return Optional.ofNullable(this.warehouseOptionsFetchers.get(optionsReference))
+                .map(optionsFetcher -> new FieldOptionsDTO(optionsFetcher.getFieldOptions(warehouseConfig)))
+                .orElse(null);
     }
 }
