@@ -57,7 +57,7 @@ const InputField = ({
       {loading && !isHidden && (
         <div className="spinner-border spinner-border-sm"></div>
       )}
-      {(meta.touched || !isValid) && !!meta.error ? (
+      {meta.touched && !isValid && !!meta.error ? (
         <div className="error" style={{ color: "#f74c3c", fontSize: "12px" }}>
           {meta.error}
         </div>
@@ -99,11 +99,9 @@ function getInput(
         }}
         onBlur={field.onBlur}
         {...props}
-        className={cn(
-          props.className,
-          "form-control",
-          valid ? "required-field" : ""
-        )}
+        className={cn(props.className, "form-control", {
+          "required-field": valid,
+        })}
         value={field.value}
         defaultValue={field.value}
         disabled={optionsRef}
