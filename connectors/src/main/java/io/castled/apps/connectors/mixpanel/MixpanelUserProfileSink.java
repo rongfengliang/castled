@@ -7,21 +7,29 @@ import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
 import io.castled.apps.connectors.mixpanel.dto.UserProfileAndError;
 import io.castled.apps.models.DataSinkRequest;
+import io.castled.commons.errors.errorclassifications.UnclassifiedError;
 import io.castled.commons.models.MessageSyncStats;
 import io.castled.commons.streams.ErrorOutputStream;
+import io.castled.core.CastledOffsetListQueue;
 import io.castled.schema.models.Field;
 import io.castled.schema.models.Message;
 import io.castled.schema.models.Tuple;
 import io.castled.utils.TimeUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Singleton
+@Slf4j
 public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
 
     private final MixpanelRestClient mixpanelRestClient;
@@ -33,6 +41,9 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
 
     private final AtomicLong failedRecords = new AtomicLong(0);
 
+    private final CastledOffsetListQueue<Message> requestsBuffer =
+            new CastledOffsetListQueue<>(new UpsertUserProfileConsumer(), 10, 10, true);
+
     public MixpanelUserProfileSink(DataSinkRequest dataSinkRequest) {
         this.mixpanelRestClient = new MixpanelRestClient(((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getProjectToken(),
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
@@ -43,30 +54,24 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
 
     @Override
     protected void writeRecords(List<Message> messages) {
-        List<UserProfileAndError> failedRecords = this.mixpanelRestClient.upsertUserProfileDetails(
-                messages.stream().map(Message::getRecord).map(this::constructUserProfileDetails).collect(Collectors.toList()));
-
-        Map<String, Message> userProfileRecordMapper = messages.stream().filter(message -> getDistinctID(message.getRecord()) != null)
-                .collect(Collectors.toMap(message -> getDistinctID(message.getRecord()), Function.identity()));
-
-        failedRecords.forEach(failedRecord ->
-                failedRecord.getFailureReasons().forEach(failureReason -> this.errorOutputStream.writeFailedRecord(userProfileRecordMapper.get(failedRecord.getDistinctID()),
-                        mixpanelErrorParser.getPipelineError(failureReason))));
-
-        this.processedRecords.addAndGet(messages.size());
-        this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
+        try {
+            requestsBuffer.writePayload(Lists.newArrayList(messages), 5, TimeUnit.MINUTES);
+        } catch (TimeoutException e) {
+            log.error("Unable to publish records to records queue", e);
+            for (Message record : messages) {
+                errorOutputStream.writeFailedRecord(record,
+                        new UnclassifiedError("Internal error!! Unable to publish records to records queue. Please contact support"));
+            }
+        }
     }
 
-    private String getDistinctID(Tuple record) {
-        return (String) record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
+    private Object getDistinctID(Tuple record) {
+        return record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
     }
 
     private Map<String,Object> constructUserProfileDetails(Tuple record) {
 
-        String firstName = (String) record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.FIRST_NAME.getFieldName());
-        String lastName = (String) record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.LAST_NAME.getFieldName());
-        String email = (String) record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.EMAIL.getFieldName());
-        String distinctID = (String) record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
+        Object distinctID = record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
 
         Map<String,Object> userProfileInfo = Maps.newHashMap();
         userProfileInfo.put("$token",mixpanelAppConfig.getProjectToken());
@@ -114,5 +119,31 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
 
     public void flushRecords() throws Exception {
         super.flushRecords();
+        requestsBuffer.flush(TimeUtils.minutesToMillis(10));
+    }
+
+    private class UpsertUserProfileConsumer implements Consumer<List<Message>> {
+        @Override
+        public void accept(List<Message> messages) {
+            if (CollectionUtils.isEmpty(messages)) {
+                return;
+            }
+            processBulkUserProfileUpdate(messages);
+        }
+    }
+
+    private void processBulkUserProfileUpdate(List<Message> messages) {
+        List<UserProfileAndError> failedRecords = this.mixpanelRestClient.upsertUserProfileDetails(
+                messages.stream().map(Message::getRecord).map(this::constructUserProfileDetails).collect(Collectors.toList()));
+
+        Map<Object, Message> userProfileRecordMapper = messages.stream().filter(message -> getDistinctID(message.getRecord()) != null)
+                .collect(Collectors.toMap(message -> getDistinctID(message.getRecord()), Function.identity()));
+
+        failedRecords.forEach(failedRecord ->
+                failedRecord.getFailureReasons().forEach(failureReason -> this.errorOutputStream.writeFailedRecord(userProfileRecordMapper.get(failedRecord.getDistinctID()),
+                        mixpanelErrorParser.getPipelineError(failureReason))));
+
+        this.processedRecords.addAndGet(messages.size());
+        this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
     }
 }
