@@ -52,7 +52,7 @@ const InputField = ({
         onChange,
         props,
         optionsRef,
-        (meta.touched || !isValid) && !!meta.error
+        meta.touched && !isValid && !!meta.error
       )}
       {loading && !isHidden && (
         <div className="spinner-border spinner-border-sm"></div>

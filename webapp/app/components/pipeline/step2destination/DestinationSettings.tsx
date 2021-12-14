@@ -52,12 +52,13 @@ const DestinationSettings = ({
           setPipelineWizContext(pipelineWizContext);
         }}
       >
-        {({ setFieldValue, setFieldTouched, isSubmitting }) => (
+        {({ setFieldValue, setFieldTouched, isSubmitting, isValid }) => (
           <Form>
             <DynamicFormFields
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
               formFields={formFields}
+              isValid={isValid}
               values={pipelineWizContext.values?.appSyncConfig}
               dataFetcher={(optionsRef) =>
                 appsService.dynamicFieldValues(
