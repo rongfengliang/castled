@@ -10,7 +10,7 @@ on:
 
 jobs:
   publishCastled:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -21,6 +21,15 @@ jobs:
           distribution: temurin
           java-version: "11"
           cache: "maven"
+
+      - name: Get Old Version
+        id: old_version
+        run: echo ::set-output name=OLD_VERSION::$(grep VERSION .env | cut -d"=" -f2)
+
+      - name: Version Bump
+        env:
+          PART_TO_BUMP: ${{ github.event.inputs.partToBump }}
+        run: ./tools/bin/bump_release_version.sh
 
       - name: Release Maven package
         uses: samuelmeuli/action-maven-publish@v1
@@ -33,16 +42,11 @@ jobs:
       - name: Build Jar
         run: mvn clean package
 
-      - name: Get Old Version
-        id: old_version
-        run: echo ::set-output name=OLD_VERSION::$(grep VERSION .env | cut -d"=" -f2)
-
-      - name: Publish Castled Docker Images
+      - name: Release Docker Images
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PART_TO_BUMP: ${{ github.event.inputs.partToBump }}
-        run: ./tools/bin/release_version.sh
+        run: ./tools/bin/docker_release.sh
 
       - name: Get New Version
         id: new_version
