@@ -304,6 +304,10 @@ form {
   pointer-events: none;
 }
 
-.validation-input {
+.required-icon {
+  color: #f74c3c;
+  font-size: 10px;
+}
+.required-field {
   border-color: #f74c3c;
 }

@@ -17,28 +17,26 @@ export default {
         type === "RADIO_GROUP" ||
         type === "DROP_DOWN"
       ) {
-        validator = (
-          validations.required
-            ? yup
-                .string()
-                .required(errorMessages?.required || `${title} is required`)
-            : yup.string()
-        )
-          // .min(
-          //   validations.min,
-          //   errorMessages?.min ||
-          //     `${title} cannot be less than ${errorMessages?.min} characters in length`
-          // )
-          // .max(
-          //   validations.max,
-          //   errorMessages?.max ||
-          //     `${title} cannot exceed ${errorMessages?.max} characters in length`
-          // )
-          // .matches(
-          //   new RegExp(validations.regex),
-          //   errorMessages?.regex ||
-          //     `${title} doesn't match the pattern ${errorMessages?.regex}`
-          // );
+        validator = validations.required
+          ? yup
+              .string()
+              .required(errorMessages?.required || `${title} is required`)
+          : yup.string();
+        // .min(
+        //   validations.min,
+        //   errorMessages?.min ||
+        //     `${title} cannot be less than ${errorMessages?.min} characters in length`
+        // )
+        // .max(
+        //   validations.max,
+        //   errorMessages?.max ||
+        //     `${title} cannot exceed ${errorMessages?.max} characters in length`
+        // )
+        // .matches(
+        //   new RegExp(validations.regex),
+        //   errorMessages?.regex ||
+        //     `${title} doesn't match the pattern ${errorMessages?.regex}`
+        // );
       } else if (type === "CHECK_BOX") {
         validator = validations.required
           ? yup

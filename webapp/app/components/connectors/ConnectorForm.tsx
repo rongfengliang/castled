@@ -173,7 +173,7 @@ const ConnectorForm = ({
           <InputField
             type="text"
             name="name"
-            title="Name*"
+            title="Name"
             placeholder="Enter name"
           />
           <InputField type="hidden" name="config.type" title="Type" />

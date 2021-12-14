@@ -44,7 +44,7 @@ const InputField = ({
       {title && !isHidden && (
         <label htmlFor={props.id || props.name} className="form-label">
           {title}
-          {required && "*"}
+          {required && <span className="required-icon">*</span>}
         </label>
       )}
       {getInput(
@@ -85,7 +85,7 @@ function getInput(
         className={cn(
           props.className,
           "form-control",
-          valid ? "validation-input" : ""
+          valid ? "required-field" : ""
         )}
         defaultValue={field.value}
       />
@@ -102,7 +102,7 @@ function getInput(
         className={cn(
           props.className,
           "form-control",
-          valid ? "validation-input" : ""
+          valid ? "required-field" : ""
         )}
         value={field.value}
         defaultValue={field.value}

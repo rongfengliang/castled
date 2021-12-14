@@ -28,7 +28,7 @@ const InputField = ({
       {title && (
         <label htmlFor={props.id || props.name} className="form-label">
           {title}
-          {required && "*"}
+          {required && <span className="required-icon">*</span>}
         </label>
       )}
       <input
