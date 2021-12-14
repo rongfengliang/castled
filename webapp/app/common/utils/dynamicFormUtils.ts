@@ -4,9 +4,10 @@ import _ from "lodash";
 import * as yup from "yup";
 
 export default {
-  getValidation: (formFields?: FormFieldsDto) => {
+  getValidation: (formFields?: FormFieldsDto, namePrefix?: string) => {
     if (!formFields) return null;
-    const shape: StringAnyMap = {};
+    const configShape: StringAnyMap = {};
+    let shape: StringAnyMap = {};
     _.map(formFields.fields, (field, key) => {
       let validator: yup.AnySchema<any> | null = null;
       const { validations, errorMessages } = field;
@@ -23,21 +24,21 @@ export default {
                 .required(errorMessages?.required || `${title} is required`)
             : yup.string()
         )
-          .min(
-            validations.min,
-            errorMessages?.min ||
-              `${title} cannot be less than ${errorMessages?.min} characters in length`
-          )
-          .max(
-            validations.max,
-            errorMessages?.max ||
-              `${title} cannot exceed ${errorMessages?.max} characters in length`
-          )
-          .matches(
-            new RegExp(validations.regex),
-            errorMessages?.regex ||
-              `${title} doesn't match the pattern ${errorMessages?.regex}`
-          );
+          // .min(
+          //   validations.min,
+          //   errorMessages?.min ||
+          //     `${title} cannot be less than ${errorMessages?.min} characters in length`
+          // )
+          // .max(
+          //   validations.max,
+          //   errorMessages?.max ||
+          //     `${title} cannot exceed ${errorMessages?.max} characters in length`
+          // )
+          // .matches(
+          //   new RegExp(validations.regex),
+          //   errorMessages?.regex ||
+          //     `${title} doesn't match the pattern ${errorMessages?.regex}`
+          // );
       } else if (type === "CHECK_BOX") {
         validator = validations.required
           ? yup
@@ -45,8 +46,15 @@ export default {
               .required(errorMessages?.required || `${title} is required`)
           : yup.bool();
       }
-      shape[key] = validator;
+      // const name = namePrefix ? `${namePrefix}.${key}` : key;
+      // shape[name] = validator;
+      configShape[key] = validator;
     });
+    if (namePrefix) {
+      shape[namePrefix] = yup.object().shape(configShape);
+    } else {
+      shape = configShape;
+    }
     shape["name"] = yup.string().required("Name is required");
     return yup.object().shape(shape);
   },

@@ -22,7 +22,7 @@ const InputField = ({
   className,
   onChange,
   setFieldValue,
-  setFieldTouched,
+  isValid,
   optionsRef,
   dataFetcher,
   ...props
@@ -47,13 +47,20 @@ const InputField = ({
           {required && "*"}
         </label>
       )}
-      {getInput(field, onChange, props, optionsRef)}
+      {getInput(
+        field,
+        onChange,
+        props,
+        optionsRef,
+        (meta.touched || !isValid) && !!meta.error
+      )}
       {loading && !isHidden && (
         <div className="spinner-border spinner-border-sm"></div>
       )}
-      {/* {`Meta: ${JSON.stringify(meta)}`} */}
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+      {(meta.touched || !isValid) && !!meta.error ? (
+        <div className="error" style={{ color: "#f74c3c", fontSize: "12px" }}>
+          {meta.error}
+        </div>
       ) : null}
     </div>
   );
@@ -63,17 +70,23 @@ function getInput(
   field: FieldInputProps<any>,
   onChange: ((value: string) => void) | undefined,
   props: any,
-  optionsRef?: string
+  optionsRef?: string,
+  valid?: boolean
 ) {
   if (props.type === "textarea") {
     return (
       <TextareaAutosize
-        onChange={(e) => {
-          field.onChange(e);
-          onChange?.(e.currentTarget.value);
-        }}
+        // onChange={(e) => {
+        //   field.onChange(e);
+        //   onChange?.(e.currentTarget.value);
+        // }}
+        {...field}
         {...props}
-        className={cn(props.className, "form-control")}
+        className={cn(
+          props.className,
+          "form-control",
+          valid ? "validation-input" : ""
+        )}
         defaultValue={field.value}
       />
     );
@@ -84,8 +97,13 @@ function getInput(
           field.onChange(e);
           onChange?.(e.currentTarget.value);
         }}
+        onBlur={field.onBlur}
         {...props}
-        className={cn(props.className, "form-control")}
+        className={cn(
+          props.className,
+          "form-control",
+          valid ? "validation-input" : ""
+        )}
         value={field.value}
         defaultValue={field.value}
         disabled={optionsRef}

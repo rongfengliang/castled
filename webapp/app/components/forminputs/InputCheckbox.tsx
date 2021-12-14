@@ -6,6 +6,7 @@ const InputCheckbox = ({
   title,
   required,
   description,
+  isValid,
   ...props
 }: InputBaseProps) => {
   const [field, meta] = useField({ ...(props as any), type: "checkbox" });
@@ -21,8 +22,8 @@ const InputCheckbox = ({
         {title}
         {required && "*"}
       </label>
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+      {(meta.touched || !isValid) && meta.error ? (
+        <div className="error" style={{ color: 'red', fontSize: '12px'}}>{meta.error}</div>
       ) : null}
     </div>
   );
