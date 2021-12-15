@@ -5,7 +5,7 @@ EXPOSE 7050
 
 WORKDIR /app
 
-ARG CASTLED_VERSION=0.1.15-alpha
+ENV CASTLED_VERSION=0.1.15-alpha
 
 COPY target/container-${CASTLED_VERSION}.jar container-${CASTLED_VERSION}.jar
 
