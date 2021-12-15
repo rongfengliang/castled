@@ -7,7 +7,7 @@
     <groupId>io.castled</groupId>
     <artifactId>app</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>0.1.15-alpha</version>
     <modules>
         <module>commons</module>
         <module>jarvis</module>
