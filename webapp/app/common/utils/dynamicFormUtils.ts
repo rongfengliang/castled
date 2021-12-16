@@ -67,6 +67,6 @@ export default {
     } else {
       shape = configShape;
     }
-    return yup.object().shape(shape);
+    return yup.object().shape({ ...shape, ...moreValidations });
   },
 };

@@ -1,5 +1,5 @@
 import { FormFieldsDto } from "@/app/common/dtos/FormFieldsDto";
-import { Form, Formik, FormikValues } from "formik";
+import { Form, Formik, FormikValues, yupToFormErrors } from "formik";
 import InputField from "@/app/components/forminputs/InputField";
 import DynamicFormFields from "@/app/components/connectors/DynamicFormFields";
 import ButtonSubmit from "@/app/components/forminputs/ButtonSubmit";
@@ -15,8 +15,7 @@ import routerUtils from "@/app/common/utils/routerUtils";
 import { Card } from "react-bootstrap";
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
-import { GetServerSidePropsContext } from "next";
-
+import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
 import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
@@ -165,11 +164,9 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
-      validationSchema={dynamicFormUtils.getValidation(
-        formFields,
-        "config",
-        {}
-      )}
+      validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
+        name: yup.string().required("Name is required"),
+      })}
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => (
