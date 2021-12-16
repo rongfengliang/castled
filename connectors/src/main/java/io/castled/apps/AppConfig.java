@@ -10,6 +10,7 @@ import io.castled.apps.connectors.intercom.IntercomAppConfig;
 import io.castled.apps.connectors.kafka.KafkaAppConfig;
 import io.castled.apps.connectors.marketo.MarketoAppConfig;
 import io.castled.apps.connectors.mixpanel.MixpanelAppConfig;
+import io.castled.apps.connectors.restapi.RestApiAppConfig;
 import io.castled.apps.connectors.sendgrid.SendgridAppConfig;
 import lombok.Getter;
 
@@ -30,7 +31,8 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = ActiveCampaignAppConfig.class, name = "ACTIVECAMPAIGN"),
         @JsonSubTypes.Type(value = CustomerIOAppConfig.class, name = "CUSTOMERIO"),
         @JsonSubTypes.Type(value = GooglePubSubAppConfig.class, name = "GOOGLEPUBSUB"),
-        @JsonSubTypes.Type(value = MixpanelAppConfig.class, name = "MIXPANEL")
+        @JsonSubTypes.Type(value = MixpanelAppConfig.class, name = "MIXPANEL"),
+        @JsonSubTypes.Type(value = RestApiAppConfig.class, name = "RESTAPI")
 })
 @Getter
 public abstract class AppConfig {

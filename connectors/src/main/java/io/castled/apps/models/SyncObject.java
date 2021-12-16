@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.castled.apps.ExternalAppType;
 import io.castled.apps.connectors.googlepubsub.GooglePubSubTopicSyncObject;
 import io.castled.apps.connectors.mailchimp.MailchimpAudienceSyncObject;
+import io.castled.apps.connectors.restapi.RestApiAppSyncConfig;
 import lombok.*;
 
 @Data
@@ -25,7 +26,8 @@ import lombok.*;
         @JsonSubTypes.Type(value = GenericSyncObject.class, name = "ACTIVECAMPAIGN"),
         @JsonSubTypes.Type(value = GenericSyncObject.class, name = "CUSTOMERIO"),
         @JsonSubTypes.Type(value = GooglePubSubTopicSyncObject.class, name = "GOOGLEPUBSUB"),
-        @JsonSubTypes.Type(value = GenericSyncObject.class, name = "MIXPANEL")
+        @JsonSubTypes.Type(value = GenericSyncObject.class, name = "MIXPANEL"),
+        @JsonSubTypes.Type(value = GenericSyncObject.class, name = "RESTAPI")
 })
 @Getter
 @Setter
