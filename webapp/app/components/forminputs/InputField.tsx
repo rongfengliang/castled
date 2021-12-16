@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FieldInputProps, useField } from "formik";
+import { FieldInputProps, FieldMetaProps, useField } from "formik";
 import cn from "classnames";
 import { InputBaseProps } from "@/app/common/dtos/InputBaseProps";
 import { AxiosResponse } from "axios";
@@ -17,42 +17,43 @@ export interface InputFieldProps extends InputBaseProps {
 
 const InputField = ({
   title,
+  required,
   description,
   className,
   onChange,
   setFieldValue,
-  setFieldTouched,
   optionsRef,
   dataFetcher,
   ...props
 }: InputFieldProps) => {
   const [field, meta] = useField(props);
   const isHidden = props.type === "hidden";
-
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     if (optionsRef) {
       setLoading(true);
-      dataFetcher?.(optionsRef).then(({ data }) => {    
+      dataFetcher?.(optionsRef).then(({ data }) => {
         setFieldValue(field.name, data.options[0].value);
         setLoading(false);
       });
-
     }
   }, [optionsRef]);
-
   return (
     <div className={className ? className : cn({ "mb-3": !isHidden })}>
       {title && !isHidden && (
         <label htmlFor={props.id || props.name} className="form-label">
           {title}
+          {required && <span className="required-icon">*</span>}
         </label>
       )}
-      {getInput(field, onChange, props, optionsRef)}
-      <div className={cn({'spinner-border spinner-border-sm': loading && !isHidden})}></div>
+      {getInput(field, meta, onChange, props, optionsRef)}
+      {loading && !isHidden && (
+        <div className="spinner-border spinner-border-sm"></div>
+      )}
       {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="error">
+          {meta.error}
+        </div>
       ) : null}
     </div>
   );
@@ -60,19 +61,23 @@ const InputField = ({
 
 function getInput(
   field: FieldInputProps<any>,
+  meta: FieldMetaProps<any>,
   onChange: ((value: string) => void) | undefined,
   props: any,
-  optionsRef?: string,
+  optionsRef?: string
 ) {
   if (props.type === "textarea") {
     return (
       <TextareaAutosize
+        {...field}
+        {...props}
         onChange={(e) => {
           field.onChange(e);
           onChange?.(e.currentTarget.value);
         }}
-        {...props}
-        className={cn(props.className, "form-control")}
+        className={cn(props.className, "form-control", {
+          "required-field": meta.touched && meta.error,
+        })}
         defaultValue={field.value}
       />
     );
@@ -83,11 +88,14 @@ function getInput(
           field.onChange(e);
           onChange?.(e.currentTarget.value);
         }}
+        onBlur={field.onBlur}
         {...props}
-        className={cn(props.className, "form-control")}
+        className={cn(props.className, "form-control", {
+          "required-field": meta.touched && meta.error,
+        })}
         value={field.value}
         defaultValue={field.value}
-        disabled = {optionsRef}
+        disabled={optionsRef}
       />
     );
   }

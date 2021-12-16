@@ -1,4 +1,9 @@
 export enum FormFieldType {
   TEXT_BOX = "TEXT_BOX",
   CHECK_BOX = "CHECK_BOX",
+  RADIO_GROUP = "RADIO_GROUP",
+  DROP_DOWN = "DROP_DOWN",
+  JSON_FILE = "JSON_FILE",
+  TEXT_FILE = "TEXT_FILE",
+  HIDDEN = "HIDDEN",
 }

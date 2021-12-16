@@ -52,7 +52,7 @@ const DestinationSettings = ({
           setPipelineWizContext(pipelineWizContext);
         }}
       >
-        {({ setFieldValue, setFieldTouched, isSubmitting }) => (
+        {({ setFieldValue, setFieldTouched, isSubmitting, isValid }) => (
           <Form>
             <DynamicFormFields
               setFieldValue={setFieldValue}
