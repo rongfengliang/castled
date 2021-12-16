@@ -13,19 +13,17 @@ const InputCheckbox = ({
   return (
     <div className="mb-3">
       <label className="checkbox form-label">
+        {required && <span className="required-icon">*</span>}
         <input
           {...field}
           {...(props as any)}
           type="checkbox"
-          className="me-2"
+          className="me-1"
         />
-        {required && <span className="required-icon">*</span>}
         {title}
       </label>
       {meta.touched && meta.error ? (
-        <div className="error">
-          {meta.error}
-        </div>
+        <div className="error">{meta.error}</div>
       ) : null}
     </div>
   );
