@@ -42,8 +42,8 @@ const InputField = ({
     <div className={className ? className : cn({ "mb-3": !isHidden })}>
       {title && !isHidden && (
         <label htmlFor={props.id || props.name} className="form-label">
-          {title}
           {required && <span className="required-icon">*</span>}
+          {title}
         </label>
       )}
       {getInput(field, meta, onChange, props, optionsRef)}

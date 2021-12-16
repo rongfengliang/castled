@@ -72,8 +72,8 @@ const InputSelect = ({
     <div className={cn("mb-3", { "d-none": props.hidden })}>
       {title && (
         <label htmlFor={props.id || props.name} className="form-label">
+          {required && <span className="required-icon">*</span>}
           {title}
-          {required && "*"}
         </label>
       )}
       <Select
@@ -100,9 +100,7 @@ const InputSelect = ({
         }
       />
       {meta.touched && meta.error ? (
-        <div className="error">
-          {meta.error}
-        </div>
+        <div className="error">{meta.error}</div>
       ) : null}
     </div>
   );
