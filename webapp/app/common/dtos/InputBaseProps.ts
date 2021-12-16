@@ -5,5 +5,6 @@ export interface InputBaseProps extends FieldAttributes<any> {
   title: string | undefined;
   description?: string;
   className?: string;
+  required?: boolean;
   onChange?: (value: string) => void;
 }

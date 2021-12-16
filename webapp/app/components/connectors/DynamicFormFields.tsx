@@ -22,7 +22,6 @@ export interface DynamicFormFieldsProps {
     isTouched?: boolean,
     shouldValidate?: boolean
   ) => void;
-  isValid: any;
   setFieldError?: (field: string, message: string | undefined) => void;
   dataFetcher?: (
     optionsRef: string
@@ -53,7 +52,6 @@ const DynamicFormFields = ({
   skipNames,
   values,
   setFieldValue,
-  isValid,
   dataFetcher,
 }: DynamicFormFieldsProps) => {
   if (!formFields?.fields) return null;
@@ -70,12 +68,11 @@ const DynamicFormFields = ({
     const group = formFields.fields[key].group;
     orderedFieldsInfo.push({ order: i, key, group });
   });
-  // orderedFieldsInfo.sort(function (a: OrderedFieldInfo, b: OrderedFieldInfo) {
-  //   // if (a.group < b.group) return -1;
-  //   // if (a.group > b.group) return 1;
-  //   return a.order - b.order;
-  // });
-
+  orderedFieldsInfo.sort(function (a: OrderedFieldInfo, b: OrderedFieldInfo) {
+    if (a.group < b.group) return -1;
+    if (a.group > b.group) return 1;
+    return a.order - b.order;
+  });
   // Display
   for (const fieldInfo of orderedFieldsInfo) {
     const key = fieldInfo.key;
@@ -122,7 +119,6 @@ const DynamicFormFields = ({
         values={values}
         dataFetcher={dataFetcher}
         setFieldValue={setFieldValue}
-        isValid={isValid}
         deps={formFields.groupActivators[field.group]?.dependencies}
         title={field.fieldProps.title || key}
       />

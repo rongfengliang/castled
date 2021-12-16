@@ -22,8 +22,10 @@ const InputCheckbox = ({
         {title}
         {required && <span className="required-icon">*</span>}
       </label>
-      {(meta.touched || !isValid) && meta.error ? (
-        <div className="error" style={{ color: '#f74c3c', fontSize: '12px'}}>{meta.error}</div>
+      {meta.touched && meta.error ? (
+        <div className="error">
+          {meta.error}
+        </div>
       ) : null}
     </div>
   );

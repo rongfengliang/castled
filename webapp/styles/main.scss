@@ -308,6 +308,13 @@ form {
   color: #f74c3c;
   font-size: 10px;
 }
+
 .required-field {
   border-color: #f74c3c;
+}
+
+form {
+  .error {
+    font-size: $font-size-sm;
+  }
 }

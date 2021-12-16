@@ -165,16 +165,21 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
-      validationSchema={dynamicFormUtils.getValidation(formFields, 'config')}
+      validationSchema={dynamicFormUtils.getValidation(
+        formFields,
+        "config",
+        {}
+      )}
       onSubmit={onSubmit}
     >
-      {({ values, isSubmitting, setFieldValue, isValid }) => (
+      {({ values, isSubmitting, setFieldValue }) => (
         <Form>
           <InputField
             type="text"
             name="name"
             title="Name"
             placeholder="Enter name"
+            required
           />
           <InputField type="hidden" name="config.type" title="Type" />
           {connectorType && (
@@ -182,7 +187,6 @@ const ConnectorForm = ({
               namePrefix="config"
               skipNames={["name"]}
               formFields={formFields}
-              isValid={isValid}
               setFieldValue={setFieldValue}
               values={values}
               dataFetcher={(optionsRef) =>

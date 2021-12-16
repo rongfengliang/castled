@@ -100,7 +100,9 @@ const InputSelect = ({
         }
       />
       {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
+        <div className="error">
+          {meta.error}
+        </div>
       ) : null}
     </div>
   );
