@@ -39,6 +39,11 @@ You can access castled app at http://localhost:3000. Happy castling!!
 
 You can access the documentation at: https://docs.castled.io/
 
+## Community Support
+
+- [Slack](https://castled.slack.com) - For any discussions or if any help needed in getting started with Castled or the very least to say hi to us :wave:
+- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requets please use Github. We will get back to you in no time!
+
 ## Performance
 
 The throughput/latency of a data pipeline depends mostly on the destination api limitations and/or rate limits. We do make the best effort to tune it to provide the most optimal throughput possible. But to give an indication of the throughput we support, publishing a bench mark we did to transfer upto 100 million records from BigQuery to Apache Kafka.
