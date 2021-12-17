@@ -118,7 +118,7 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
           </Table>
         </div>
       )}
-      {connectors && connectors.length === 0 && (
+      {connectors && connectors.length === 0 && category === "Warehouse" && (
         <div className="text-center">
           <Alert variant="light" className="text-center">
             Get started using by our demo warehouse
