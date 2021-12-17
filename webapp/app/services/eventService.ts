@@ -18,8 +18,9 @@ export default {
       };
     }
     if (process.browser) {
+      console.log("loading tag manager");
       tagManager.initialize({
-        gtmId: "GTM-5LNCKP7",
+        gtmId: "GTM-5PMX6V3",
         dataLayer: userProps,
       });
       console.log("GTM Loaded", userProps);
@@ -27,6 +28,7 @@ export default {
   },
   send: (props: StringAnyMap) => {
     if (process.browser) {
+      console.log("inside event send");
       tagManager.dataLayer({ dataLayer: { ...props } });
     }
   },
