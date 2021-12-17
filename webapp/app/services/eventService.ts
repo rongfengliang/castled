@@ -20,7 +20,7 @@ export default {
     if (process.browser) {
       console.log("loading tag manager");
       tagManager.initialize({
-        gtmId: "GTM-5PMX6V3",
+        gtmId: "GTM-WZHMGD3",
         dataLayer: userProps,
       });
       console.log("GTM Loaded", userProps);
