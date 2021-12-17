@@ -19,7 +19,7 @@ export default {
     }
     if (process.browser) {
       tagManager.initialize({
-        gtmId: "GTM-5PMX6V3",
+        gtmId: "GTM-5LNCKP7",
         dataLayer: userProps,
       });
       console.log("GTM Loaded", userProps);
