@@ -18,12 +18,17 @@
 
 Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying on your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing Snowflake, BigQuery, Redshift and Postgres as the data source and some of the most popular sales, marketing and support solutions such as Salesforce, Hubspot, Intercom, Google Ads etc as the destination.
 
+<p align="center">
+  <img src="https://cdn.castled.io/content/readme/castled_overview.svg" alt="Castled-logo" width="800" />
+</p>
+
 Some of our key offerings include
 
-- Incremental/Complete data syncs from your cloud data warehouse.
+- **Incremental** or **Full** data syncs from your cloud data warehouse.
 - Automated failure handling and recovery.
-- Reliability and Resiliance at scale.
-- CFL(Castled Form Language) is a Java Annotation based UI framework, which can support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
+- **Reliability** and **Resiliance** at scale.
+- **CFL(Castled Form Language)** is a Java Annotation based UI framework, which can support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
+- **Kubernetes** ready for easy deployment.
 
 ## Getting Started
 
