@@ -52,7 +52,7 @@ public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
         this.restApiErrorParser = ObjectRegistry.getInstance(RestApiErrorParser.class);
 
         int parallelThreads = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getParallelThreads()).orElse(1);
-        this.requestsBuffer = new CastledOffsetListQueue<>(new UpsertUserProfileConsumer(), parallelThreads, parallelThreads, true);
+        this.requestsBuffer = new CastledOffsetListQueue<>(new UpsertRestApiObjectConsumer(), parallelThreads, parallelThreads, true);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
         return recordProperties;
     }
 
-    private void processBulkUserProfileUpdate(List<Message> messages) {
+    private void upsertRestApiObjects(List<Message> messages) {
         ErrorObject errorObject = this.restApiRestClient.upsertDetails(this.payloadProperty,
                 messages.stream().map(Message::getRecord).map(this::constructProperties).collect(Collectors.toList()));
 
@@ -109,13 +109,13 @@ public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
         this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
     }
 
-    private class UpsertUserProfileConsumer implements Consumer<List<Message>> {
+    private class UpsertRestApiObjectConsumer implements Consumer<List<Message>> {
         @Override
         public void accept(List<Message> messages) {
             if (CollectionUtils.isEmpty(messages)) {
                 return;
             }
-            processBulkUserProfileUpdate(messages);
+            upsertRestApiObjects(messages);
         }
     }
 }
