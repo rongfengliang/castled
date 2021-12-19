@@ -75,7 +75,7 @@ public class CustomerIOEventSink implements CustomerIOObjectSink<String> {
                 ((CustomerIOAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiKey());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.customerIOErrorParser = ObjectRegistry.getInstance(CustomerIOErrorParser.class);
-        this.audienceSyncObject = (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject();
+        this.audienceSyncObject = ((CustomerIOAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getObject();
         this.syncConfig = (CustomerIOAppSyncConfig) dataSinkRequest.getAppSyncConfig();
         this.primaryKeys = dataSinkRequest.getPrimaryKeys();
         this.syncStats = new AppSyncStats(0, 0, 0);

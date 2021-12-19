@@ -10,6 +10,11 @@ import java.util.Optional;
 
 public enum ExternalAppType {
 
+    GOOGLE_SHEETS(ImmutableMap.<String, Object>builder()
+            .put(ConnectorConstants.ACCESS_TYPE, AccessType.GOOGLE_SERVICE_ACCOUNT)
+            .put(ConnectorConstants.TITLE, "Google Sheets")
+            .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/gsheets.png")
+            .build()),
     SALESFORCE(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.OAUTH)
             .put(ConnectorConstants.TITLE, "Salesforce")
@@ -104,6 +109,4 @@ public enum ExternalAppType {
         OAuthServiceType oauthService = (OAuthServiceType) properties.get(ConnectorConstants.OAUTH_SERVICE);
         return Optional.ofNullable(oauthService).orElse(null);
     }
-
-
 }

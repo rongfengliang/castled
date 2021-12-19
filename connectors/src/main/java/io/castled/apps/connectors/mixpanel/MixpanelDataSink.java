@@ -29,7 +29,7 @@ public class MixpanelDataSink implements DataSink {
     private MixpanelObjectSink<Message> getObjectSink(DataSinkRequest dataSinkRequest) {
         MixpanelObjectSink<Message> bufferedObjectSink = null;
         MixpanelObject mixpanelObject = MixpanelObject
-                .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
+                .getObjectByName(((MixpanelAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getObject().getObjectName());
         switch (mixpanelObject) {
             case USER_PROFILE:
                 bufferedObjectSink = new MixpanelUserProfileSink(dataSinkRequest);

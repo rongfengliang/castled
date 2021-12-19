@@ -14,7 +14,7 @@ public class GooglePubSubTopicSyncObject extends SyncObject {
     private String topicId;
 
     public GooglePubSubTopicSyncObject(String topicId, String topicName) {
-        super(topicName, ExternalAppType.GOOGLEPUBSUB);
+        super(topicName);
         this.topicId = topicId;
         this.topicName = topicName;
     }

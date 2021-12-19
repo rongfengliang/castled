@@ -9,15 +9,15 @@ import io.castled.schema.models.Message;
 
 public class MarketoDataSink implements DataSink {
 
-    MarketoGenericObjectSink genericObjectSink = null;
-    MarketoLeadSink leadSink = null;
+    private MarketoGenericObjectSink genericObjectSink = null;
+    private MarketoLeadSink leadSink = null;
 
     @Override
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
 
         BufferedObjectSink<Message> objectSink;
         MarketoObject marketoObject = MarketoObject
-                .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
+                .getObjectByName(((MarketoAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getObject().getObjectName());
         switch (marketoObject) {
             case LEADS:
                 this.leadSink = new MarketoLeadSink(dataSinkRequest);

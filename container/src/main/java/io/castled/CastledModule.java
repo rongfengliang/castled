@@ -71,7 +71,6 @@ public class CastledModule extends AbstractModule {
         install(new ConnectorsModule(castledConfiguration.getWarehouseConnectorConfig()));
         bindTaskExecutors();
         bindScheduledJobs();
-        bindAppConnectors();
         bindPipelineEventHandlers();
         bindInterceptors();
         bindAppSyncOptions();
@@ -93,24 +92,6 @@ public class CastledModule extends AbstractModule {
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_CREATED).to(PipelineCreateEventsHandler.class);
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_DELETED).to(PipelineDeleteEventsHandler.class);
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_SCHEDULE_CHANGED).to(PipelineScheduleChangeEventsHandler.class);
-    }
-
-
-    private void bindAppConnectors() {
-        MapBinder<ExternalAppType, ExternalAppConnector> externalAppConnectorMapping = MapBinder.newMapBinder(binder(),
-                ExternalAppType.class, ExternalAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.SALESFORCE).to(SalesforceAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.HUBSPOT).to(HubspotAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.INTERCOM).to(IntercomAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLEADS).to(GoogleAdsAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.MAILCHIMP).to(MailchimpAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.SENDGRID).to(SendgridAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.ACTIVECAMPAIGN).to(ActiveCampaignAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.MARKETO).to(MarketoAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.KAFKA).to(KafkaAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.CUSTOMERIO).to(CustomerIOAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLEPUBSUB).to(GooglePubSubAppConnector.class);
-        externalAppConnectorMapping.addBinding(ExternalAppType.MIXPANEL).to(MixpanelAppConnector.class);
     }
 
 

@@ -21,7 +21,7 @@ public class MessageUtils {
         return JsonUtils.objectToByteArray(messageMap);
     }
 
-    private static Object getJsonValue(Field field) {
+    public static Object getJsonValue(Field field) {
         switch (field.getSchema().getType()) {
             case DATE:
                 LocalDate localDate = (LocalDate) field.getValue();
