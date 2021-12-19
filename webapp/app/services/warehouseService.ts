@@ -49,6 +49,12 @@ export default {
     return http.get(`/v1/warehouses/queries/${queryId}/results`);
   },
 
+  demoQueries: (
+    warehouseId: number
+  ): Promise<AxiosResponse<string[]>> => {
+    return http.get(`/v1/warehouses/demo/${warehouseId}/queries`);
+  },
+
   configOptions: (
     optionsRef: string,
     data: ConnectorRequestDto | undefined

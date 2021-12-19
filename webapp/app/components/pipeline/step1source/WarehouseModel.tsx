@@ -7,13 +7,13 @@ import ButtonSubmit from "@/app/components/forminputs/ButtonSubmit";
 import warehouseService from "@/app/services/warehouseService";
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import Loading from "@/app/components/common/Loading";
+import Card from "react-bootstrap/Card";
 import { ExecuteQueryRequestDto } from "@/app/common/dtos/ExecuteQueryRequestDto";
 import bannerNotificationService from "@/app/services/bannerNotificationService";
 import { ExecuteQueryResultsDto } from "@/app/common/dtos/ExecuteQueryResultsDto";
 import { Table } from "react-bootstrap";
 import _ from "lodash";
 import InputField from "@/app/components/forminputs/InputField";
-import { IconPlayerPlay, IconLoader } from "@tabler/icons";
 import { Button } from "react-bootstrap";
 
 const WarehouseModel = ({
@@ -25,17 +25,27 @@ const WarehouseModel = ({
   const [queryResults, setQueryResults] = useState<
     ExecuteQueryResultsDto | undefined
   >();
+
+  const [demoQueries, setDemoQueries] = useState<string[] | undefined>();
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
   if (!pipelineWizContext) return <Loading />;
   const [query, setQuery] = useState<string | undefined>();
   const warehouseId = pipelineWizContext.values?.warehouseId;
+
+  const updateDemoQueries = (whId: number) => {
+    warehouseService.demoQueries(whId)
+      .then(({ data }) => {
+        setDemoQueries(data);
+      });
+  }
   useEffect(() => {
     const warehouseId = pipelineWizContext.values?.warehouseId;
     if (!warehouseId) {
       setCurWizardStep("source", "selectType");
     }
+    updateDemoQueries(warehouseId!);
   }, []);
-  if (!warehouseId) return <Loading />;
+  if (!warehouseId || !demoQueries) return <Loading />;
   const getQueryResults = (queryId: string) => {
     warehouseService
       .executeQueryResults(queryId)
@@ -56,6 +66,9 @@ const WarehouseModel = ({
       steps={steps}
       stepGroups={stepGroups}
     >
+      {demoQueries.length > 0 && (<Card>
+        <Card.Body>Please run <code>SELECT * FROM USERS</code> or <code>SELECT * FROM COMPANIES</code> on our demo database</Card.Body>
+      </Card>)}
       <Formik
         key={pipelineWizContext.values?.sourceQuery}
         initialValues={

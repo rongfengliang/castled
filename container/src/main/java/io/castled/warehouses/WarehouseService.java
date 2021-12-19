@@ -1,6 +1,7 @@
 package io.castled.warehouses;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
@@ -211,5 +212,13 @@ public class WarehouseService {
         return Optional.ofNullable(this.warehouseOptionsFetchers.get(optionsReference))
                 .map(optionsFetcher -> new FieldOptionsDTO(optionsFetcher.getFieldOptions(warehouseConfig)))
                 .orElse(null);
+    }
+
+    public List<String> getDemoQueries(Long warehouseId) {
+        Warehouse warehouse = getWarehouse(warehouseId, true);
+        if (warehouse.isDemo()) {
+            return Lists.newArrayList("select * from users", "select * from companies");
+        }
+        return Lists.newArrayList();
     }
 }

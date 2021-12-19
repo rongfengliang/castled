@@ -132,4 +132,10 @@ public class WarehouseResource {
     public FieldOptionsDTO getWarehouseConfigOptions(WarehouseAttributes warehouseAttributes, @QueryParam("optionsRef") String optionsReference) {
         return this.warehouseService.getConfigOptions(warehouseAttributes.getConfig(), optionsReference);
     }
+
+    @GET
+    @Path("/demo/{warehouse_id}/queries")
+    public List<String> getDemoQueries(@PathParam("warehouse_id") Long warehouseId) {
+        return this.warehouseService.getDemoQueries(warehouseId);
+    }
 }
