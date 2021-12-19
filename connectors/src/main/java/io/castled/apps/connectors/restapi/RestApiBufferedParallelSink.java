@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 @Slf4j
-public class RestApiPostCallSink extends RestApiObjectSink<Message> {
+public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
 
     private final RestApiRestClient restApiRestClient;
     private final RestApiErrorParser restApiErrorParser;
@@ -48,7 +48,7 @@ public class RestApiPostCallSink extends RestApiObjectSink<Message> {
 
     private CastledOffsetListQueue<Message> requestsBuffer;
 
-    public RestApiPostCallSink(DataSinkRequest dataSinkRequest) {
+    public RestApiBufferedParallelSink(DataSinkRequest dataSinkRequest) {
         
         
         String apiURL = ((RestApiAppConfig)dataSinkRequest.getExternalApp().getConfig()).getApiURL();
@@ -82,7 +82,7 @@ public class RestApiPostCallSink extends RestApiObjectSink<Message> {
     }
 
     private Object getDistinctID(Tuple record) {
-        return record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
+        return record.getValue(CustomeAPIObjectFields.GENERIC_OBJECT_FIELD.IDENITIFIER.getFieldName());
     }
 
 
@@ -127,7 +127,7 @@ public class RestApiPostCallSink extends RestApiObjectSink<Message> {
     }
 
     private void processBulkUserProfileUpdate(List<Message> messages) {
-        List<UserProfileAndError> failedRecords = this.restApiRestClient.upsertDetails(
+        List<ObjectAndError> failedRecords = this.restApiRestClient.upsertDetails(
                 messages.stream().map(Message::getRecord).map(this::constructProperties).collect(Collectors.toList()));
 
         Map<Object, Message> userProfileRecordMapper = messages.stream().filter(message -> getDistinctID(message.getRecord()) != null)

@@ -10,7 +10,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 
 @GroupActivator(dependencies = {"object"}, group = MappingFormGroups.SYNC_MODE)
-@GroupActivator(dependencies = {"object"}, condition = "object.objectName == 'POST'", group = "postGroup")
+@GroupActivator(dependencies = {"object"}, condition = "object.objectName == 'FLAT'", group = "postGroup")
 @Getter
 @Setter
 public class RestApiAppSyncConfig extends AppSyncConfig {

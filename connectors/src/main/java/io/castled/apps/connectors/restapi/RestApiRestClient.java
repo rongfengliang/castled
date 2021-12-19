@@ -5,6 +5,7 @@ import io.castled.ObjectRegistry;
 import io.castled.apps.connectors.mixpanel.MixpanelObjectFields;
 import io.castled.apps.connectors.mixpanel.dto.*;
 import io.castled.exceptions.CastledRuntimeException;
+import io.castled.utils.ResponseUtils;
 import io.castled.utils.RestUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,15 +24,8 @@ public class RestApiRestClient {
 
     public static final String BASIC_AUTH = "Basic ";
     private final Client client;
-
-
-    private String apiKey = null;
-    private String apiURL = null;
-
-    public static final String EVENT_URL = "https://api.mixpanel.com/import";
-    public static final String USER_PROFILE_URL = "https://api.mixpanel.com/engage#profile-batch-update";
-    public static final String GROUP_PROFILE_URL = "https://api.mixpanel.com/groups#group-batch-update";
-
+    private final String apiKey;
+    private final String apiURL;
 
     public RestApiRestClient(String apiURL, String apiKey) {
         this.apiURL= apiURL;
@@ -39,33 +33,34 @@ public class RestApiRestClient {
         this.client = ObjectRegistry.getInstance(Client.class);
     }
 
-    public List<UserProfileAndError> upsertDetails(List<Map<String,Object>> details) {
+    public List<ObjectAndError>  upsertDetails(List<Map<String,Object>> details) {
 
-        List<UserProfileAndError> userProfileAndErrors = new ArrayList<>();
+        List<ObjectAndError> objectAndErrors = new ArrayList<>();
         try {
             Response response = invokeRestAPI(details);
             log.info("Response status {}",response.getStatus());
 
-            if(response.getStatus()!=200) {
-                handleUpsertFailure(response,userProfileAndErrors,details);
+            if(!ResponseUtils.is2xx(response)) {
+                handleUpsertFailure(response,objectAndErrors,details);
             }
         }
         catch (BadRequestException badRequestException) {
-            log.error("Userprofile bulk upsert failed ", badRequestException);
-            userProfileAndErrors.addAll(details.stream().map(contact -> new UserProfileAndError((String) contact.get("$"+ MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName()),
-                    Collections.singletonList(badRequestException.getMessage()))).collect(Collectors.toList()));
+            log.error("Custom API upsert failed ", badRequestException);
+            objectAndErrors.addAll(details.stream().
+                    map(object -> new ObjectAndError((String) object.get(CustomeAPIObjectFields.GENERIC_OBJECT_FIELD.IDENITIFIER.getFieldName()),Collections.singletonList(badRequestException.getMessage())))
+                    .collect(Collectors.toList()));
         }
         catch (Exception e) {
             log.error("Upsert failed", e);
             throw new CastledRuntimeException(e);
         }
 
-        return userProfileAndErrors;
+        return objectAndErrors;
     }
 
-    private boolean handleUpsertFailure(Response response, List<UserProfileAndError> groupProfileAndErrors, List<Map<String, Object>> groupProfileDetails) {
-        groupProfileAndErrors.addAll(groupProfileDetails.stream().
-                map(event -> new UserProfileAndError( (String) event.get("$"+MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName()), Collections.singletonList("Error code :"+response.getStatus())))
+    private boolean handleUpsertFailure(Response response, List<ObjectAndError> objectAndErrors, List<Map<String, Object>> requestPayloadDetails) {
+        objectAndErrors.addAll(requestPayloadDetails.stream().
+                map(object -> new ObjectAndError((String) object.get(CustomeAPIObjectFields.GENERIC_OBJECT_FIELD.IDENITIFIER.getFieldName()),Collections.singletonList("Error code :"+response.getStatus())))
                 .collect(Collectors.toList()));
         return true;
     }

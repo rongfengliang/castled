@@ -1,7 +1,6 @@
 package io.castled.apps.connectors.restapi;
 
 import io.castled.apps.DataSink;
-import io.castled.apps.connectors.mixpanel.*;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.exceptions.CastledRuntimeException;
@@ -28,17 +27,22 @@ public class RestApiDataSink implements DataSink {
     }
 
     private RestApiObjectSink<Message> getObjectSink(DataSinkRequest dataSinkRequest) {
-        RestApiObjectSink<Message> bufferedObjectSink = null;
-        RestApiObject restApiObject = RestApiObject
-                .getObjectByName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
-        switch (restApiObject) {
-            case POST:
-                bufferedObjectSink = new RestApiPostCallSink(dataSinkRequest);
-                break;
-            default:
-                throw new CastledRuntimeException(String.format("Invalid object type %s!", restApiObject.getName()));
+        Integer noOfThreads = null;
+        Integer batchSize = null;
+        String parallelThreads = ((RestApiAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getParallelThreads();
+        if(parallelThreads!=null) {
+            noOfThreads = Integer.parseInt(parallelThreads);
         }
-        return bufferedObjectSink;
+
+        String size = ((RestApiAppSyncConfig)dataSinkRequest.getAppSyncConfig()).getBatchSize();
+        if(size!=null) {
+            batchSize = Integer.parseInt(parallelThreads);
+        }
+
+        if(batchSize>0 && noOfThreads>0){
+            return new RestApiBufferedParallelSink(dataSinkRequest);
+        }
+        return new RestApiObjectBufferedSink(dataSinkRequest);
     }
 
     @Override

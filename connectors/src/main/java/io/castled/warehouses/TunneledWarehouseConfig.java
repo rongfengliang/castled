@@ -25,7 +25,7 @@ public class TunneledWarehouseConfig extends WarehouseConfig {
     @FormField(description = "SSH User", title = "SSH User", placeholder = "", schema = FormFieldSchema.STRING, group = TUNNEL_GROUP, type = FormFieldType.TEXT_BOX)
     private String sshUser;
 
-    @FormField(description = "Enable SSH Tunnel", title = "Enable Tunnel", schema = FormFieldSchema.BOOLEAN, type = FormFieldType.CHECK_BOX)
+    @FormField(required = false , description = "Enable SSH Tunnel", title = "Enable Tunnel", schema = FormFieldSchema.BOOLEAN, type = FormFieldType.CHECK_BOX)
     private boolean tunnelEnabled;
 
     @FormField(description = "Private Key file", title = "Private Key file", schema = FormFieldSchema.STRING, group = TUNNEL_GROUP, type = FormFieldType.TEXT_FILE)

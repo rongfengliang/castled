@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public enum RestApiObject {
 
-    POST("POST");
+    FLAT_STRUCTURED_OBJECT("FLAT");
 
     @Getter
     private final String name;
