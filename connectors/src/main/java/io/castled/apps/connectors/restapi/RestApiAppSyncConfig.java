@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class RestApiAppSyncConfig extends AppSyncConfig {
 
-    @FormField(required = false, type = FormFieldType.TEXT_BOX, title = "Property Name in the input object", description = "Batch Size")
+    @FormField(required = false, type = FormFieldType.TEXT_BOX, title = "Property Name in the input object", description = "Property name in the input object")
     private String propertyName;
 
     @FormField(required = false,type = FormFieldType.TEXT_BOX, title = "Batch Size", description = "Batch Size")
