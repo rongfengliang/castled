@@ -12,7 +12,6 @@ import SessionProvider, {
   useSession,
 } from "@/app/common/context/sessionContext";
 import jsUtils from "@/app/common/utils/jsUtils";
-import eventService from "@/app/services/eventService";
 
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
@@ -40,20 +39,11 @@ const App = ({ Component, pageProps }: AppProps) => {
         <SessionProvider>
           <Meta />
           <ReactNotification />
-          <EventLoader />
           <Component {...pageProps} router={router} />
         </SessionProvider>
       </ThemeProvider>
     </SWRConfig>
   );
-};
-
-const EventLoader = () => {
-  const { user } = useSession();
-  useEffect(() => {
-    eventService.load(user);
-  }, [user]);
-  return null;
 };
 
 export default App;
