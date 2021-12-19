@@ -10,6 +10,7 @@ import io.castled.apps.connectors.hubspot.objectsinks.HubspotObjectSink;
 import io.castled.apps.connectors.hubspot.schemaMappers.HubspotPropertySchemaMapper;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.apps.models.PrimaryKeyIdMapper;
+import io.castled.apps.syncconfigs.GenericObjectRadioGroupConfig;
 import io.castled.commons.models.AppSyncMode;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.commons.models.ObjectIdAndMessage;
@@ -32,7 +33,8 @@ public class HubspotDataSink implements DataSink {
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
 
         Message message;
-        HubspotStandardObject hubspotStandardObject = HubspotStandardObject.fromName(dataSinkRequest.getAppSyncConfig().getObject().getObjectName());
+        HubspotStandardObject hubspotStandardObject = HubspotStandardObject.fromName(((GenericObjectRadioGroupConfig) dataSinkRequest.getAppSyncConfig())
+                .getObject().getObjectName());
         this.hubspotObjectSink = new HubspotObjectSink((OAuthAppConfig) dataSinkRequest.getExternalApp().getConfig(), dataSinkRequest.getErrorOutputStream(),
                 hubspotStandardObject);
 

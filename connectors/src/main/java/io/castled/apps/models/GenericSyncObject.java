@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 public class GenericSyncObject extends SyncObject {
 
     public GenericSyncObject(String objectName, ExternalAppType appType) {
-        super(objectName, appType);
+        super(objectName);
     }
 
 }

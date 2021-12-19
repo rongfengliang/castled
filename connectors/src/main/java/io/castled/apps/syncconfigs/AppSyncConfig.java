@@ -8,6 +8,7 @@ import io.castled.apps.connectors.activecampaign.ActiveCampaignAppSyncConfig;
 import io.castled.apps.connectors.customerio.CustomerIOAppSyncConfig;
 import io.castled.apps.connectors.googleads.GoogleAdsAppSyncConfig;
 import io.castled.apps.connectors.googlepubsub.GooglePubSubAppSyncConfig;
+import io.castled.apps.connectors.googlesheets.GoogleSheetsAppSyncConfig;
 import io.castled.apps.connectors.kafka.KafkaAppSyncConfig;
 import io.castled.apps.connectors.mailchimp.MailchimpAppSyncConfig;
 import io.castled.apps.connectors.marketo.MarketoAppSyncConfig;
@@ -41,7 +42,8 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = CustomerIOAppSyncConfig.class, name = "CUSTOMERIO"),
         @JsonSubTypes.Type(value = GooglePubSubAppSyncConfig.class, name = "GOOGLEPUBSUB"),
         @JsonSubTypes.Type(value = MixpanelAppSyncConfig.class, name = "MIXPANEL"),
-        @JsonSubTypes.Type(value = RestApiAppSyncConfig.class, name = "RESTAPI")
+        @JsonSubTypes.Type(value = GoogleSheetsAppSyncConfig.class, name = "GOOGLE_SHEETS"),
+
 })
 @Getter
 @Setter
@@ -52,11 +54,4 @@ public abstract class AppSyncConfig {
     @FormField(type = FormFieldType.RADIO_GROUP, title = "Sync Mode", description = "Sync mode which controls whether records will be appended, updated or upserted", group = MappingFormGroups.SYNC_MODE,
             optionsRef = @OptionsRef(value = OptionsReferences.SYNC_MODE, type = OptionsRefType.DYNAMIC))
     private AppSyncMode mode;
-
-    public abstract SyncObject getObject();
-
-    public SubResource getSubResource() {
-        return null;
-    }
-
 }

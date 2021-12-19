@@ -16,7 +16,7 @@ public class MailchimpDataSink implements DataSink {
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
         Message message;
         this.mailchimpAudienceSink = new MailchimpAudienceSink((OAuthAppConfig) dataSinkRequest.getExternalApp().getConfig(),
-                dataSinkRequest.getErrorOutputStream(), (MailchimpAudienceSyncObject) dataSinkRequest.getAppSyncConfig().getObject());
+                dataSinkRequest.getErrorOutputStream(), ((MailchimpAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getObject());
         while ((message = dataSinkRequest.getMessageInputStream().readMessage()) != null) {
             this.mailchimpAudienceSink.writeRecord(message);
         }

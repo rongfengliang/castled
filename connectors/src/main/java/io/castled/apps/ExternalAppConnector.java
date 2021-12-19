@@ -20,7 +20,7 @@ public interface ExternalAppConnector<CONFIG extends AppConfig, DATASINK extends
     List<FormFieldOption> getAllObjects(CONFIG config, MAPPINGCONFIG mappingConfig);
 
     default List<FormFieldOption> getSubResources(CONFIG config, MAPPINGCONFIG mappingconfig) {
-        throw new UnsupportedOperationException(String.format("Sub-objects not implemented for %s", mappingconfig.getObject().getObjectName()));
+        throw new UnsupportedOperationException(String.format("Sub-objects not implemented for %s", config.getType()));
     }
 
     default FormFieldsDTO getMappingFields() {
@@ -53,7 +53,7 @@ public interface ExternalAppConnector<CONFIG extends AppConfig, DATASINK extends
         return pipelineConfig;
     }
 
-    default RecordSchema enrichWarehouseASchema(AppSyncConfigDTO appSyncConfigDTO , RecordSchema warehouseSchema) {
+    default RecordSchema enrichWarehouseASchema(AppSyncConfigDTO appSyncConfigDTO, RecordSchema warehouseSchema) {
         return warehouseSchema;
     }
 

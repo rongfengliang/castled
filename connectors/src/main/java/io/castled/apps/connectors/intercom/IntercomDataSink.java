@@ -6,6 +6,7 @@ import io.castled.apps.models.DataSinkRequest;
 import io.castled.apps.models.GenericSyncObject;
 import io.castled.apps.models.PrimaryKeyIdMapper;
 import io.castled.apps.syncconfigs.AppSyncConfig;
+import io.castled.apps.syncconfigs.GenericObjectRadioGroupConfig;
 import io.castled.commons.models.AppSyncMode;
 import io.castled.commons.models.AppSyncStats;
 import io.castled.schema.models.Message;
@@ -32,7 +33,7 @@ public class IntercomDataSink implements DataSink {
     @Override
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
 
-        GenericSyncObject intercomSyncObject = (GenericSyncObject) dataSinkRequest.getAppSyncConfig().getObject();
+        GenericSyncObject intercomSyncObject = ((GenericObjectRadioGroupConfig) dataSinkRequest.getAppSyncConfig()).getObject();
         IntercomObject intercomObject = IntercomObject.getObjectByName(intercomSyncObject.getObjectName());
         this.intercomObjectSink =
                 this.intercomObjectSinks.get(intercomObject).initialize(intercomObject, dataSinkRequest.getAppSyncConfig(),

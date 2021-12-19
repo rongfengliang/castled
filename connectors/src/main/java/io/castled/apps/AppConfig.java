@@ -6,6 +6,7 @@ import io.castled.apps.connectors.activecampaign.ActiveCampaignAppConfig;
 import io.castled.apps.connectors.customerio.CustomerIOAppConfig;
 import io.castled.apps.connectors.googleads.GoogleAdsAppConfig;
 import io.castled.apps.connectors.googlepubsub.GooglePubSubAppConfig;
+import io.castled.apps.connectors.googlesheets.GoogleSheetsAppConfig;
 import io.castled.apps.connectors.intercom.IntercomAppConfig;
 import io.castled.apps.connectors.kafka.KafkaAppConfig;
 import io.castled.apps.connectors.marketo.MarketoAppConfig;
@@ -33,6 +34,7 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = GooglePubSubAppConfig.class, name = "GOOGLEPUBSUB"),
         @JsonSubTypes.Type(value = MixpanelAppConfig.class, name = "MIXPANEL"),
         @JsonSubTypes.Type(value = RestApiAppConfig.class, name = "RESTAPI")
+        @JsonSubTypes.Type(value = GoogleSheetsAppConfig.class, name = "GOOGLE_SHEETS")
 })
 @Getter
 public abstract class AppConfig {

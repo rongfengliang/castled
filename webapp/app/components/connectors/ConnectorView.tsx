@@ -51,14 +51,6 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
       });
   };
 
-  const onClickDemo = () => {
-    warehouseService
-      .createDemoWarehouse()
-      .then(() => {
-        loadConnectors();
-      })
-      .catch(console.log);
-  };
   if (connectors === null) return <DefaultErrorPage statusCode={404} />;
   return (
     <Layout
@@ -116,16 +108,6 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
               ))}
             </tbody>
           </Table>
-        </div>
-      )}
-      {connectors && connectors.length === 0 && category === "Warehouse" && (
-        <div className="text-center">
-          <Alert variant="light" className="text-center">
-            Get started using by our demo warehouse
-          </Alert>
-          <button className="btn btn-primary" onClick={onClickDemo}>
-            <span className="sr-only">Create Demo Warehouse</span>
-          </button>
         </div>
       )}
     </Layout>

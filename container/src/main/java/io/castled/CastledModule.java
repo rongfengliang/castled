@@ -72,7 +72,6 @@ public class CastledModule extends AbstractModule {
         install(new ConnectorsModule(castledConfiguration.getWarehouseConnectorConfig()));
         bindTaskExecutors();
         bindScheduledJobs();
-        bindAppConnectors();
         bindPipelineEventHandlers();
         bindInterceptors();
         bindAppSyncOptions();
@@ -96,7 +95,6 @@ public class CastledModule extends AbstractModule {
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_SCHEDULE_CHANGED).to(PipelineScheduleChangeEventsHandler.class);
     }
 
-
     private void bindAppConnectors() {
         MapBinder<ExternalAppType, ExternalAppConnector> externalAppConnectorMapping = MapBinder.newMapBinder(binder(),
                 ExternalAppType.class, ExternalAppConnector.class);
@@ -114,7 +112,6 @@ public class CastledModule extends AbstractModule {
         externalAppConnectorMapping.addBinding(ExternalAppType.MIXPANEL).to(MixpanelAppConnector.class);
         externalAppConnectorMapping.addBinding(ExternalAppType.RESTAPI).to(RestApiAppConnector.class);
     }
-
 
     private void bindScheduledJobs() {
         Multibinder<JarvisGlobalCronJob> multiBinder = Multibinder.newSetBinder(binder(), JarvisGlobalCronJob.class);

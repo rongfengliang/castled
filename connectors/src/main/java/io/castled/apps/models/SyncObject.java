@@ -1,5 +1,6 @@
 package io.castled.apps.models;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.castled.apps.ExternalAppType;
@@ -29,6 +30,11 @@ import lombok.*;
         @JsonSubTypes.Type(value = GenericSyncObject.class, name = "MIXPANEL"),
         @JsonSubTypes.Type(value = GenericSyncObject.class, name = "RESTAPI")
 })
+=======
+import lombok.*;
+
+@Data
+>>>>>>> a54fb5771e5bfbb1d2a38fb333193399cf240d4e
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,5 +42,4 @@ import lombok.*;
 public class SyncObject {
 
     private String objectName;
-    private ExternalAppType appType;
 }

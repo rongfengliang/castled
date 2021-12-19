@@ -67,7 +67,7 @@ public class MixpanelAppConnector implements ExternalAppConnector<MixpanelAppCon
 
     public PipelineConfigDTO validateAndEnrichPipelineConfig(PipelineConfigDTO pipelineConfig) throws BadRequestException {
         MixpanelAppSyncConfig mixpanelAppSyncConfig = (MixpanelAppSyncConfig) pipelineConfig.getAppSyncConfig();
-        String objectName = pipelineConfig.getAppSyncConfig().getObject().getObjectName();
+        String objectName = ((MixpanelAppSyncConfig)pipelineConfig.getAppSyncConfig()).getObject().getObjectName();
 
         if(MixpanelObject.EVENT.getName().equalsIgnoreCase(objectName)) {
             enrichPipelineConfigForEventObject(pipelineConfig, mixpanelAppSyncConfig);
