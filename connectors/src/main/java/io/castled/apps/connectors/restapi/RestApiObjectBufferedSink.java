@@ -34,8 +34,6 @@ public class RestApiObjectBufferedSink extends RestApiObjectSink<Message> {
     private long lastProcessedOffset = 100;
 
     public RestApiObjectBufferedSink(DataSinkRequest dataSinkRequest) {
-
-
         String apiURL = ((RestApiAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiURL();
         String apiKey = ((RestApiAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiKey();
         this.batchSize = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getBatchSize()).orElse(1);
