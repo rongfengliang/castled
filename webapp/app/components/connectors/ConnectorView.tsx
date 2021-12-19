@@ -8,7 +8,7 @@ import DefaultErrorPage from "next/error";
 import { ConnectorCategory } from "@/app/common/utils/types";
 import warehouseService from "@/app/services/warehouseService";
 import bannerNotificationService from "@/app/services/bannerNotificationService";
-
+import cn from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -36,6 +36,10 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
   }, [router.isReady]);
 
   useEffect(() => {
+    loadConnectors();
+  }, []);
+
+  const loadConnectors = () => {
     const fetcher = category === "App" ? appsService : warehouseService;
     fetcher
       .get()
@@ -45,7 +49,8 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
       .catch(() => {
         setConnectors(null);
       });
-  }, []);
+  };
+
   if (connectors === null) return <DefaultErrorPage statusCode={404} />;
   return (
     <Layout
@@ -78,7 +83,16 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
                   <td>{connector.id}</td>
                   <td>
                     <Link href={`${path}/${connector.id}`}>
-                      <a>{connector.name}</a>
+                      <a
+                        className={cn({
+                          "disable-link": connector && connector.demo,
+                        })}
+                      >
+                        {connector.name}
+                        {connector && connector.demo && (
+                          <Badge bg="warning">demo</Badge>
+                        )}
+                      </a>
                     </Link>
                   </td>
                   <td>{connector.type}</td>

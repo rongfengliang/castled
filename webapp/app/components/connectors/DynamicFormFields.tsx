@@ -1,4 +1,4 @@
-import { FormFieldsDto } from "@/app/common/dtos/FormFieldsDto";
+import { FormFieldMeta, FormFieldsDto } from "@/app/common/dtos/FormFieldsDto";
 import InputCheckbox from "../forminputs/InputCheckbox";
 import InputField from "../forminputs/InputField";
 import InputFile from "../forminputs/InputFile";
@@ -8,18 +8,21 @@ import { AxiosResponse } from "axios";
 import jexl from "jexl";
 import { DataFetcherResponseDto } from "@/app/common/dtos/DataFetcherResponseDto";
 import _ from "lodash";
+import { FormFieldType } from "@/app/common/enums/FormFieldType";
+import { FieldMetaProps } from "formik";
 
 export interface DynamicFormFieldsProps {
   namePrefix?: string;
   formFields?: FormFieldsDto;
   skipNames?: string[];
   values: any;
-  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
-  setFieldTouched: (
+  setFieldValue?: (field: string, value: any, shouldValidate?: boolean) => void;
+  setFieldTouched?: (
     field: string,
     isTouched?: boolean,
     shouldValidate?: boolean
   ) => void;
+  setFieldError?: (field: string, message: string | undefined) => void;
   dataFetcher?: (
     optionsRef: string
   ) => Promise<AxiosResponse<DataFetcherResponseDto>>;
@@ -32,14 +35,14 @@ interface OrderedFieldInfo {
 }
 
 const fieldRenderers: {
-  [key: string]: { renderer: any; props?: { [type: string]: any } };
+  [key in FormFieldType]: { renderer: any; props?: { [type: string]: any } };
 } = {
   TEXT_BOX: { renderer: InputField, props: { type: "text" } },
   CHECK_BOX: { renderer: InputCheckbox },
   RADIO_GROUP: { renderer: InputSelect },
   DROP_DOWN: { renderer: InputSelect },
-  JSON_FILE : {renderer:  InputFile, props: { type: "json" } },
-  TEXT_FILE : {renderer:  InputFile, props: { type: "text" } },
+  JSON_FILE: { renderer: InputFile, props: { type: "json" } },
+  TEXT_FILE: { renderer: InputFile, props: { type: "text" } },
   HIDDEN: { renderer: InputSelect, props: { hidden: true } },
 };
 
@@ -49,7 +52,6 @@ const DynamicFormFields = ({
   skipNames,
   values,
   setFieldValue,
-  setFieldTouched,
   dataFetcher,
 }: DynamicFormFieldsProps) => {
   if (!formFields?.fields) return null;
@@ -67,16 +69,15 @@ const DynamicFormFields = ({
     orderedFieldsInfo.push({ order: i, key, group });
   });
   // orderedFieldsInfo.sort(function (a: OrderedFieldInfo, b: OrderedFieldInfo) {
-  //   // if (a.group < b.group) return -1;
-  //   // if (a.group > b.group) return 1;
+  //   if (a.group < b.group) return -1;
+  //   if (a.group > b.group) return 1;
   //   return a.order - b.order;
   // });
-
   // Display
   for (const fieldInfo of orderedFieldsInfo) {
     const key = fieldInfo.key;
     if (skipNamesSet.has(key)) continue;
-    const field: any = formFields.fields[key];
+    const field: FormFieldMeta = formFields.fields[key];
     const fieldRenderer = fieldRenderers[field.fieldProps.type];
     if (!fieldRenderer) {
       console.error("Field renderer not found for " + field);
@@ -85,7 +86,6 @@ const DynamicFormFields = ({
     const depValues: any[] = [];
     // Skip if group activator is present but dependency not met
     if (field.group in formFields.groupActivators) {
-
       const groupActivator = formFields.groupActivators[field.group];
       let skip = false;
       for (const dependency of groupActivator?.dependencies) {
@@ -100,7 +100,7 @@ const DynamicFormFields = ({
         depValues.push(JSON.stringify(depValue));
       }
       if (groupActivator?.condition) {
-        skip = !(jexl.evalSync(groupActivator.condition!, values));
+        skip = !jexl.evalSync(groupActivator.condition!, values);
       }
 
       if (skip) continue;
@@ -110,15 +110,15 @@ const DynamicFormFields = ({
     fields.push(
       <Input
         key={name}
+        required={field.validations.required}
         name={name}
         {...field.fieldProps}
         {...props}
         defaultValue=""
-        dValues = {depValues}
+        dValues={depValues}
         values={values}
         dataFetcher={dataFetcher}
         setFieldValue={setFieldValue}
-        setFieldTouched={setFieldTouched}
         deps={formFields.groupActivators[field.group]?.dependencies}
         title={field.fieldProps.title || key}
       />

@@ -1,15 +1,34 @@
-## Introduction
+<p align="center">
+  <img src="https://cdn.castled.io/logo/castled_original_on_black.svg" alt="Castled-logo" width="300" />
+  <p align="center">Open source reverse-ETL platform to operationalize your data warehouse</p>
+</p>
 
-[<img src="https://cdn.castled.io/logo/castled_original_on_black.svg" width="300"/>](https://castled.io)
+<p align="center">
+  <a href="https://docs.castled.io/deploying-castled/deploy-local">
+    <img src="https://cdn.castled.io/content/readme/deploy_locally.svg" alt="deply locally" />
+  </a>
+  <a href="https://docs.castled.io/deploying-castled/deploy-on-aws-ec2">
+    <img src="https://cdn.castled.io/content/readme/deploy_aws.svg" alt="deploy on aws" />
+  </a>
+</p>
+
+---
+
+## Introduction
 
 Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying on your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing Snowflake, BigQuery, Redshift and Postgres as the data source and some of the most popular sales, marketing and support solutions such as Salesforce, Hubspot, Intercom, Google Ads etc as the destination.
 
+<p align="center">
+  <img src="https://cdn.castled.io/content/readme/castled_overview.svg" alt="Castled-logo" width="800" />
+</p>
+
 Some of our key offerings include
 
-- Incremental/Complete data syncs from your cloud data warehouse.
+- **Incremental** or **Full** data syncs from your cloud data warehouse.
 - Automated failure handling and recovery.
-- Reliability and Resiliance at scale.
-- CFL(Castled Form Language) is a Java Annotation based UI framework, which can support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
+- **Reliability** and **Resiliance** at scale.
+- **CFL(Castled Form Language)** is a Java Annotation based UI framework, which can support the most complex UI forms from backend, thereby removing the prerequisite of having a UI developer to add a new connector.
+- **Kubernetes** ready for easy deployment.
 
 ## Getting Started
 
@@ -24,6 +43,11 @@ You can access castled app at http://localhost:3000. Happy castling!!
 ## Documentation
 
 You can access the documentation at: https://docs.castled.io/
+
+## Community Support
+
+- [Slack](https://castled.slack.com) - For any discussions or if any help needed in getting started with Castled or the very least to say hi to us :wave:
+- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requets please use Github. We will get back to you in no time!
 
 ## Performance
 

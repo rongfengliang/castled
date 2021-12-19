@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
-import io.castled.apps.connectors.mixpanel.dto.UserProfileAndError;
+import io.castled.apps.connectors.mixpanel.dto.GroupProfileAndError;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.commons.errors.errorclassifications.UnclassifiedError;
 import io.castled.commons.models.MessageSyncStats;
@@ -30,26 +30,24 @@ import java.util.stream.Collectors;
 
 @Singleton
 @Slf4j
-public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
+public class MixpanelGroupProfileSink extends MixpanelObjectSink<Message> {
 
     private final MixpanelRestClient mixpanelRestClient;
     private final MixpanelErrorParser mixpanelErrorParser;
     private final ErrorOutputStream errorOutputStream;
-    private final MixpanelAppConfig mixpanelAppConfig;
     private final AtomicLong processedRecords = new AtomicLong(0);
     private long lastProcessedOffset = 0;
-
-    private final AtomicLong failedRecords = new AtomicLong(0);
+    private final MixpanelAppSyncConfig syncConfig;
 
     private final CastledOffsetListQueue<Message> requestsBuffer =
-            new CastledOffsetListQueue<>(new UpsertUserProfileConsumer(), 10, 10, true);
+            new CastledOffsetListQueue<>(new UpsertGroupProfileConsumer(), 10, 10, true);
 
-    public MixpanelUserProfileSink(DataSinkRequest dataSinkRequest) {
+    public MixpanelGroupProfileSink(DataSinkRequest dataSinkRequest) {
         this.mixpanelRestClient = new MixpanelRestClient(((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getProjectToken(),
                 ((MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiSecret());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.mixpanelErrorParser = ObjectRegistry.getInstance(MixpanelErrorParser.class);
-        this.mixpanelAppConfig = (MixpanelAppConfig) dataSinkRequest.getExternalApp().getConfig();
+        this.syncConfig = (MixpanelAppSyncConfig) dataSinkRequest.getAppSyncConfig();
     }
 
     @Override
@@ -65,36 +63,21 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
         }
     }
 
-    private Object getDistinctID(Tuple record) {
-        return record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
+    private Object getGroupID(Tuple record) {
+        return record.getValue(MixpanelObjectFields.GROUP_PROFILE_FIELDS.GROUP_ID.getFieldName());
     }
 
-    private Map<String,Object> constructUserProfileDetails(Tuple record) {
-
-        Object distinctID = record.getValue(MixpanelObjectFields.USER_PROFILE_FIELDS.DISTINCT_ID.getFieldName());
-
-        Map<String,Object> userProfileInfo = Maps.newHashMap();
-        userProfileInfo.put("$token",mixpanelAppConfig.getProjectToken());
-        userProfileInfo.put("$distinct_id",distinctID);
-        userProfileInfo.put("$set",constructPropertyMap(record));
-
-        return userProfileInfo;
+    private Map<String,Object> constructGroupProfileDetails(Tuple record) {
+        Map<String,Object> groupProfileInfo = Maps.newHashMap();
+        groupProfileInfo.put("$group_key",syncConfig.getGroupKey());
+        groupProfileInfo.put("$group_id",getGroupID(record));
+        groupProfileInfo.put("$set",constructPropertyMap(record));
+        return groupProfileInfo;
     }
 
     private Map<String, Object> constructPropertyMap(Tuple record) {
-        Map<String,Object> propertyMap = Maps.newHashMap();
-        Map<String,Object> reservedPropertyMap = record.getFields().stream().
-                filter(field -> isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(field -> "$"+field.getName() , Field::getValue));
-        if(!reservedPropertyMap.isEmpty()) {
-            propertyMap.putAll(reservedPropertyMap);
-        }
-
-        Map<String,Object> nonReservedPropertyMap = record.getFields().stream().
+        return record.getFields().stream().
                 filter(field -> !isMixpanelReservedKeyword(field.getName())).collect(Collectors.toMap(Field::getName, Field::getValue));
-        if(!nonReservedPropertyMap.isEmpty()) {
-            propertyMap.putAll(nonReservedPropertyMap);
-        }
-        return propertyMap;
     }
 
     private boolean isMixpanelReservedKeyword(String fieldName)
@@ -104,7 +87,7 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
 
     private List<String> getReservedKeywords()
     {
-        return Lists.newArrayList("region","timezone","country_code","last_seen","city","first_name","last_name","email");
+        return Lists.newArrayList("group_id","group_key");
     }
 
     @Override
@@ -122,25 +105,25 @@ public class MixpanelUserProfileSink extends MixpanelObjectSink<Message> {
         requestsBuffer.flush(TimeUtils.minutesToMillis(10));
     }
 
-    private class UpsertUserProfileConsumer implements Consumer<List<Message>> {
+    private class UpsertGroupProfileConsumer implements Consumer<List<Message>> {
         @Override
         public void accept(List<Message> messages) {
             if (CollectionUtils.isEmpty(messages)) {
                 return;
             }
-            processBulkUserProfileUpdate(messages);
+            processBulkGroupProfileUpdate(messages);
         }
     }
 
-    private void processBulkUserProfileUpdate(List<Message> messages) {
-        List<UserProfileAndError> failedRecords = this.mixpanelRestClient.upsertUserProfileDetails(
-                messages.stream().map(Message::getRecord).map(this::constructUserProfileDetails).collect(Collectors.toList()));
+    private void processBulkGroupProfileUpdate(List<Message> messages) {
+        List<GroupProfileAndError> failedRecords = this.mixpanelRestClient.upsertGroupProfileDetails(
+                messages.stream().map(Message::getRecord).map(this::constructGroupProfileDetails).collect(Collectors.toList()));
 
-        Map<Object, Message> userProfileRecordMapper = messages.stream().filter(message -> getDistinctID(message.getRecord()) != null)
-                .collect(Collectors.toMap(message -> getDistinctID(message.getRecord()), Function.identity()));
+        Map<Object, Message> groupProfileRecordMapper = messages.stream().filter(message -> getGroupID(message.getRecord()) != null)
+                .collect(Collectors.toMap(message -> getGroupID(message.getRecord()), Function.identity()));
 
         failedRecords.forEach(failedRecord ->
-                failedRecord.getFailureReasons().forEach(failureReason -> this.errorOutputStream.writeFailedRecord(userProfileRecordMapper.get(failedRecord.getDistinctID()),
+                failedRecord.getFailureReasons().forEach(failureReason -> this.errorOutputStream.writeFailedRecord(groupProfileRecordMapper.get(failedRecord.getGroupID()),
                         mixpanelErrorParser.getPipelineError(failureReason))));
 
         this.processedRecords.addAndGet(messages.size());

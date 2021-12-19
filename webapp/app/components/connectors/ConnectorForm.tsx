@@ -1,5 +1,5 @@
 import { FormFieldsDto } from "@/app/common/dtos/FormFieldsDto";
-import { Form, Formik, FormikValues } from "formik";
+import { Form, Formik, FormikValues, yupToFormErrors } from "formik";
 import InputField from "@/app/components/forminputs/InputField";
 import DynamicFormFields from "@/app/components/connectors/DynamicFormFields";
 import ButtonSubmit from "@/app/components/forminputs/ButtonSubmit";
@@ -15,9 +15,9 @@ import routerUtils from "@/app/common/utils/routerUtils";
 import { Card } from "react-bootstrap";
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
-import { GetServerSidePropsContext } from "next";
-
+import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -40,7 +40,7 @@ const ConnectorForm = ({
   docUrl,
   accessType,
   oauthCallback,
-  onFinish
+  onFinish,
 }: ConnectorFormProps) => {
   const router = useRouter();
   const { pipelineWizContext } = usePipelineWizContext();
@@ -85,7 +85,7 @@ const ConnectorForm = ({
     {
       id: "connector_form",
       pickFieldsForEvent: ["name", "config.type"],
-      dataLayer: { connectorCategory: category }
+      dataLayer: { connectorCategory: category },
     },
     fetcher,
     (res: any) => {
@@ -121,7 +121,7 @@ const ConnectorForm = ({
             values.config.type +
             "&failed=1"
           }`,
-          serverUrl: `${appBaseUrl}${API_BASE}`
+          serverUrl: `${appBaseUrl}${API_BASE}`,
         };
       }
       return values;
@@ -164,15 +164,19 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
+      validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
+        name: yup.string().required("Name is required"),
+      })}
       onSubmit={onSubmit}
     >
-      {({ values, setFieldValue, setFieldTouched, isSubmitting }) => (
+      {({ values, isSubmitting, setFieldValue }) => (
         <Form>
           <InputField
             type="text"
             name="name"
             title="Name"
             placeholder="Enter name"
+            required
           />
           <InputField type="hidden" name="config.type" title="Type" />
           {connectorType && (
@@ -180,9 +184,8 @@ const ConnectorForm = ({
               namePrefix="config"
               skipNames={["name"]}
               formFields={formFields}
-              values={values}
               setFieldValue={setFieldValue}
-              setFieldTouched={setFieldTouched}
+              values={values}
               dataFetcher={(optionsRef) =>
                 warehouseService.configOptions(optionsRef, values)
               }

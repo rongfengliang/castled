@@ -21,6 +21,7 @@ public class CastledBlockingQueue<T> {
     public CastledBlockingQueue(Consumer<T> childConsumer, int parallelism, int maxCapacity, boolean exitOnError) {
         this.consumer = decorateConsumer(childConsumer);
         this.executorService = Executors.newFixedThreadPool(parallelism);
+        log.info("Parallelism {} , Max Capacity {}",parallelism,maxCapacity);
         this.blockingQueue = new ArrayBlockingQueue<T>(maxCapacity);
         this.exitOnError = exitOnError;
         for (int i = 0; i < parallelism; i++) {
