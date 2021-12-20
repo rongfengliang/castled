@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import NProgress from "nprogress";
 import ReactNotification from "react-notifications-component";
 import { SWRConfig } from "swr";
+import eventService from "@/app/services/eventService";
 import axios from "axios";
 import SessionProvider, {
   useSession,
@@ -39,11 +40,20 @@ const App = ({ Component, pageProps }: AppProps) => {
         <SessionProvider>
           <Meta />
           <ReactNotification />
+          <EventLoader />
           <Component {...pageProps} router={router} />
         </SessionProvider>
       </ThemeProvider>
     </SWRConfig>
   );
+};
+
+const EventLoader = () => {
+  const { user } = useSession();
+  useEffect(() => {
+    eventService.load(user);
+  }, [user]);
+  return null;
 };
 
 export default App;
