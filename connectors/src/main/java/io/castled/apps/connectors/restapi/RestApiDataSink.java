@@ -25,12 +25,7 @@ public class RestApiDataSink implements DataSink {
     }
 
     private RestApiObjectSink<Message> getObjectSink(DataSinkRequest dataSinkRequest) {
-        Integer noOfThreads = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getParallelThreads()).orElse(0);
-        Integer batchSize = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getBatchSize()).orElse(0);
-        if (batchSize > 0 && noOfThreads > 0) {
-            return new RestApiBufferedParallelSink(dataSinkRequest);
-        }
-        return new RestApiObjectBufferedSink(dataSinkRequest);
+        return new RestApiBufferedParallelSink(dataSinkRequest);
     }
 
     @Override
