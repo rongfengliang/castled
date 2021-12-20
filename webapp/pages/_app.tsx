@@ -66,8 +66,8 @@ const IntercomLoader = () => {
   const { user } = useSession();
   useEffect(() => {
     boot({
-      email: `test@castled.io`,
-      name: `Test User`
+      email: user?.email,
+      name: user?.name,
     });
   }, [user]);
   return null;
