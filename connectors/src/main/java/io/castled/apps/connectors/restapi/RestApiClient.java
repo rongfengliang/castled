@@ -5,7 +5,6 @@ import io.castled.utils.ResponseUtils;
 import io.castled.utils.RestUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
