@@ -15,17 +15,13 @@ public class RestApiDataSink implements DataSink {
 
     @Override
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
-        this.restApiObjectSink = getObjectSink(dataSinkRequest);
+        this.restApiObjectSink = new RestApiBufferedParallelSink(dataSinkRequest);
         log.info("Sync started for REST API");
         Message message;
         while ((message = dataSinkRequest.getMessageInputStream().readMessage()) != null) {
             this.restApiObjectSink.writeRecord(message);
         }
         this.restApiObjectSink.flushRecords();
-    }
-
-    private RestApiObjectSink<Message> getObjectSink(DataSinkRequest dataSinkRequest) {
-        return new RestApiBufferedParallelSink(dataSinkRequest);
     }
 
     @Override
