@@ -1,8 +1,10 @@
 import { StringAnyMap } from "@/app/common/utils/types";
+import http from "@/app/services/http";
 import tagManager from "react-gtm-module";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 
 export default {
+
   load: (user: LoggedInUserDto | null | undefined) => {
     let userProps = {};
     if (user) {
@@ -20,7 +22,7 @@ export default {
     if (process.browser) {
       console.log("loading tag manager");
       tagManager.initialize({
-        gtmId: "GTM-WZHMGD3",
+        gtmId: "GTM-5PMX6V3",
         dataLayer: userProps,
       });
       console.log("GTM Loaded", userProps);
@@ -28,8 +30,11 @@ export default {
   },
   send: (props: StringAnyMap) => {
     if (process.browser) {
-      console.log("inside event send");
       tagManager.dataLayer({ dataLayer: { ...props } });
+      http.post("/v1/tracking", props)
+      .catch(() => {
+        console.log(`tracking failed for event ${props.event}`)
+      });
     }
   },
 };

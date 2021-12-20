@@ -6,13 +6,15 @@ import Router, { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import NProgress from "nprogress";
 import ReactNotification from "react-notifications-component";
+import { IntercomProvider, useIntercom } from 'react-use-intercom';
 import { SWRConfig } from "swr";
+import eventService from "@/app/services/eventService";
 import axios from "axios";
 import SessionProvider, {
   useSession,
 } from "@/app/common/context/sessionContext";
 import jsUtils from "@/app/common/utils/jsUtils";
-import eventService from "@/app/services/eventService";
+import { domain } from "process";
 
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
@@ -40,8 +42,11 @@ const App = ({ Component, pageProps }: AppProps) => {
         <SessionProvider>
           <Meta />
           <ReactNotification />
-          <EventLoader />
-          <Component {...pageProps} router={router} />
+          <IntercomProvider appId='ak93xau2'>
+            <IntercomLoader />
+            <Component {...pageProps} router={router} />
+          </IntercomProvider>
+
         </SessionProvider>
       </ThemeProvider>
     </SWRConfig>
@@ -52,6 +57,18 @@ const EventLoader = () => {
   const { user } = useSession();
   useEffect(() => {
     eventService.load(user);
+  }, [user]);
+  return null;
+};
+
+const IntercomLoader = () => {
+  const { boot } = useIntercom();
+  const { user } = useSession();
+  useEffect(() => {
+    boot({
+      email: user?.email,
+      name: user?.name,
+    });
   }, [user]);
   return null;
 };
