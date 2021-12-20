@@ -62,9 +62,6 @@ public class CastledApplication extends Application<CastledConfiguration> {
     @Inject
     private UsersResource usersResource;
 
-    @Inject
-    private TestResource testResource;
-
     public static void main(String[] args) throws Exception {
         new CastledApplication().run(args);
     }
@@ -106,7 +103,6 @@ public class CastledApplication extends Application<CastledConfiguration> {
         environment.jersey().register(pipelineRunResource);
         environment.jersey().register(usersResource);
         environment.lifecycle().manage(lifecycleManager);
-        environment.jersey().register(testResource);
 
         environment.jersey().register(new AuthDynamicFeature(castledAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
