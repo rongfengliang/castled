@@ -67,7 +67,7 @@ const IntercomLoader = () => {
   useEffect(() => {
     boot({
       email: user?.email,
-      name: user?.name
+      name: user?.name,
     });
   }, [user]);
   return null;
