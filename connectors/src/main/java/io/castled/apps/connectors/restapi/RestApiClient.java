@@ -37,7 +37,7 @@ public class RestApiClient {
                 errorObject = response.readEntity(ErrorObject.class);
             }
         } catch (Exception e) {
-            log.error(String.format("Custom API upsert failed for URL %s and API Key %s", this.apiURL,this.apiKey), e);
+            log.error(String.format("Custom API upsert failed for %s %s", this.apiURL,this.apiKey), e);
             errorObject = new ErrorObject("UNCLASSIFIED", e.getMessage());
         }
         return errorObject;
