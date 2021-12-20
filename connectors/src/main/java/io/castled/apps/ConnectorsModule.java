@@ -20,6 +20,7 @@ import io.castled.apps.connectors.kafka.KafkaAppConnector;
 import io.castled.apps.connectors.mailchimp.MailchimpAppConnector;
 import io.castled.apps.connectors.marketo.MarketoAppConnector;
 import io.castled.apps.connectors.mixpanel.MixpanelAppConnector;
+import io.castled.apps.connectors.restapi.RestApiAppConnector;
 import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridListsOptionsFetcher;
@@ -81,6 +82,7 @@ public class ConnectorsModule extends AbstractModule {
         externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLEPUBSUB).to(GooglePubSubAppConnector.class);
         externalAppConnectorMapping.addBinding(ExternalAppType.MIXPANEL).to(MixpanelAppConnector.class);
         externalAppConnectorMapping.addBinding(ExternalAppType.GOOGLE_SHEETS).to(GoogleSheetsAppConnector.class);
+        externalAppConnectorMapping.addBinding(ExternalAppType.RESTAPI).to(RestApiAppConnector.class);
     }
 
 

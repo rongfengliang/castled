@@ -13,6 +13,7 @@ import io.castled.apps.connectors.kafka.KafkaAppSyncConfig;
 import io.castled.apps.connectors.mailchimp.MailchimpAppSyncConfig;
 import io.castled.apps.connectors.marketo.MarketoAppSyncConfig;
 import io.castled.apps.connectors.mixpanel.MixpanelAppSyncConfig;
+import io.castled.apps.connectors.restapi.RestApiAppSyncConfig;
 import io.castled.apps.connectors.sendgrid.SendgridAppSyncConfig;
 import io.castled.apps.models.SubResource;
 import io.castled.apps.models.SyncObject;
@@ -41,6 +42,7 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = GooglePubSubAppSyncConfig.class, name = "GOOGLEPUBSUB"),
         @JsonSubTypes.Type(value = MixpanelAppSyncConfig.class, name = "MIXPANEL"),
         @JsonSubTypes.Type(value = GoogleSheetsAppSyncConfig.class, name = "GOOGLE_SHEETS"),
+        @JsonSubTypes.Type(value = RestApiAppSyncConfig.class, name = "RESTAPI")
 })
 @Getter
 @Setter
