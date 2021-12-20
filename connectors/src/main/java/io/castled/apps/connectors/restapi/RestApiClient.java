@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class RestApiRestClient {
+public class RestApiClient {
 
     public static final String BEARER_AUTHENTICATION = "Bearer ";
     private final Client client;
     private final String apiKey;
     private final String apiURL;
 
-    public RestApiRestClient(String apiURL, String apiKey) {
+    public RestApiClient(String apiURL, String apiKey) {
         this.apiURL = apiURL;
         this.apiKey = apiKey;
         this.client = ObjectRegistry.getInstance(Client.class);
@@ -33,16 +33,12 @@ public class RestApiRestClient {
         try {
             Response response = invokeRestAPI(propertyName, details);
             log.info("Response status {}", response.getStatus());
-
             if (!ResponseUtils.is2xx(response)) {
                 errorObject = response.readEntity(ErrorObject.class);
             }
-        } catch (BadRequestException badRequestException) {
-            log.error("Custom API upsert failed ", badRequestException);
-            errorObject = new ErrorObject("BAD_REQUEST", badRequestException.getMessage());
         } catch (Exception e) {
-            log.error("Upsert failed", e);
-            errorObject = new ErrorObject("EXCEPTION", e.getMessage());
+            log.error(String.format("Custom API upsert failed for URL %s and API Key %s", this.apiURL,this.apiKey), e);
+            errorObject = new ErrorObject("UNCLASSIFIED", e.getMessage());
         }
         return errorObject;
     }
@@ -57,7 +53,7 @@ public class RestApiRestClient {
 
     private Object constructPayload(String propertyName, List<Map<String, Object>> inputDetails) {
         if (propertyName != null) {
-            Map jsonObject = new HashMap();
+            Map<String,Object> jsonObject = new HashMap<>();
             jsonObject.put(propertyName, inputDetails);
             return jsonObject;
         }

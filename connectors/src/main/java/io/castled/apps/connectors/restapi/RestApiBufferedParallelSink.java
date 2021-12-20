@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
 
-    private final RestApiRestClient restApiRestClient;
+    private final RestApiClient restApiRestClient;
     private final RestApiErrorParser restApiErrorParser;
     private final ErrorOutputStream errorOutputStream;
     private final AtomicLong processedRecords = new AtomicLong(0);
@@ -47,7 +47,7 @@ public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
         String apiKey = ((RestApiAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiKey();
         this.batchSize = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getBatchSize()).orElse(1);
         this.payloadProperty = ((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getPropertyName();
-        this.restApiRestClient = new RestApiRestClient(apiURL, apiKey);
+        this.restApiRestClient = new RestApiClient(apiURL, apiKey);
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.restApiErrorParser = ObjectRegistry.getInstance(RestApiErrorParser.class);
 
@@ -102,8 +102,8 @@ public class RestApiBufferedParallelSink extends RestApiObjectSink<Message> {
         ErrorObject errorObject = this.restApiRestClient.upsertDetails(this.payloadProperty,
                 messages.stream().map(Message::getRecord).map(this::constructProperties).collect(Collectors.toList()));
 
-        Optional.ofNullable(errorObject).ifPresent((objectAndError1) -> messages.
-                forEach(message -> this.errorOutputStream.writeFailedRecord(message, restApiErrorParser.getPipelineError(objectAndError1.getCode(), objectAndError1.getMessage()))));
+        Optional.ofNullable(errorObject).ifPresent((objectAndErrorRef) -> messages.
+                forEach(message -> this.errorOutputStream.writeFailedRecord(message, restApiErrorParser.getPipelineError(objectAndErrorRef.getCode(), objectAndErrorRef.getMessage()))));
 
         this.processedRecords.addAndGet(messages.size());
         this.lastProcessedOffset = Math.max(lastProcessedOffset, Iterables.getLast(messages).getOffset());
