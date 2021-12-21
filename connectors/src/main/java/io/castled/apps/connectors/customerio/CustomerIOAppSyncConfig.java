@@ -3,6 +3,7 @@ package io.castled.apps.connectors.customerio;
 import io.castled.OptionsReferences;
 import io.castled.apps.models.GenericSyncObject;
 import io.castled.apps.syncconfigs.AppSyncConfig;
+import io.castled.commons.models.AppSyncMode;
 import io.castled.forms.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,4 +58,8 @@ public class CustomerIOAppSyncConfig extends AppSyncConfig {
     @FormField(type = FormFieldType.DROP_DOWN, group ="personGroup", title = "Matching Primary Key For Destination App Record", description = "How a source record will be uniquely identified",
             optionsRef = @OptionsRef(value = OptionsReferences.CIO_PRIMARY_KEYS, type = OptionsRefType.DYNAMIC))
     private String primaryKey;
+
+    @FormField(type = FormFieldType.RADIO_GROUP, title = "Sync Mode", description = "Sync mode which controls whether records will be appended, updated or upserted", group = MappingFormGroups.SYNC_MODE,
+            optionsRef = @OptionsRef(value = OptionsReferences.SYNC_MODE, type = OptionsRefType.DYNAMIC))
+    private AppSyncMode mode;
 }

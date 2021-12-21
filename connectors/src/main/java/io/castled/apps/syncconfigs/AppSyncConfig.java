@@ -49,8 +49,4 @@ import lombok.Setter;
 public abstract class AppSyncConfig {
 
     private ExternalAppType appType;
-
-    @FormField(type = FormFieldType.RADIO_GROUP, title = "Sync Mode", description = "Sync mode which controls whether records will be appended, updated or upserted", group = MappingFormGroups.SYNC_MODE,
-            optionsRef = @OptionsRef(value = OptionsReferences.SYNC_MODE, type = OptionsRefType.DYNAMIC))
-    private AppSyncMode mode;
 }

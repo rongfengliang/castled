@@ -79,12 +79,13 @@ public class HubspotDataSink implements DataSink {
 
         List<Object> primaryKeyValues = dataSinkRequest.getPrimaryKeys().stream().map(pk -> message.getRecord().getValue(pk))
                 .collect(Collectors.toList());
-        if (dataSinkRequest.getAppSyncConfig().getMode() == AppSyncMode.INSERT) {
+        GenericObjectRadioGroupConfig hubspotAppSyncConfig = (GenericObjectRadioGroupConfig) dataSinkRequest.getAppSyncConfig();
+        if (hubspotAppSyncConfig.getMode() == AppSyncMode.INSERT) {
             hubspotObjectSink.writeRecord(new ObjectIdAndMessage(null, message));
             return;
         }
         String objectId = primaryKeyObjectIdMapper.getObjectId(primaryKeyValues);
-        if (dataSinkRequest.getAppSyncConfig().getMode() == AppSyncMode.UPDATE && objectId == null) {
+        if (hubspotAppSyncConfig.getMode() == AppSyncMode.UPDATE && objectId == null) {
             skippedRecords++;
             return;
         }

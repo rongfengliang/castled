@@ -63,7 +63,9 @@ public class IntercomDataSink implements DataSink {
 
         PrimaryKeyIdMapper primaryKeyIdMapper = intercomObjectSink.getPrimaryKeyIdMapper();
         Object objectId = primaryKeyIdMapper.getObjectId(primaryKeyValues);
-        if (appSyncConfig.getMode() == AppSyncMode.UPDATE && objectId == null) {
+
+        GenericObjectRadioGroupConfig intercomSyncConfig = (GenericObjectRadioGroupConfig) appSyncConfig;
+        if (intercomSyncConfig.getMode() == AppSyncMode.UPDATE && objectId == null) {
             return false;
         }
         if (objectId == null) {
