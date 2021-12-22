@@ -1,1 +1,1 @@
-gcloud projects add-iam-policy-binding ${projectId} --member serviceAccount:${serviceAccount} --role roles/bigquery.dataViewer
+gcloud projects add-iam-policy-binding ${projectId} --member serviceAccount:${serviceAccount.client_email} --role roles/bigquery.dataViewer

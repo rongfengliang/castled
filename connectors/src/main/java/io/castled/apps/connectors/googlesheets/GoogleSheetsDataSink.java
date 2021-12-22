@@ -1,24 +1,17 @@
 package io.castled.apps.connectors.googlesheets;
 
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.ClearValuesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import io.castled.ObjectRegistry;
 import io.castled.apps.DataSink;
 import io.castled.apps.models.DataSinkRequest;
 import io.castled.commons.models.AppSyncStats;
-import io.castled.commons.models.ServiceAccountDetails;
-import io.castled.schema.models.Field;
 import io.castled.schema.models.Message;
-import io.castled.warehouses.connectors.bigquery.daos.ServiceAccountDetailsDAO;
-import org.jdbi.v3.core.Jdbi;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GoogleSheetsDataSink implements DataSink {
 
@@ -28,11 +21,8 @@ public class GoogleSheetsDataSink implements DataSink {
     public void syncRecords(DataSinkRequest dataSinkRequest) throws Exception {
         GoogleSheetsAppConfig googleSheetsAppConfig = (GoogleSheetsAppConfig) dataSinkRequest.getExternalApp().getConfig();
         GoogleSheetsAppSyncConfig googleSheetsAppSyncConfig = (GoogleSheetsAppSyncConfig) dataSinkRequest.getAppSyncConfig();
-        ServiceAccountDetails serviceAccountDetails =
-                ObjectRegistry.getInstance(Jdbi.class).onDemand(ServiceAccountDetailsDAO.class)
-                        .getServiceAccount(googleSheetsAppConfig.getServiceAccount()).getServiceAccountDetails();
 
-        Sheets sheetsService = GoogleSheetUtils.getSheets(serviceAccountDetails);
+        Sheets sheetsService = GoogleSheetUtils.getSheets(googleSheetsAppConfig.getServiceAccountDetails());
         List<SheetRow> sheetRows = GoogleSheetUtils.getRows(sheetsService, googleSheetsAppConfig.getSpreadSheetId(),
                 googleSheetsAppSyncConfig.getObject().getObjectName());
 
