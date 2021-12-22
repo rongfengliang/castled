@@ -23,14 +23,14 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     @Override
     public List<FormFieldOption> getAllObjects(GoogleSheetsAppConfig config, GoogleSheetsAppSyncConfig mappingConfig) {
         try {
-            Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccountDetails());
+            Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccount());
             Spreadsheet spreadsheet = sheetsService.spreadsheets().get(config.getSpreadSheetId()).execute();
             return spreadsheet.getSheets().stream().map(Sheet::getProperties)
                     .map(sheetProperties -> new FormFieldOption(new GoogleSheetsSyncObject(sheetProperties.getSheetId(), sheetProperties.getTitle()),
                             sheetProperties.getTitle()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Gsheets get objects failed for {}", config.getServiceAccountDetails().getClientEmail(), e);
+            log.error("Gsheets get objects failed for {}", config.getServiceAccount().getClientEmail(), e);
             throw new CastledRuntimeException(e);
         }
     }

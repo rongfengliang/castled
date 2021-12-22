@@ -22,7 +22,7 @@ public class GoogleSheetsDataSink implements DataSink {
         GoogleSheetsAppConfig googleSheetsAppConfig = (GoogleSheetsAppConfig) dataSinkRequest.getExternalApp().getConfig();
         GoogleSheetsAppSyncConfig googleSheetsAppSyncConfig = (GoogleSheetsAppSyncConfig) dataSinkRequest.getAppSyncConfig();
 
-        Sheets sheetsService = GoogleSheetUtils.getSheets(googleSheetsAppConfig.getServiceAccountDetails());
+        Sheets sheetsService = GoogleSheetUtils.getSheets(googleSheetsAppConfig.getServiceAccount());
         List<SheetRow> sheetRows = GoogleSheetUtils.getRows(sheetsService, googleSheetsAppConfig.getSpreadSheetId(),
                 googleSheetsAppSyncConfig.getObject().getObjectName());
 

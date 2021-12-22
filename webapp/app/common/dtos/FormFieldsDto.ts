@@ -1,11 +1,12 @@
 import { FormFieldType } from "../enums/FormFieldType";
 import { CodeBlock } from "./CodeBlock";
+import { HelpText } from "./HelpText";
 
 export interface FormFieldsDto {
   fields: {
     [key: string]: FormFieldMeta;
   };
-  helpText?: string;
+  helpText?: HelpText;
   codeBlock?: CodeBlock;
   groupActivators: {
     [key: string]: {

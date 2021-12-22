@@ -156,6 +156,21 @@ const ConnectorForm = ({
     );
   };
 
+  const getHelpText = (formFields: FormFieldsDto, values: FormikValues) => {
+    if (
+      formFields.helpText?.dependencies.filter(
+        (dependencyRef) => values.config[dependencyRef]
+      ).length !== formFields.helpText?.dependencies.length
+    ) {
+      return null;
+    }
+    return (
+        <div className="mb-1">
+        {stringUtils.replaceTemplate(formFields.helpText!.value, values.config)}
+        </div>
+    );
+  };
+
   return (
     <Formik
       initialValues={
@@ -191,6 +206,7 @@ const ConnectorForm = ({
             />
           )}
           {formFields?.codeBlock && getCodeBlock(formFields, values)}
+          {formFields?.helpText && getHelpText(formFields, values)}
           <ButtonSubmit submitting={isSubmitting} className="mb-3">
             {submitLabel}
           </ButtonSubmit>

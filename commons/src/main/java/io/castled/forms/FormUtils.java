@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
+import java.sql.Ref;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -33,7 +34,15 @@ public class FormUtils {
             }
         }
         CodeBlock codeBlock = ReflectionUtils.getAnnotation(configClass, CodeBlock.class);
-        return new FormFieldsDTO(formFields, toCodeBlockDTO(codeBlock), groupActivators);
+        HelpText helpText = ReflectionUtils.getAnnotation(configClass, HelpText.class);
+        return new FormFieldsDTO(formFields, toCodeBlockDTO(codeBlock), toHelpTextDTO(helpText), groupActivators);
+    }
+
+    private static HelpTextDTO toHelpTextDTO(HelpText helpText) {
+        if (helpText == null) {
+            return null;
+        }
+        return new HelpTextDTO(helpText.value(), Arrays.stream(helpText.dependencies()).collect(Collectors.toList()));
     }
 
     private static CodeBlockDTO toCodeBlockDTO(CodeBlock codeBlock) {
