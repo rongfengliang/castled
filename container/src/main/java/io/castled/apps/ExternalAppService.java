@@ -7,6 +7,7 @@ import io.castled.ObjectRegistry;
 import io.castled.apps.daos.ExternalAppDAO;
 import io.castled.apps.dtos.AppSyncConfigDTO;
 import io.castled.apps.models.ExternalAppSchema;
+import io.castled.apps.optionfetchers.AppOptionsFetcher;
 import io.castled.apps.syncconfigs.AppSyncConfig;
 import io.castled.caches.ExternalAppCache;
 import io.castled.caches.UsersCache;
@@ -30,6 +31,7 @@ import io.castled.pubsub.registry.ExternalAppUpdatedMessage;
 import io.castled.resources.validators.ResourceAccessController;
 import io.castled.utils.JsonUtils;
 import io.castled.utils.OAuthStateStore;
+import io.castled.warehouses.WarehouseConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 
@@ -39,6 +41,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -55,13 +58,15 @@ public class ExternalAppService {
     private final MessagePublisher messagePublisher;
     private final Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers;
     private final OAuthAccessProviderFactory oAuthAccessProviderFactory;
+    private final Map<String, AppOptionsFetcher> appOptionsFetchers;
 
 
     @Inject
     public ExternalAppService(Jdbi jdbi, Map<ExternalAppType, ExternalAppConnector> appConnectors,
                               EncryptionManager encryptionManager, ExternalAppCache externalAppCache,
                               ResourceAccessController accessController, MessagePublisher messagePublisher,
-                              Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers, OAuthAccessProviderFactory oAuthAccessProviderFactory) {
+                              Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers,
+                              OAuthAccessProviderFactory oAuthAccessProviderFactory, Map<String, AppOptionsFetcher> appOptionsFetchers) {
         this.externalAppDAO = jdbi.onDemand(ExternalAppDAO.class);
         this.pipelineDAO = jdbi.onDemand(PipelineDAO.class);
         this.appConnectors = appConnectors;
@@ -71,6 +76,7 @@ public class ExternalAppService {
         this.messagePublisher = messagePublisher;
         this.appSyncOptionsFetchers = appSyncOptionsFetchers;
         this.oAuthAccessProviderFactory = oAuthAccessProviderFactory;
+        this.appOptionsFetchers = appOptionsFetchers;
 
     }
 
@@ -238,5 +244,12 @@ public class ExternalAppService {
     public FieldOptionsDTO getAppSyncOptions(AppSyncConfigDTO appSyncConfig, String optionsReference) {
         ExternalApp externalApp = getExternalApp(appSyncConfig.getAppId(), true);
         return new FieldOptionsDTO(this.appSyncOptionsFetchers.get(optionsReference).getOptions(appSyncConfig, externalApp));
+    }
+
+    public FieldOptionsDTO getConfigOptions(AppConfig appConfig,
+                                            String optionsReference) {
+        return Optional.ofNullable(this.appOptionsFetchers.get(optionsReference))
+                .map(optionsFetcher -> new FieldOptionsDTO(optionsFetcher.getFieldOptions(appConfig)))
+                .orElse(null);
     }
 }

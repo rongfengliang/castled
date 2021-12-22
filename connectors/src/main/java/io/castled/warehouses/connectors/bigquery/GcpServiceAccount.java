@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class GcpServiceAccount {
 
     private Long id;
-    private Long userId;
     private ServiceAccountDetails serviceAccountDetails;
 }

@@ -8,8 +8,12 @@ import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
 import io.castled.apps.ExternalAppConnector;
 import io.castled.apps.models.ExternalAppSchema;
+import io.castled.commons.models.ServiceAccountDetails;
+import io.castled.exceptions.CastledRuntimeException;
 import io.castled.forms.dtos.FormFieldOption;
+import io.castled.warehouses.connectors.bigquery.daos.ServiceAccountDetailsDAO;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,16 +26,19 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     @Override
     public List<FormFieldOption> getAllObjects(GoogleSheetsAppConfig config, GoogleSheetsAppSyncConfig mappingConfig) {
         try {
-            Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccountDetails());
+            ServiceAccountDetails serviceAccountDetails =
+                    ObjectRegistry.getInstance(Jdbi.class).onDemand(ServiceAccountDetailsDAO.class)
+                            .getServiceAccount(config.getServiceAccount()).getServiceAccountDetails();
+            Sheets sheetsService = GoogleSheetUtils.getSheets(serviceAccountDetails);
             Spreadsheet spreadsheet = sheetsService.spreadsheets().get(config.getSpreadSheetId()).execute();
             return spreadsheet.getSheets().stream().map(Sheet::getProperties)
                     .map(sheetProperties -> new FormFieldOption(new GoogleSheetsSyncObject(sheetProperties.getSheetId(), sheetProperties.getTitle()),
                             sheetProperties.getTitle()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("failed", e);
+            log.error("Gsheets get objects failed for {}", config.getServiceAccount(), e);
+            throw new CastledRuntimeException(e);
         }
-        return Lists.newArrayList();
     }
 
     @Override

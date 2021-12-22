@@ -1,39 +1,39 @@
-package io.castled.warehouses.connectors.bigquery;
+package io.castled.apps.connectors.googlesheets;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import io.castled.apps.AppConfig;
+import io.castled.apps.optionfetchers.AppOptionsFetcher;
 import io.castled.commons.models.ServiceAccountDetails;
 import io.castled.forms.dtos.FormFieldOption;
 import io.castled.utils.JsonUtils;
-import io.castled.warehouses.WarehouseConfig;
+import io.castled.warehouses.connectors.bigquery.GcpServiceAccount;
 import io.castled.warehouses.connectors.bigquery.daos.ServiceAccountDetailsDAO;
-import io.castled.warehouses.optionsfetchers.WarehouseOptionsFetcher;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
-@Singleton
-public class BQServiceAccountOptionsFetcher implements WarehouseOptionsFetcher {
+public class GSheetsServiceAccountFetcher implements AppOptionsFetcher {
 
     private final ServiceAccountDetailsDAO serviceAccountDetailsDAO;
 
     @Inject
-    public BQServiceAccountOptionsFetcher(Jdbi jdbi) {
+    public GSheetsServiceAccountFetcher(Jdbi jdbi) {
         this.serviceAccountDetailsDAO = jdbi.onDemand(ServiceAccountDetailsDAO.class);
     }
 
     @Override
-    public List<FormFieldOption> getFieldOptions(WarehouseConfig warehouseConfig) {
-        BigQueryWarehouseConfig bigQueryWarehouseConfig = (BigQueryWarehouseConfig) warehouseConfig;
-        ServiceAccountDetails serviceAccountDetails = bigQueryWarehouseConfig.getServiceAccountDetails();
+    public List<FormFieldOption> getFieldOptions(AppConfig appConfig) {
+        GoogleSheetsAppConfig googleSheetsAppConfig = (GoogleSheetsAppConfig) appConfig;
+        ServiceAccountDetails serviceAccountDetails = googleSheetsAppConfig.getServiceAccountDetails();
         GcpServiceAccount gcpServiceAccount = serviceAccountDetailsDAO.getServiceAccount(serviceAccountDetails.getClientEmail());
         if (gcpServiceAccount == null) {
             serviceAccountDetailsDAO.createServiceAccountDetails(serviceAccountDetails.getClientEmail(),
                     Base64.getEncoder().encodeToString(JsonUtils.objectToByteArray(serviceAccountDetails)));
         }
-        return Collections.singletonList(new FormFieldOption(bigQueryWarehouseConfig.getServiceAccountDetails().getClientEmail(),
-                bigQueryWarehouseConfig.getServiceAccountDetails().getClientEmail()));
+        return Collections.singletonList(new FormFieldOption(googleSheetsAppConfig.getServiceAccountDetails().getClientEmail(),
+                googleSheetsAppConfig.getServiceAccountDetails().getClientEmail()));
+
     }
 }

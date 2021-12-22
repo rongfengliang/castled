@@ -22,13 +22,9 @@ import java.util.Base64;
 public interface ServiceAccountDetailsDAO {
 
     @GetGeneratedKeys
-    @SqlUpdate("insert into service_account_details(user_id, account_email, account_key) " +
-            "values(:userId, :accountEmail, :accountKey)")
-    long createServiceAccountDetails(@Bind("userId") long userId,
-                                     @Bind("accountEmail") String accountEmail, @Bind("accountKey") String accountKey);
-
-    @SqlQuery("select * from service_account_details where user_id = :userId")
-    GcpServiceAccount getUserServiceAccount(@Bind("userId") Long userId);
+    @SqlUpdate("insert into service_account_details(account_email, account_key) " +
+            "values(:accountEmail, :accountKey)")
+    long createServiceAccountDetails(@Bind("accountEmail") String accountEmail, @Bind("accountKey") String accountKey);
 
     @SqlQuery("select * from service_account_details where account_email = :accountEmail")
     GcpServiceAccount getServiceAccount(@Bind("accountEmail") String accountEmail);
@@ -43,7 +39,7 @@ public interface ServiceAccountDetailsDAO {
             ServiceAccountDetails serviceAccountDetails = JsonUtils.jsonStringToObject(new String(Base64.getDecoder().decode(accountKey.getBytes(StandardCharsets.UTF_8))),
                     ServiceAccountDetails.class);
             return GcpServiceAccount.builder().id(rs.getLong("id"))
-                    .userId(rs.getLong("user_id")).serviceAccountDetails(serviceAccountDetails).build();
+                    .serviceAccountDetails(serviceAccountDetails).build();
 
         }
     }

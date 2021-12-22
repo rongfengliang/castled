@@ -13,6 +13,7 @@ import io.castled.apps.connectors.googleads.GadAccountOptionsFetcher;
 import io.castled.apps.connectors.googleads.GadsLoginCustomerOptionsFetcher;
 import io.castled.apps.connectors.googleads.GoogleAdsAppConnector;
 import io.castled.apps.connectors.googlepubsub.GooglePubSubAppConnector;
+import io.castled.apps.connectors.googlesheets.GSheetsServiceAccountFetcher;
 import io.castled.apps.connectors.googlesheets.GoogleSheetsAppConnector;
 import io.castled.apps.connectors.hubspot.HubspotAppConnector;
 import io.castled.apps.connectors.intercom.*;
@@ -24,6 +25,7 @@ import io.castled.apps.connectors.restapi.RestApiAppConnector;
 import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridListsOptionsFetcher;
+import io.castled.apps.optionfetchers.AppOptionsFetcher;
 import io.castled.forms.StaticOptionsFetcher;
 import io.castled.jdbc.JdbcConnectionType;
 import io.castled.jdbc.JdbcQueryHelper;
@@ -63,6 +65,7 @@ public class ConnectorsModule extends AbstractModule {
         bindStaticOptionFetchers();
         bindWarehouseOptionFetchers();
         bindAppConnectors();
+        bindAppOptionFetchers();
     }
 
 
@@ -90,6 +93,12 @@ public class ConnectorsModule extends AbstractModule {
         MapBinder<String, WarehouseOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
                 String.class, WarehouseOptionsFetcher.class);
         warehouseOptionFetchers.addBinding(OptionsReferences.BQ_SERVICE_ACCOUNT).to(BQServiceAccountOptionsFetcher.class);
+    }
+
+    private void bindAppOptionFetchers() {
+        MapBinder<String, AppOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
+                String.class, AppOptionsFetcher.class);
+        warehouseOptionFetchers.addBinding(OptionsReferences.GSHEETS_SERVICE_ACCOUNT).to(GSheetsServiceAccountFetcher.class);
     }
 
     private void bindJdbcQueryHelpers() {

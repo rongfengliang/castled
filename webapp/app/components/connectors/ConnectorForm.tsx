@@ -17,7 +17,6 @@ import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContex
 import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
 import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
-import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -70,14 +69,14 @@ const ConnectorForm = ({
     category === "Warehouse"
       ? warehouseService.create
       : isOauth
-      ? appsService.createOauth
-      : appsService.create;
+        ? appsService.createOauth
+        : appsService.create;
   const updateConnector: any =
     category === "Warehouse"
       ? warehouseService.update
       : isOauth
-      ? appsService.updateOauth
-      : appsService.update;
+        ? appsService.updateOauth
+        : appsService.update;
   const fetcher = editConnector
     ? (data: any) => updateConnector(editConnector.id, data)
     : createConnector;
@@ -99,28 +98,26 @@ const ConnectorForm = ({
     undefined,
     (values: any): any => {
       if (isOauth) {
-        const defaultOauthUrl = `${appBaseUrl}${
-          (location?.pathname || router.pathname) +
+        const defaultOauthUrl = `${appBaseUrl}${(location?.pathname || router.pathname) +
           "?wizardStep=" +
           wizardStep +
           "&type=" +
           values.config.type +
           "&success=1"
-        }`;
+          }`;
 
         return {
           ...values,
           successUrl: oauthCallback
             ? `${appBaseUrl}${oauthCallback}`
             : defaultOauthUrl,
-          failureUrl: `${appBaseUrl}${
-            oauthCallback +
+          failureUrl: `${appBaseUrl}${oauthCallback +
             "?wizardStep=" +
             wizardStep +
             "&type=" +
             values.config.type +
             "&failed=1"
-          }`,
+            }`,
           serverUrl: `${appBaseUrl}${API_BASE}`,
         };
       }
@@ -131,8 +128,8 @@ const ConnectorForm = ({
   const submitLabel = !editConnector
     ? `Add ${category}`
     : isOauth
-    ? "Reauthorize"
-    : "Save";
+      ? "Reauthorize"
+      : "Save";
 
   const getCodeBlock = (formFields: FormFieldsDto, values: FormikValues) => {
     if (
@@ -187,7 +184,9 @@ const ConnectorForm = ({
               setFieldValue={setFieldValue}
               values={values}
               dataFetcher={(optionsRef) =>
-                warehouseService.configOptions(optionsRef, values)
+                category === "Warehouse" ? warehouseService.configOptions(optionsRef, values) :
+                  appsService.configOptions(optionsRef, values)
+
               }
             />
           )}
