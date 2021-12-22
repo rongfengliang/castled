@@ -16,13 +16,8 @@ export interface DynamicFormFieldsProps {
   formFields?: FormFieldsDto;
   skipNames?: string[];
   values: any;
-  setFieldValue?: (field: string, value: any, shouldValidate?: boolean) => void;
-  setFieldTouched?: (
-    field: string,
-    isTouched?: boolean,
-    shouldValidate?: boolean
-  ) => void;
-  setFieldError?: (field: string, message: string | undefined) => void;
+  setCurrentFields?: any;
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
   dataFetcher?: (
     optionsRef: string
   ) => Promise<AxiosResponse<DataFetcherResponseDto>>;
@@ -51,6 +46,7 @@ const DynamicFormFields = ({
   formFields,
   skipNames,
   values,
+  setCurrentFields,
   setFieldValue,
   dataFetcher,
 }: DynamicFormFieldsProps) => {
@@ -93,6 +89,7 @@ const DynamicFormFields = ({
           ? `${namePrefix}.${dependency}`
           : dependency;
         const depValue: any = _.get(values, dependencyName);
+        setCurrentFields && setCurrentFields(depValue);
         if (!depValue) {
           skip = true;
           break;
@@ -117,6 +114,7 @@ const DynamicFormFields = ({
         defaultValue=""
         dValues={depValues}
         values={values}
+        validations={field.validations}
         dataFetcher={dataFetcher}
         setFieldValue={setFieldValue}
         deps={formFields.groupActivators[field.group]?.dependencies}

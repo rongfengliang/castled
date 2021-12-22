@@ -296,26 +296,20 @@ form {
     cursor: pointer;
   }
 }
-
-.disable-link {
-  cursor: not-allowed;
+input[required] + label:after {
+  content: "*";
+  color: #f74c3c;
 }
-.disable-link:active {
-  pointer-events: none;
+.is-invalid-form {
+  border-color: #f74c3c !important;
 }
 
 .required-icon {
   color: #f74c3c;
   font-size: 10px;
-  padding-right: 2px;
+  margin-right: 3.5px;
 }
 
 .required-field {
   border-color: #f74c3c;
-}
-
-form {
-  .error {
-    font-size: $font-size-sm;
-  }
 }

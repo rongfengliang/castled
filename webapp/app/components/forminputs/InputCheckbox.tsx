@@ -2,6 +2,12 @@ import React from "react";
 import { useField } from "formik";
 import { InputBaseProps } from "@/app/common/dtos/InputBaseProps";
 
+const validate = (value: any, props: any, title: string, required: boolean) => {
+  if (!value && required) {
+    return `${title} is required`;
+  }
+}
+
 const InputCheckbox = ({
   title,
   required,
@@ -9,7 +15,7 @@ const InputCheckbox = ({
   isValid,
   ...props
 }: InputBaseProps) => {
-  const [field, meta] = useField({ ...(props as any), type: "checkbox" });
+  const [field, meta] = useField({ ...(props as any), type: "checkbox", validate:(value) =>  validate(value, props, title, required) });
   return (
     <div className="mb-3">
       <label className="checkbox form-label">

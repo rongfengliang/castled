@@ -48,6 +48,11 @@ const ConnectorForm = ({
   const id = routerUtils.getInt(router.query.id);
   const type = connectorType || routerUtils.getInt(router.query.type);
   const [formFields, setFormFields] = useState<FormFieldsDto | undefined>();
+  const [fields, setFields] = useState<boolean | undefined>();
+  const [initialValue, setInitialValue] = useState({
+    name: "",
+    config: { type: connectorType },
+  });
   useEffect(() => {
     if (!pipelineWizContext) return;
     if (id) {
@@ -61,6 +66,13 @@ const ConnectorForm = ({
           : warehouseService.formFields;
       fetcher(type).then(({ data }) => {
         setFormFields(data);
+        let obj = {};
+        const names = Object.keys(data.fields);
+        names.forEach((el: string) => {
+          Object.assign(obj, { [`${el}`]: "" });
+        });
+        setInitialValue({ name: "", config: { type: connectorType, ...obj } });
+        console.log(initialValue);
       });
     }
   }, [!!pipelineWizContext, type, id]);
@@ -159,17 +171,25 @@ const ConnectorForm = ({
     );
   };
 
+  const setFormField = (fields: boolean) => {
+    setFields(fields);
+  };
+
   return (
     <Formik
-      initialValues={
-        editConnector || { name: "", config: { type: connectorType } }
-      }
-      validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
-        name: yup.string().required("Name is required"),
-      })}
+      initialValues={editConnector || initialValue}
+      enableReinitialize
+      validationSchema={dynamicFormUtils.getValidation(
+        formFields,
+        "config",
+        {
+          name: yup.string().required("Name is required"),
+        },
+        fields
+      )}
       onSubmit={onSubmit}
     >
-      {({ values, isSubmitting, setFieldValue }) => (
+      {({ values, setFieldValue, isSubmitting }) => (
         <Form>
           <InputField
             type="text"
@@ -184,8 +204,9 @@ const ConnectorForm = ({
               namePrefix="config"
               skipNames={["name"]}
               formFields={formFields}
-              setFieldValue={setFieldValue}
               values={values}
+              setFieldValue={setFieldValue}
+              setCurrentFields={setFormField}
               dataFetcher={(optionsRef) =>
                 warehouseService.configOptions(optionsRef, values)
               }

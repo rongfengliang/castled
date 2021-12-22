@@ -26,7 +26,12 @@ const InputField = ({
   dataFetcher,
   ...props
 }: InputFieldProps) => {
-  const [field, meta] = useField(props);
+  const [field, meta] = useField({
+    ...props,
+    validate: (v) => {
+      if (!v?.length && props?.validations?.required) return title + ' Field is Required';
+    }
+  });
   const isHidden = props.type === "hidden";
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -46,12 +51,10 @@ const InputField = ({
           {title}
         </label>
       )}
-      {getInput(field, meta, onChange, props, optionsRef)}
-      {loading && !isHidden && (
-        <div className="spinner-border spinner-border-sm"></div>
-      )}
+      {getInput(field, onChange, props, optionsRef, meta)}
+      <div className={cn({'spinner-border spinner-border-sm': loading && !isHidden})}></div>
       {meta.touched && meta.error ? (
-        <div className="error">
+        <div className="error" style={{ color: 'red' }}>
           {meta.error}
         </div>
       ) : null}
@@ -61,10 +64,10 @@ const InputField = ({
 
 function getInput(
   field: FieldInputProps<any>,
-  meta: FieldMetaProps<any>,
   onChange: ((value: string) => void) | undefined,
   props: any,
-  optionsRef?: string
+  optionsRef?: string,
+  meta?: any
 ) {
   if (props.type === "textarea") {
     return (
@@ -90,9 +93,7 @@ function getInput(
         }}
         onBlur={field.onBlur}
         {...props}
-        className={cn(props.className, "form-control", {
-          "required-field": meta.touched && meta.error,
-        })}
+        className={cn(meta.touched && meta.error && 'is-invalid-form', "form-control")}
         value={field.value}
         defaultValue={field.value}
         disabled={optionsRef}

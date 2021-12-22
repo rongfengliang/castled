@@ -14,7 +14,6 @@ const ButtonSubmit = ({
   icon,
   ...props
 }: ButtonSubmitProps) => {
-  console.log(children);
   return (
     <button
       type="submit"

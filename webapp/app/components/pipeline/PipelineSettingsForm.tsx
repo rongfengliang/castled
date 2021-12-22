@@ -79,7 +79,7 @@ function PipelineSettingsForm({
       onSubmit={handleSubmit}
       enableReinitialize
     >
-      {({ values, setFieldValue, setFieldTouched, isSubmitting }) => (
+      {({ values, setFieldValue, isSubmitting }) => (
         <Form>
           <InputField title="Pipeline Name" type="text" name="name" />
           <InputSelect
@@ -87,7 +87,6 @@ function PipelineSettingsForm({
             options={renderUtils.selectOptions(QueryModeLabel)}
             values={values}
             setFieldValue={setFieldValue}
-            setFieldTouched={setFieldTouched}
             name="queryMode"
           />
           <label className="form-label mb-3">Pipeline Schedule</label>
@@ -102,7 +101,6 @@ function PipelineSettingsForm({
             options={renderUtils.selectOptions(SchedulTimeUnitLabel)}
             values={values}
             setFieldValue={setFieldValue}
-            setFieldTouched={setFieldTouched}
             name="schedule.timeUnit"
           />
           <ButtonSubmit submitting={isSubmitting}>{submitLabel}</ButtonSubmit>

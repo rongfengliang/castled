@@ -16,11 +16,6 @@ export interface InputSelectOptions extends InputBaseProps {
   values: any;
   dValues?: any[];
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
-  setFieldTouched: (
-    field: string,
-    isTouched?: boolean,
-    shouldValidate?: boolean
-  ) => void;
   optionsRef?: string;
   deps?: string[];
   dataFetcher?: (
@@ -38,7 +33,6 @@ const InputSelect = ({
   optionsRef,
   deps,
   setFieldValue,
-  setFieldTouched,
   dataFetcher,
   values,
   dValues,
@@ -87,7 +81,7 @@ const InputSelect = ({
               }))
         }
         onChange={(v) => setFieldValue?.(field.name, v?.value)}
-        onBlur={() => setFieldTouched?.(field.name, true)}
+        onBlur={field.onBlur}
         value={
           optionsLoading || !optionsDynamic
             ? { label: "Loading..." }
@@ -99,6 +93,7 @@ const InputSelect = ({
               }
         }
       />
+      {console.log(meta)}
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
