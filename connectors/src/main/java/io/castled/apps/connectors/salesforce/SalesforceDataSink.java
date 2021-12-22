@@ -125,8 +125,10 @@ public class SalesforceDataSink implements DataSink {
     private void computeExistingPrimaryKeysIfReqd(OAuthAppConfig salesforceAppConfig, List<String> primaryKeys,
                                                   AppSyncConfig appSyncConfig) throws Exception {
 
-        GenericSyncObject sfdcSyncObject = ((GenericObjectRadioGroupConfig) appSyncConfig).getObject();
-        if (appSyncConfig.getMode() == AppSyncMode.UPDATE) {
+
+        GenericObjectRadioGroupConfig sfdcAppSyncConfig = (GenericObjectRadioGroupConfig) appSyncConfig;
+        GenericSyncObject sfdcSyncObject = sfdcAppSyncConfig.getObject();
+        if (sfdcAppSyncConfig.getMode() == AppSyncMode.UPDATE) {
             String primaryKey = primaryKeys.get(0);
             SFDCBulkClient sfdcBulkClient = new SFDCBulkClient(salesforceAppConfig.getOAuthToken(),
                     salesforceAppConfig.getClientConfig());
@@ -195,8 +197,9 @@ public class SalesforceDataSink implements DataSink {
 
     private JobRequest createJobRequest(AppSyncConfig appSyncConfig, String primaryKey) {
 
+        GenericObjectRadioGroupConfig sfdcAppSyncConfig = (GenericObjectRadioGroupConfig) appSyncConfig;
         GenericSyncObject sfdcSyncObject = ((GenericObjectRadioGroupConfig) appSyncConfig).getObject();
-        switch (appSyncConfig.getMode()) {
+        switch (sfdcAppSyncConfig.getMode()) {
             case UPSERT:
                 return new UpsertJobRequest(sfdcSyncObject.getObjectName(), ContentType.CSV, primaryKey);
             case INSERT:
@@ -204,14 +207,15 @@ public class SalesforceDataSink implements DataSink {
             case UPDATE:
                 return new UpsertJobRequest(sfdcSyncObject.getObjectName(), ContentType.CSV, primaryKey);
             default:
-                throw new CastledRuntimeException("Unhandled app sync mode: " + appSyncConfig.getMode());
+                throw new CastledRuntimeException("Unhandled app sync mode: " + sfdcAppSyncConfig.getMode());
         }
     }
 
 
     private boolean appendRecordToBuffer(Message message, AppSyncConfig appSyncConfig, List<String> primaryKeys)
             throws IOException {
-        if (appSyncConfig.getMode() == AppSyncMode.UPDATE) {
+        GenericObjectRadioGroupConfig sfdcAppSyncConfig = (GenericObjectRadioGroupConfig) appSyncConfig;
+        if (sfdcAppSyncConfig.getMode() == AppSyncMode.UPDATE) {
             String primaryKey = primaryKeys.get(0);
             if (!existingPrimaryKeyValues.contains(message.getRecord().getValue(primaryKey))) {
                 return false;

@@ -3,6 +3,7 @@ package io.castled.apps.connectors.sendgrid;
 import io.castled.OptionsReferences;
 import io.castled.apps.models.GenericSyncObject;
 import io.castled.apps.syncconfigs.AppSyncConfig;
+import io.castled.commons.models.AppSyncMode;
 import io.castled.forms.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,8 @@ public class SendgridAppSyncConfig extends AppSyncConfig {
     @FormField(title = "Lists", type = FormFieldType.DROP_DOWN, description = "An array of Lists that this contact will be added to", group = MappingFormGroups.SUB_RESOURCE,
             optionsRef = @OptionsRef(value = OptionsReferences.SENDGRID_LISTS, type = OptionsRefType.DYNAMIC))
     private String listIds;
+
+    @FormField(type = FormFieldType.RADIO_GROUP, title = "Sync Mode", description = "Sync mode which controls whether records will be appended, updated or upserted", group = MappingFormGroups.SYNC_MODE,
+            optionsRef = @OptionsRef(value = OptionsReferences.SYNC_MODE, type = OptionsRefType.DYNAMIC))
+    private AppSyncMode mode;
 }
