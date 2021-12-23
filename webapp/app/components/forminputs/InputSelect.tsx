@@ -69,41 +69,45 @@ const InputSelect = ({
     }
   }, [optionsRef, ...depValues]);
   return (
-    <div className={cn("mb-3", { "d-none": props.hidden })}>
-      {title && (
-        <label htmlFor={props.id || props.name} className="form-label">
-          {title}
-          {required && "*"}
-        </label>
-      )}
-      <Select
-        {...props}
-        options={
-          !optionsDynamic
-            ? [{ label: "Loading.." }]
-            : optionsDynamic.map((o) => ({
+    <div>
+      {optionsLoading && <div className={cn("mb-3", "spinner-border", "spinner-border-sm", { "d-none": !props.hidden })}>
+        </div>}
+      <div className={cn("mb-3", { "d-none": props.hidden })}>
+        {title && (
+          <label htmlFor={props.id || props.name} className="form-label">
+            {title}
+            {required && "*"}
+          </label>
+        )}
+        <Select
+          {...props}
+          options={
+            !optionsDynamic
+              ? [{ label: "Loading.." }]
+              : optionsDynamic.map((o) => ({
                 value: o.value,
                 label: o.title,
               }))
-        }
-        onChange={(v) => setFieldValue?.(field.name, v?.value)}
-        onBlur={() => setFieldTouched?.(field.name, true)}
-        value={
-          optionsLoading || !optionsDynamic
-            ? { label: "Loading..." }
-            : {
+          }
+          onChange={(v) => setFieldValue?.(field.name, v?.value)}
+          onBlur={() => setFieldTouched?.(field.name, true)}
+          value={
+            optionsLoading || !optionsDynamic
+              ? { label: "Loading..." }
+              : {
                 value: field.value,
                 label: optionsDynamic
                   .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
                   .map((o) => o.title),
               }
-        }
-      />
-      {meta.touched && meta.error ? (
-        <div className="error">
-          {meta.error}
-        </div>
-      ) : null}
+          }
+        />
+        {meta.touched && meta.error ? (
+          <div className="error">
+            {meta.error}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };

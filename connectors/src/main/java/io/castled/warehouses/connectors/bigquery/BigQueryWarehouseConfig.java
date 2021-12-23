@@ -16,6 +16,7 @@ import static io.castled.forms.FormGroups.TUNNEL_GROUP;
         , snippets = {@CodeSnippet(title = "BQ Data Viewer Role", ref = "bq_data_viewer_access"),
         @CodeSnippet(title = "BQ User Role", ref = "bq_data_user_access"),
         @CodeSnippet(title = "GCP Storage Admin Role", ref = "gcp_storage_admin_access")})
+@GroupActivator(dependencies = {"projectId","bucketName","location"}, group = "service_account")
 public class BigQueryWarehouseConfig extends WarehouseConfig {
 
     @FormField(description = "Project Id", title = "Project Id", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
@@ -28,6 +29,6 @@ public class BigQueryWarehouseConfig extends WarehouseConfig {
             optionsRef = @OptionsRef(value = OptionsReferences.BQ_LOCATIONS, type = OptionsRefType.STATIC))
     private String location;
 
-    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account Json File", title = "Service Account Json File")
+    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account Json File", title = "Service Account Json File", group = "service_account")
     private ServiceAccountDetails serviceAccount;
 }

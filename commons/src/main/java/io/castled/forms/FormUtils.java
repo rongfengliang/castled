@@ -103,7 +103,7 @@ public class FormUtils {
             case CHECK_BOX:
                 return new CheckBoxProps(formField.title(), formField.description());
             case HIDDEN:
-                return new HiddenProps(formField.optionsRef().value());
+                return new HiddenProps(formField.optionsRef().value(), formField.loadingText());
             case JSON_FILE:
                 return new JsonFileProps(formField.title(), formField.description());
             case TEXT_FILE:
