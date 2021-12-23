@@ -7,6 +7,8 @@ import { AxiosResponse } from "axios";
 
 import { ObjectUtils } from "@/app/common/utils/objectUtils";
 
+import { Spinner } from "react-bootstrap";
+
 import { DataFetcherResponseDto } from "@/app/common/dtos/DataFetcherResponseDto";
 import Select from "react-select";
 import cn from "classnames";
@@ -27,6 +29,7 @@ export interface InputSelectOptions extends InputBaseProps {
     optionsRef: string
   ) => Promise<AxiosResponse<DataFetcherResponseDto>>;
   hidden?: boolean;
+  loadingText?: string;
 }
 
 const InputSelect = ({
@@ -70,7 +73,16 @@ const InputSelect = ({
   }, [optionsRef, ...depValues]);
   return (
     <div>
-      {optionsLoading && <div className={cn("mb-3", "spinner-border", "spinner-border-sm", { "d-none": !props.hidden })}>
+      {optionsLoading && props.hidden &&
+        <div className="mb-1">
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          <span className="ml-2">{props.loadingText}</span>
         </div>}
       <div className={cn("mb-3", { "d-none": props.hidden })}>
         {title && (
