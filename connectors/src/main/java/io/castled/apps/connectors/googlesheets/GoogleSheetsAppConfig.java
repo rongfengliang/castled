@@ -9,11 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @HelpText(value = "Provide Editor access of your google sheets to email ${serviceAccount.client_email}", dependencies = {"spreadSheetId", "serviceAccount"})
+@GroupActivator(dependencies = {"spreadSheetId"}, group = "service_account")
 public class GoogleSheetsAppConfig extends AppConfig {
 
     @FormField(type = FormFieldType.TEXT_BOX, title = "Spread Sheet Id", description = "Spread Sheet Id", schema = FormFieldSchema.STRING)
     private String spreadSheetId;
 
-    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account Json File", title = "Service Account Json File")
+    @FormField(type = FormFieldType.JSON_FILE, description = "Service Account Json File", title = "Service Account Json File", group = "service_account")
     private ServiceAccountDetails serviceAccount;
 }
