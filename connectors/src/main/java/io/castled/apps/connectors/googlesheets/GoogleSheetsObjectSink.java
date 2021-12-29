@@ -1,19 +1,26 @@
 package io.castled.apps.connectors.googlesheets;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.castled.apps.BufferedObjectSink;
+import io.castled.commons.errors.errorclassifications.ExternallyCategorizedError;
+import io.castled.commons.errors.errorclassifications.UnclassifiedError;
 import io.castled.commons.models.MessageSyncStats;
+import io.castled.commons.streams.ErrorOutputStream;
 import io.castled.exceptions.CastledRuntimeException;
+import io.castled.forms.dtos.FormFieldOption;
 import io.castled.schema.models.Field;
 import io.castled.schema.models.Message;
 import io.castled.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.snowflake.client.jdbc.internal.apache.arrow.flatbuf.Int;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
@@ -32,60 +39,73 @@ public class GoogleSheetsObjectSink extends BufferedObjectSink<Message> {
     private final Sheets sheetsService;
     private final Map<Integer, SheetRow> hashedRows;
     private final List<String> headers;
+    private final ErrorOutputStream errorOutputStream;
 
     public GoogleSheetsObjectSink(GoogleSheetsAppConfig googleSheetsAppConfig, GoogleSheetsAppSyncConfig googleSheetsAppSyncConfig,
-                                  Sheets sheetsService, List<SheetRow> sheetRows, List<String> primaryKeys, List<String> headers) {
+                                  Sheets sheetsService, List<SheetRow> sheetRows, List<String> primaryKeys, List<String> headers,
+                                  ErrorOutputStream errorOutputStream) {
         this.googleSheetsAppConfig = googleSheetsAppConfig;
         this.googleSheetsAppSyncConfig = googleSheetsAppSyncConfig;
         this.sheetsService = sheetsService;
         this.hashedRows = Optional.ofNullable(sheetRows)
-                .map(row -> row.stream().collect(Collectors.toMap(rowRef -> GoogleSheetUtils.getPrimaryKeysHash(rowRef, primaryKeys), Function.identity())))
+                .map(row -> row.stream().collect(Collectors.toMap(rowRef -> GoogleSheetUtils.getPrimaryKeysHash(rowRef.getValues(), primaryKeys), Function.identity())))
                 .orElse(Maps.newHashMap());
         this.primaryKeys = primaryKeys;
         this.headers = headers;
+        this.errorOutputStream = errorOutputStream;
     }
 
     @Override
     protected void writeRecords(List<Message> messages) {
         try {
-            List<List<Object>> values = Lists.newArrayList();
+            List<ValueRange> updateValueRanges = Lists.newArrayList();
+            List<List<Object>> appendValues = Lists.newArrayList();
             for (Message message : messages) {
-                SheetRow sheetRow = new SheetRow(headers.stream()
-                        .collect(Collectors.toMap(Function.identity(), header -> GoogleSheetUtils.getSheetsValue(message.getRecord().getField(header)), (v1, v2) -> v1, LinkedHashMap::new)));
-                values.add(new ArrayList<>(sheetRow.getValues().values()));
-                hashedRows.remove(GoogleSheetUtils.getPrimaryKeysHash(sheetRow, primaryKeys));
-            }
-            ValueRange valueRange = new ValueRange().setValues(values);
-            sheetsService.spreadsheets()
-                    .values().append(googleSheetsAppConfig.getSpreadSheetId(),
-                            googleSheetsAppSyncConfig.getObject().getObjectName(), valueRange).setValueInputOption("USER_ENTERED").execute();
-        } catch (Exception e) {
-            log.error("Google Sheets append records failed", e);
-            throw new CastledRuntimeException(e);
-        }
-        this.processedRecords.addAndGet(messages.size());
-        this.lastProcessedOffset = Math.max(lastProcessedOffset, messages.get(messages.size() - 1).getOffset());
+                LinkedHashMap<String, Object> rowValues = headers.stream().collect(Collectors.toMap(Function.identity(),
+                        header -> GoogleSheetUtils.getSheetsValue(message.getRecord().getField(header)), (v1, v2) -> v1, LinkedHashMap::new));
 
-    }
-
-    public void afterRecordsFlush() {
-        try {
-            if (!MapUtils.isEmpty(hashedRows)) {
-                List<List<Object>> rowValues = Lists.newArrayList();
-                if (processedRecords.get() == 0) {
-                    rowValues.add(new ArrayList<>(Lists.newArrayList(hashedRows.values()).get(0).getValues().keySet()));
+                int primaryKeyHash = GoogleSheetUtils.getPrimaryKeysHash(rowValues, primaryKeys);
+                if (hashedRows.containsKey(primaryKeyHash)) {
+                    SheetRow sheetRow = hashedRows.get(primaryKeyHash);
+                    updateValueRanges.add(new ValueRange().setValues(Collections.singletonList(new ArrayList<>(rowValues.values())))
+                            .setRange(GoogleSheetUtils.getRange(googleSheetsAppSyncConfig.getObject().getObjectName(), sheetRow.getRowNo())));
+                    hashedRows.remove(primaryKeyHash);
+                } else {
+                    appendValues.add(new ArrayList<>(rowValues.values()));
                 }
-                rowValues.addAll(hashedRows.values().stream()
-                        .map(valueRef -> new ArrayList<>(valueRef.getValues().values())).collect(Collectors.toList()));
-                ValueRange valueRange = new ValueRange().setValues(rowValues);
+            }
+            if (CollectionUtils.isNotEmpty(updateValueRanges)) {
+                BatchUpdateValuesRequest batchUpdateValuesRequest = new BatchUpdateValuesRequest().setData(updateValueRanges).setValueInputOption("USER_ENTERED");
+                sheetsService.spreadsheets().values().batchUpdate(googleSheetsAppConfig.getSpreadSheetId(), batchUpdateValuesRequest).execute();
+            }
+            if (CollectionUtils.isNotEmpty(appendValues)) {
+                ValueRange valueRange = new ValueRange().setValues(appendValues);
                 sheetsService.spreadsheets()
                         .values().append(googleSheetsAppConfig.getSpreadSheetId(),
                                 googleSheetsAppSyncConfig.getObject().getObjectName(), valueRange).setValueInputOption("USER_ENTERED").execute();
+
             }
         } catch (Exception e) {
-            log.error("Google Sheets append records failed", e);
-            throw new CastledRuntimeException(e);
+            handleGSheetsError(messages, e);
         }
+        this.processedRecords.addAndGet(messages.size());
+        this.lastProcessedOffset = Math.max(lastProcessedOffset, messages.get(messages.size() - 1).getOffset());
+    }
+
+    private void handleGSheetsError(List<Message> messages, Exception e) {
+        log.error("Google Sheets append records failed for spreadsheet id {} and name {}", googleSheetsAppConfig.getSpreadSheetId(),
+                googleSheetsAppSyncConfig.getObject().getObjectName(), e);
+        if (e instanceof GoogleJsonResponseException) {
+            GoogleJsonResponseException gre = (GoogleJsonResponseException) e;
+            for (Message message : messages) {
+                this.errorOutputStream.writeFailedRecord(message, new ExternallyCategorizedError(gre.getStatusMessage(), gre.getContent()));
+            }
+            return;
+        }
+        for (Message message : messages) {
+            this.errorOutputStream.writeFailedRecord(message, new UnclassifiedError(Optional.ofNullable(e.getMessage()).orElse("Unknown error")));
+        }
+
     }
 
     public MessageSyncStats getSyncStats() {

@@ -10,5 +10,6 @@ import java.util.LinkedHashMap;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SheetRow {
+    private long rowNo;
     private LinkedHashMap<String, Object> values;
 }

@@ -2,19 +2,17 @@ package io.castled.apps.connectors.googlesheets;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.castled.commons.models.ServiceAccountDetails;
-import io.castled.exceptions.CastledRuntimeException;
 import io.castled.schema.models.Field;
 import io.castled.utils.JsonUtils;
+import io.castled.utils.ListUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.ByteArrayInputStream;
@@ -54,19 +52,23 @@ public class GoogleSheetUtils {
         }
         List<String> headers = sheetEntries.get(0).stream().map(String::valueOf).collect(Collectors.toList());
         List<List<Object>> rowValues = sheetEntries.subList(1, sheetEntries.size());
-        if (rowValues.stream().anyMatch(row -> row.size() != headers.size())) {
-            throw new CastledRuntimeException("Row size does not match the header size");
-        }
         List<SheetRow> sheetRows = Lists.newArrayList();
-        for (List<Object> rowValue : rowValues) {
-            sheetRows.add(new SheetRow(IntStream.range(0, headers.size()).boxed()
-                    .collect(Collectors.toMap(headers::get, rowValue::get, (v1, v2) -> v1, LinkedHashMap::new))));
+        for (int i = 0; i < rowValues.size(); i++) {
+            sheetRows.add(new SheetRow(i + 2, getSheetValues(headers, rowValues.get(i))));
         }
         return sheetRows;
     }
 
-    public static Integer getPrimaryKeysHash(SheetRow sheetRow, List<String> primaryKeys) {
-        return primaryKeys.stream().map(primaryKey -> sheetRow.getValues().get(primaryKey)).collect(Collectors.toList()).hashCode();
+    private static LinkedHashMap<String, Object> getSheetValues(List<String> headers, List<Object> rowValue) {
+        LinkedHashMap<String, Object> sheetValues = Maps.newLinkedHashMap();
+        for (int index = 0; index < headers.size(); index++) {
+            sheetValues.put(headers.get(index), ListUtils.nullOnIndexOutOfBounds(rowValue, index));
+        }
+        return sheetValues;
+    }
+
+    public static Integer getPrimaryKeysHash(Map<String, Object> row, List<String> primaryKeys) {
+        return primaryKeys.stream().map(row::get).collect(Collectors.toList()).hashCode();
     }
 
     public static Object getSheetsValue(Field field) {
@@ -93,5 +95,9 @@ public class GoogleSheetUtils {
                 return field.getValue();
         }
 
+    }
+
+    public static String getRange(String sheetName, long rowNo) {
+        return String.format("%s!%d:%d", sheetName, rowNo, rowNo);
     }
 }
