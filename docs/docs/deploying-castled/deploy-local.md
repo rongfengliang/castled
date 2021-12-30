@@ -7,7 +7,7 @@ sidebar_position: 1
 ---
 
 :::note
-These steps have been tested on MacOS(M1 and Intel) and Ubuntu 20.04
+These steps have been tested on MacOS(Intel) and Ubuntu 20.04
 :::
 
 ## Setting up Castled
