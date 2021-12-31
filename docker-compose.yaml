@@ -57,6 +57,7 @@ services:
     volumes:
       - zk_data:/var/lib/zookeeper/data
       - zk_log:/var/lib/zookeeper/log
+      - zk_secrets:/etc/zookeeper/secrets
 
   kafka:
     image: confluentinc/cp-kafka:5.3.0
@@ -74,6 +75,7 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     volumes:
       - kafka_vol:/var/lib/kafka/data
+      - kafka_secrets:/etc/kafka/secrets
 
   redis:
     image: redis:6.2-alpine
@@ -81,7 +83,7 @@ services:
     logging: *default-logging
     restart: unless-stopped
     volumes:
-      - redis_vol:/data/redis
+      - redis_vol:/data/
 
   webapp:
     image: castled/webapp:${VERSION}
@@ -97,12 +99,9 @@ services:
 
 volumes:
   kafka_vol:
-    name: ${KAFKA_DOCKER_MOUNT}
   db_vol:
-    name: ${DB_DOCKER_MOUNT}
   zk_log:
-    name: ${ZK_LOG_DOCKER_MOUNT}
   zk_data:
-    name: ${ZK_DATA_DOCKER_MOUNT}
   redis_vol:
-    name: ${REDIS_DOCKER_MOUNT}
+  kafka_secrets:
+  zk_secrets:

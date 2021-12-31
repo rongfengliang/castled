@@ -16,7 +16,7 @@
 
 ## Introduction
 
-Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying on your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing Snowflake, BigQuery, Redshift and Postgres as the data source and some of the most popular sales, marketing and support solutions such as Salesforce, Hubspot, Intercom, Google Ads etc as the destination.
+Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying in your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing **Snowflake**, **BigQuery**, **Redshift** and **Postgres** as the data source and some of the most popular sales, marketing and support solutions such as **Salesforce**, **Hubspot**, **Intercom**, **Google Ads** etc as the destination.
 
 <p align="center">
   <img src="https://cdn.castled.io/content/readme/castled_overview.svg" alt="Castled-logo" width="800" />
