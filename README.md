@@ -38,7 +38,7 @@ cd castled
 docker compose up
 ```
 
-You can access castled app at http://localhost:3000. Happy castling!!
+You can access castled app at http://localhost:3000. Happy castling!!!
 
 ## Documentation
 
@@ -46,7 +46,7 @@ You can access the documentation at: https://docs.castled.io/
 
 ## Community Support
 
-- [Slack](https://castled.slack.com) - For any discussions or if any help needed in getting started with Castled or the very least to say hi to us :wave:
+- [Slack](https://castled.slack.com) - For any discussions or help needed in getting started with Castled or the very least to say hi :wave: to us.
 - [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requets please use Github. We will get back to you in no time!
 
 ## Performance
