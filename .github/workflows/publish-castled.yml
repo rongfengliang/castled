@@ -1,4 +1,4 @@
-name: Castled Docker Image CI
+name: Castled Release Artifacts Publish
 
 on:
   workflow_dispatch:
@@ -39,9 +39,6 @@ jobs:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           maven_profiles: release
-
-      - name: Build Jar
-        run: mvn clean package
 
       - name: Release Docker Images
         env:
