@@ -46,8 +46,8 @@ You can access the documentation at: https://docs.castled.io/
 
 ## Community Support
 
-- [Slack](https://castled.slack.com) - For any discussions or help needed in getting started with Castled or the very least to say hi :wave: to us.
-- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requets please use Github. We will get back to you in no time!
+- [Discord](https://discord.gg/7aJ3DWP9pz) - For any discussions or help needed in getting started with Castled or just to hang out.
+- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requests please use Github. We will get back to you in no time!
 
 ## Performance
 
