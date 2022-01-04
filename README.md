@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://cdn.castled.io/logo/castled_original_on_black.svg" alt="Castled-logo" width="300" />
-  <p align="center">Open source reverse-ETL platform to operationalize your data warehouse</p>
+  <p align="center">Open source reverse-ETL platform to operationalise your data warehouse</p>
 </p>
 
 <p align="center">
