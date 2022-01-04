@@ -7,7 +7,9 @@ sidebar_position: 1
 ---
 
 :::note
-These steps have been tested on MacOS(Intel) and Ubuntu 20.04
+These steps have been tested on MacOS(Intel) and Ubuntu 20.04.
+
+Make sure that docker-compose is atleast 1.27.4 or else it can have issues with `platform` config in docker compose yaml.
 :::
 
 ## Setting up Castled
