@@ -53,7 +53,7 @@ You can access the documentation at: https://docs.castled.io/
 
 The throughput/latency of a data pipeline depends mostly on the destination api limitations and/or rate limits. We do make the best effort to tune it to provide the most optimal throughput possible. But to give an indication of the throughput we support, publishing a bench mark we did to transfer upto 100 million records from BigQuery to Apache Kafka.
 
-![kafka benchmark](https://cdn.castled.io/content/kafka_benchmark.png)
+![kafka benchmark](https://cdn.castled.io/content/readme/kafka_benchmark_shaded.png)
 
 ## Contribute to us
 
