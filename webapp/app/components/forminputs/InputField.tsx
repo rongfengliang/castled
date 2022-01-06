@@ -51,9 +51,7 @@ const InputField = ({
         <div className="spinner-border spinner-border-sm"></div>
       )}
       {meta.touched && meta.error ? (
-        <div className="error">
-          {meta.error}
-        </div>
+        <div className="error">{meta.error}</div>
       ) : null}
     </div>
   );
@@ -94,7 +92,6 @@ function getInput(
           "required-field": meta.touched && meta.error,
         })}
         value={field.value}
-        defaultValue={field.value}
         disabled={optionsRef}
       />
     );
