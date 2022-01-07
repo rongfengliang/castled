@@ -3,7 +3,6 @@ import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import authService from "@/app/services/authService";
 import { AxiosResponse } from "axios";
 import eventService from "@/app/services/eventService";
-import { copyFileSync } from "fs";
 
 type SessionProviderType = {
   user: LoggedInUserDto | null | undefined;
