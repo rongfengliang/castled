@@ -20,8 +20,8 @@ import cn from "classnames";
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      appBaseUrl: process.env.APP_BASE_URL
-    }
+      appBaseUrl: process.env.APP_BASE_URL,
+    },
   };
 }
 
@@ -56,12 +56,13 @@ const Login = (props: serverSideProps) => {
       <Formik
         initialValues={{
           email: "",
-          password: ""
+          password: "",
         }}
         onSubmit={formHandler(
+          false,
           {
             id: "login_form",
-            pickFieldsForEvent: ["email"]
+            pickFieldsForEvent: ["email"],
           },
           authService.login,
           () => handleLogin(setUser, router)
@@ -96,7 +97,7 @@ const Login = (props: serverSideProps) => {
             ExternalLoginType.GOOGLE,
             router.pathname
           )}
-          onClick={buttonHandler({ id: "login_with_google" })}
+          onClick={buttonHandler(false, { id: "login_with_google" })}
           variant="outline-dark"
         >
           <img src="/images/google.png" width={14} className="rounded-circle" />

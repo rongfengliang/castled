@@ -3,7 +3,6 @@ import http from "@/app/services/http";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 
 export default {
-
   load: (user: LoggedInUserDto | null | undefined) => {
     let userProps = {};
     if (user) {
@@ -18,13 +17,11 @@ export default {
         userCreatedTs: user.createdTs,
       };
     }
-
   },
   send: (props: StringAnyMap) => {
     if (process.browser) {
-      http.post("/v1/tracking", props)
-      .catch(() => {
-        console.log(`tracking failed for event ${props.event}`)
+      http.post("/v1/tracking", props).catch(() => {
+        console.log(`tracking failed for event ${props.event}`);
       });
     }
   },
