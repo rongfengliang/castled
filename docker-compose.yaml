@@ -44,6 +44,8 @@ services:
       - S3_BUCKET_REGION=${S3_BUCKET_REGION}
     ports:
       - 7050:7050
+    volumes:
+      - ./container/config.yml:/app/configs/config.yml
 
   zookeeper:
     image: confluentinc/cp-zookeeper:5.3.0
