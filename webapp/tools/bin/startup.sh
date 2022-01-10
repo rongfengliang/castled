@@ -13,3 +13,5 @@ if [[ -z "${API_BASE_URL}" ]]; then
 fi
 
 sed -i.bak "s#${DEFAULT_API_BASE_URL}#${API_BASE_URL}#g" .next/routes-manifest.json
+
+exec npm run start

@@ -7,6 +7,8 @@ ARG ARG_API_BASE_URL
 ENV API_BASE=${ARG_API_BASE}
 ENV API_BASE_URL=${ARG_API_BASE_URL}
 
+ENV NODE_ENV production
+
 # Set working directory
 WORKDIR /usr/webapp
 
@@ -17,10 +19,10 @@ RUN apk add --no-cache --upgrade bash
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn --no-cache install
+RUN yarn install --immutable --immutable-cache --check-cache
 
 # Copy all files
-COPY . .
+COPY --chown=node:node . .
 
 # Hack: will be replaced by runtime API_BASE_URL
 RUN echo "API_BASE_URL=$ARG_API_BASE_URL" >> .buildenv
@@ -30,11 +32,8 @@ RUN yarn build
 # Expose the listening port
 EXPOSE 3000
 
-# Hack: set_api_url.sh will update the API_BASE_URL at runtime
-RUN chown -R node .next
-
 # Run container as non-root (unprivileged) user
 # The node user is provided in the Node.js Alpine base image
 USER node
 
-CMD tools/bin/set_api_url.sh && yarn start
+CMD tools/bin/startup.sh
