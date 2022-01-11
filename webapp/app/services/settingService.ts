@@ -7,16 +7,15 @@ export default {
     return http.get("/v1/users/team-members");
   },
   inviteMember: (data: UserDTO[]): Promise<AxiosResponse<void>> => {
-    return http.post("/v1/users/invite-member", data);
+    return http.post("/v1/users/invite-member", { inviteeDetails: data });
   },
   resendInvitation: (data: UserDTO[]): Promise<AxiosResponse<void>> => {
-    return http.post("/v1/users/resend-invitation", data);
+    return http.post("/v1/users/resend-invitation", { inviteeDetails: data });
   },
-
   cancelInvitation: (email: string[]): Promise<AxiosResponse<void>> => {
-    return http.post("/v1/users/cancel-invitation", email);
+    return http.post("/v1/users/cancel-invitation", { emailList: email });
   },
   removeMember: (email: string[]): Promise<AxiosResponse<void>> => {
-    return http.post("/v1/users/remove-member", email);
+    return http.post("/v1/users/remove-member", { emailList: email });
   },
 };

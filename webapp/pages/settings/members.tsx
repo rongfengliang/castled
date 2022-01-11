@@ -1,5 +1,7 @@
 import { TeamDTO } from "@/app/common/dtos/TeamDTO";
 import settingService from "@/app/services/settingService";
+import authService from "@/app/services/authService";
+import eventService from "@/app/services/eventService";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -8,9 +10,13 @@ import {
   Modal,
   FormControl,
   ToastContainer,
+  Form,
   Toast,
 } from "react-bootstrap";
 import { IconUserPlus, IconTrash, IconX } from "@tabler/icons";
+import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
+import { AxiosResponse } from "axios";
+import Select from "react-select";
 
 const MembersTab = () => {
   const [temaMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
@@ -19,17 +25,30 @@ const MembersTab = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showA, setShowA] = useState<boolean>(false);
+  const [user, setUser] = useState<LoggedInUserDto | null>();
   useEffect(() => {
+    if (user === undefined) {
+      authService
+        .whoAmI()
+        .then((res: AxiosResponse<LoggedInUserDto>) => {
+          setUser(res.data);
+          eventService.send({
+            event: "login",
+          });
+        })
+        .catch(() => {
+          setUser(null);
+        });
+    }
     settingService
       .teamMember()
       .then(({ data }) => {
-        console.log(data);
         setTeamMembers(data as any);
       })
       .catch(() => {
         setTeamMembers(null);
       });
-  });
+  }, []);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -45,6 +64,7 @@ const MembersTab = () => {
       .then(() => {
         setMessage("Invitation sent successfully");
         setShowA(true);
+        temaMembers?.pendingInvitees?.push({ email });
         handleClose();
       })
       .catch((err: any) => {
@@ -69,6 +89,10 @@ const MembersTab = () => {
       .cancelInvitation([email])
       .then(() => {
         setMessage("Cancelled invitation");
+        const index = temaMembers?.pendingInvitees?.findIndex(
+          (mem: any) => mem.email === email
+        );
+        index && temaMembers?.pendingInvitees?.splice(index, 1);
         setShowA(true);
       })
       .catch((err: any) => {
@@ -82,6 +106,10 @@ const MembersTab = () => {
       .then(() => {
         setMessage("Removed member");
         setShowA(true);
+        const index = temaMembers?.activeMembers?.findIndex(
+          (mem: any) => mem.email === email
+        );
+        index && temaMembers?.activeMembers?.splice(index, 1);
       })
       .catch((err: any) => {
         console.log(err);
@@ -105,7 +133,7 @@ const MembersTab = () => {
               <tr>
                 <th>Email</th>
                 <th>Resend</th>
-                <th>Cancel Invitation</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -123,7 +151,8 @@ const MembersTab = () => {
                     </td>
                     <td>
                       <Button
-                        variant="warning"
+                        size="sm"
+                        variant="outline-danger"
                         onClick={() => cancelInvitation(fieldMapping.email)}
                       >
                         Cancel invitation
@@ -162,14 +191,25 @@ const MembersTab = () => {
               <tr key={i}>
                 <td>{fieldMapping.name}</td>
                 <td>{fieldMapping.email}</td>
-                <td>{fieldMapping.role}</td>
+                <td>
+                  {/* <Select
+                     options={[{ label: 'ADMIN', value: 'ADMIN'}, {label: 'USER', value: 'USER'}]}
+                     value={{value: fieldMapping.role || ''}}
+                  >
+                  </Select> */}
+                  {fieldMapping.role}
+                </td>
                 <td>{fieldMapping.createdTs}</td>
                 <td>
-                  <IconTrash
-                    size={18}
-                    className="sidebar-icon"
-                    onClick={() => removeMember(fieldMapping.email)}
-                  />
+                  {fieldMapping.role &&
+                    (fieldMapping.role as any) !== "ADMIN" &&
+                    user?.role === "ADMIN" && (
+                      <IconTrash
+                        size={18}
+                        className="sidebar-icon"
+                        onClick={() => removeMember(fieldMapping.email)}
+                      />
+                    )}
                 </td>
               </tr>
             ))}
