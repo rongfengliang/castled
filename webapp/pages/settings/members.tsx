@@ -127,12 +127,14 @@ const MembersTab = () => {
     <div>
       {temaMembers && temaMembers!.pendingInvitees.length !== 0 && (
         <>
-          <h3 className="mb-3 mt-4 font-weight-bold">1 pending invite</h3>
+          <h3 className="mb-3 mt-4 font-weight-bold">
+            {temaMembers!.pendingInvitees.length} pending invite
+          </h3>
           <Table hover>
             <thead>
               <tr>
                 <th>Email</th>
-                <th>Resend</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
