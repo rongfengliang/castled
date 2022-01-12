@@ -153,8 +153,7 @@ const MembersTab = () => {
                     </td>
                     <td>
                       <Button
-                        size="sm"
-                        variant="outline-danger"
+                        variant="link"
                         onClick={() => cancelInvitation(fieldMapping.email)}
                       >
                         Cancel invitation
