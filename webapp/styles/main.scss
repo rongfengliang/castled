@@ -92,6 +92,11 @@ body {
   text-transform: uppercase;
 }
 
+.btn-link-danger {
+  color: $red;
+}
+
+
 .title-fs {
   font-size: $title-fs;
   font-weight: $font-weight-bold;

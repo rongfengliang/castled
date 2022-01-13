@@ -2,6 +2,7 @@ import { TeamDTO } from "@/app/common/dtos/TeamDTO";
 import settingService from "@/app/services/settingService";
 import authService from "@/app/services/authService";
 import eventService from "@/app/services/eventService";
+import { UserDTO } from "@/app/common/dtos/UserDTO";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -19,13 +20,15 @@ import { AxiosResponse } from "axios";
 import Select from "react-select";
 
 const MembersTab = () => {
-  const [temaMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
+  const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
   const [email, setEmail] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [showA, setShowA] = useState<boolean>(false);
   const [user, setUser] = useState<LoggedInUserDto | null>();
+  const [roles, setRoles] = useState<string[] | null | undefined>([]);
+  const [selectedRole, setSelectedRole] = useState<string[] | null>();
   useEffect(() => {
     if (user === undefined) {
       authService
@@ -48,6 +51,14 @@ const MembersTab = () => {
       .catch(() => {
         setTeamMembers(null);
       });
+    settingService
+      .roleList()
+      .then(({ data }) => {
+        setRoles(data as any);
+      })
+      .catch(() => {
+        setRoles(null);
+      });
   }, []);
   const [show, setShow] = useState(false);
 
@@ -64,7 +75,7 @@ const MembersTab = () => {
       .then(() => {
         setMessage("Invitation sent successfully");
         setShowA(true);
-        temaMembers?.pendingInvitees?.push({ email });
+        teamMembers?.pendingInvitees?.push({ email });
         handleClose();
       })
       .catch((err: any) => {
@@ -89,10 +100,12 @@ const MembersTab = () => {
       .cancelInvitation([email])
       .then(() => {
         setMessage("Cancelled invitation");
-        const index = temaMembers?.pendingInvitees?.findIndex(
+        const index = teamMembers?.pendingInvitees?.findIndex(
           (mem: any) => mem.email === email
         );
-        index && temaMembers?.pendingInvitees?.splice(index, 1);
+        index !== undefined &&
+          index >= 0 &&
+          teamMembers?.pendingInvitees?.splice(index, 1);
         setShowA(true);
       })
       .catch((err: any) => {
@@ -106,10 +119,12 @@ const MembersTab = () => {
       .then(() => {
         setMessage("Removed member");
         setShowA(true);
-        const index = temaMembers?.activeMembers?.findIndex(
+        const index = teamMembers?.activeMembers?.findIndex(
           (mem: any) => mem.email === email
         );
-        index && temaMembers?.activeMembers?.splice(index, 1);
+        index !== undefined &&
+          index >= 0 &&
+          teamMembers?.activeMembers?.splice(index, 1);
       })
       .catch((err: any) => {
         console.log(err);
@@ -122,13 +137,37 @@ const MembersTab = () => {
     setErrorMessage("");
   };
   const toggleShowA = () => setShowA(!showA);
+  const onChangeRole = (event: any, email: string) => {
+    let obj = teamMembers?.activeMembers?.find(
+      (mem: any) => mem.email === email
+    );
+    if (obj) obj.role = event.value;
+    const index = teamMembers?.activeMembers?.findIndex(
+      (mem: any) => mem.email === email
+    );
+    index !== undefined &&
+      index >= 0 &&
+      teamMembers?.activeMembers?.splice(index, 1);
+    index !== undefined &&
+      index >= 0 &&
+      teamMembers?.activeMembers?.splice(index, 0, obj);
+    settingService
+      .updateRole(event.value, email)
+      .then(() => {
+        setMessage("Role Updated Successfully");
+        setShowA(true);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div>
-      {temaMembers && temaMembers!.pendingInvitees.length !== 0 && (
+      {teamMembers && teamMembers!.pendingInvitees.length !== 0 && (
         <>
           <h3 className="mb-3 mt-4 font-weight-bold">
-            {temaMembers!.pendingInvitees.length} pending invite
+            {teamMembers!.pendingInvitees.length} pending invite
           </h3>
           <Table hover>
             <thead>
@@ -139,8 +178,8 @@ const MembersTab = () => {
               </tr>
             </thead>
             <tbody>
-              {temaMembers !== undefined &&
-                temaMembers!.pendingInvitees.map((fieldMapping, i) => (
+              {teamMembers !== undefined &&
+                teamMembers!.pendingInvitees.map((fieldMapping, i) => (
                   <tr key={i}>
                     <td>{fieldMapping.email}</td>
                     <td>
@@ -154,9 +193,10 @@ const MembersTab = () => {
                     <td>
                       <Button
                         variant="link"
+                        className="btn-link-danger"
                         onClick={() => cancelInvitation(fieldMapping.email)}
                       >
-                        Cancel invitation
+                        Revoke
                       </Button>
                     </td>
                   </tr>
@@ -187,18 +227,23 @@ const MembersTab = () => {
           </tr>
         </thead>
         <tbody>
-          {temaMembers !== undefined &&
-            temaMembers?.activeMembers.map((fieldMapping, i) => (
+          {teamMembers !== undefined &&
+            teamMembers?.activeMembers.map((fieldMapping, i) => (
               <tr key={i}>
                 <td>{fieldMapping.name}</td>
                 <td>{fieldMapping.email}</td>
                 <td>
-                  {/* <Select
-                     options={[{ label: 'ADMIN', value: 'ADMIN'}, {label: 'USER', value: 'USER'}]}
-                     value={{value: fieldMapping.role || ''}}
-                  >
-                  </Select> */}
-                  {fieldMapping.role}
+                  {/* {fieldMapping.role} */}
+                  <Select
+                    options={roles?.map((role) => {
+                      return { label: role, value: role };
+                    })}
+                    value={{
+                      label: fieldMapping.role || "",
+                      value: fieldMapping.role || "",
+                    }}
+                    onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
+                  ></Select>
                 </td>
                 <td>{fieldMapping.createdTs}</td>
                 <td>

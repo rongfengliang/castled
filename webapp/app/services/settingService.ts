@@ -18,4 +18,13 @@ export default {
   removeMember: (email: string[]): Promise<AxiosResponse<void>> => {
     return http.post("/v1/users/remove-member", { emailList: email });
   },
+  updateRole: (
+    userRole: string,
+    email: string
+  ): Promise<AxiosResponse<void>> => {
+    return http.post("/v1/users/change-role", { email, userRole });
+  },
+  roleList: (): Promise<AxiosResponse<void>> => {
+    return http.get("/v1/users/get-roles");
+  },
 };
