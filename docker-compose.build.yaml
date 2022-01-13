@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: container
+      args:
+        - ARG_VERSION=${VERSION}
       labels:
         io.castled.git-revision: ${GIT_REVISION}
 
