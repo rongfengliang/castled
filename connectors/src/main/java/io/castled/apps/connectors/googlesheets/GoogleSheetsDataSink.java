@@ -24,7 +24,7 @@ public class GoogleSheetsDataSink implements DataSink {
         GoogleSheetsAppSyncConfig googleSheetsAppSyncConfig = (GoogleSheetsAppSyncConfig) dataSinkRequest.getAppSyncConfig();
 
         Sheets sheetsService = GoogleSheetUtils.getSheets(googleSheetsAppConfig.getServiceAccount());
-        List<SheetRow> sheetRows = GoogleSheetUtils.getRows(sheetsService, googleSheetsAppConfig.getSpreadSheetId(),
+        List<SheetRow> sheetRows = GoogleSheetUtils.getRows(sheetsService, GoogleSheetUtils.getSpreadSheetId(googleSheetsAppConfig.getSpreadSheetId()),
                 googleSheetsAppSyncConfig.getObject().getObjectName());
 
         this.googleSheetsObjectSink = new GoogleSheetsObjectSink(googleSheetsAppConfig, googleSheetsAppSyncConfig, sheetsService,
@@ -34,7 +34,7 @@ public class GoogleSheetsDataSink implements DataSink {
         int recordsCount = 0;
         while ((message = dataSinkRequest.getMessageInputStream().readMessage()) != null) {
             if (recordsCount == 0 && CollectionUtils.isEmpty(sheetRows)) {
-                sheetsService.spreadsheets().values().append(googleSheetsAppConfig.getSpreadSheetId(), googleSheetsAppSyncConfig.getObject().getObjectName(),
+                sheetsService.spreadsheets().values().append(GoogleSheetUtils.getSpreadSheetId(googleSheetsAppConfig.getSpreadSheetId()), googleSheetsAppSyncConfig.getObject().getObjectName(),
                                 new ValueRange().setValues(Collections.singletonList(new ArrayList<>(dataSinkRequest.getMappedFields()))))
                         .setValueInputOption("USER_ENTERED").execute();
             }

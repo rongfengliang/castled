@@ -76,12 +76,13 @@ public class GoogleSheetsObjectSink extends BufferedObjectSink<Message> {
             }
             if (CollectionUtils.isNotEmpty(updateValueRanges)) {
                 BatchUpdateValuesRequest batchUpdateValuesRequest = new BatchUpdateValuesRequest().setData(updateValueRanges).setValueInputOption("USER_ENTERED");
-                sheetsService.spreadsheets().values().batchUpdate(googleSheetsAppConfig.getSpreadSheetId(), batchUpdateValuesRequest).execute();
+                sheetsService.spreadsheets().values()
+                        .batchUpdate(GoogleSheetUtils.getSpreadSheetId(googleSheetsAppConfig.getSpreadSheetId()), batchUpdateValuesRequest).execute();
             }
             if (CollectionUtils.isNotEmpty(appendValues)) {
                 ValueRange valueRange = new ValueRange().setValues(appendValues);
                 sheetsService.spreadsheets()
-                        .values().append(googleSheetsAppConfig.getSpreadSheetId(),
+                        .values().append(GoogleSheetUtils.getSpreadSheetId(googleSheetsAppConfig.getSpreadSheetId()),
                                 googleSheetsAppSyncConfig.getObject().getObjectName(), valueRange).setValueInputOption("USER_ENTERED").execute();
 
             }
@@ -93,7 +94,8 @@ public class GoogleSheetsObjectSink extends BufferedObjectSink<Message> {
     }
 
     private void handleGSheetsError(List<Message> messages, Exception e) {
-        log.error("Google Sheets append records failed for spreadsheet id {} and name {}", googleSheetsAppConfig.getSpreadSheetId(),
+        log.error("Google Sheets append records failed for spreadsheet id {} and name {}",
+                GoogleSheetUtils.getSpreadSheetId(googleSheetsAppConfig.getSpreadSheetId()),
                 googleSheetsAppSyncConfig.getObject().getObjectName(), e);
         if (e instanceof GoogleJsonResponseException) {
             GoogleJsonResponseException gre = (GoogleJsonResponseException) e;

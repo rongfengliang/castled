@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,6 +44,16 @@ public class GoogleSheetUtils {
         return new Sheets.Builder(HTTP_TRANSPORT, JacksonFactory.getDefaultInstance(), new HttpCredentialsAdapter(googleCredentials))
                 .setApplicationName("Castled")
                 .build();
+    }
+
+    public static String getSpreadSheetId(String spreadsheetUrl) {
+
+        Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets/d/(.*)/edit#gid=0");
+        Matcher matcher = SPREADSHEET_PATTERN.matcher(spreadsheetUrl);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return spreadsheetUrl;
     }
 
     public static List<SheetRow> getRows(Sheets sheetsService, String spreadSheetId, String sheetName) throws IOException {
@@ -100,4 +112,5 @@ public class GoogleSheetUtils {
     public static String getRange(String sheetName, long rowNo) {
         return String.format("%s!%d:%d", sheetName, rowNo, rowNo);
     }
+
 }

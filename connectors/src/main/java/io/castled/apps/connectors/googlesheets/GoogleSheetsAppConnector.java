@@ -26,7 +26,8 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     public List<FormFieldOption> getAllObjects(GoogleSheetsAppConfig config, GoogleSheetsAppSyncConfig mappingConfig) {
         try {
             Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccount());
-            Spreadsheet spreadsheet = sheetsService.spreadsheets().get(config.getSpreadSheetId()).execute();
+            Spreadsheet spreadsheet = sheetsService.spreadsheets()
+                    .get(GoogleSheetUtils.getSpreadSheetId(config.getSpreadSheetId())).execute();
             return spreadsheet.getSheets().stream().map(Sheet::getProperties)
                     .map(sheetProperties -> new FormFieldOption(new GoogleSheetsSyncObject(sheetProperties.getSheetId(), sheetProperties.getTitle()),
                             sheetProperties.getTitle()))
@@ -40,7 +41,7 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     public void validateAppConfig(GoogleSheetsAppConfig appConfig) throws InvalidConfigException {
         try {
             Sheets sheets = GoogleSheetUtils.getSheets(appConfig.getServiceAccount());
-            sheets.spreadsheets().get(appConfig.getSpreadSheetId()).execute();
+            sheets.spreadsheets().get(GoogleSheetUtils.getSpreadSheetId(appConfig.getSpreadSheetId())).execute();
         } catch (Exception e) {
             if (e instanceof GoogleJsonResponseException) {
                 GoogleJsonResponseException gre = (GoogleJsonResponseException) e;
