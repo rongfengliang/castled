@@ -150,7 +150,7 @@ const MembersTab = () => {
       teamMembers?.activeMembers?.splice(index, 1);
     index !== undefined &&
       index >= 0 &&
-      teamMembers?.activeMembers?.splice(index, 0, obj);
+      teamMembers?.activeMembers?.splice(index, 0, obj as any);
     settingService
       .updateRole(event.value, email)
       .then(() => {
@@ -164,6 +164,64 @@ const MembersTab = () => {
 
   return (
     <div>
+      <div className="d-flex justify-content-between">
+        <h3 className="mb-1 mt-4 font-weight-bold">Members</h3>
+        <div className="mt-3 mb-2">
+          <Button variant="outline-primary" size="sm" onClick={handleShow}>
+            <span>
+              <IconUserPlus size={14} className="sidebar-icon" />
+              &nbsp; Invite team member
+            </span>
+          </Button>
+        </div>
+      </div>
+      <Table hover>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Role</th>
+            <th>Member Since</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {teamMembers !== undefined &&
+            teamMembers?.activeMembers.map((fieldMapping, i) => (
+              <tr key={i}>
+                <td>{fieldMapping.name}</td>
+                <td>{fieldMapping.email}</td>
+                <td>
+                  <Select
+                    options={roles?.map((role) => {
+                      return { label: role, value: role };
+                    })}
+                    value={{
+                      label: fieldMapping.role || "",
+                      value: fieldMapping.role || "",
+                    }}
+                    onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
+                  ></Select>
+                </td>
+                <td>{fieldMapping.createdTs}</td>
+                <td>
+                  {fieldMapping.role &&
+                    (fieldMapping.role as any) !== "ADMIN" &&
+                    user?.role === "ADMIN" && (
+                      <Button
+                        variant="link"
+                        className="bnt-red"
+                        onClick={() => removeMember(fieldMapping.email)}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </Table>
+
       {teamMembers && teamMembers!.pendingInvitees.length !== 0 && (
         <>
           <h3 className="mb-3 mt-4 font-weight-bold">
@@ -205,62 +263,6 @@ const MembersTab = () => {
           </Table>
         </>
       )}
-      <div className="d-flex justify-content-between">
-        <h3 className="mb-1 mt-4 font-weight-bold">Members</h3>
-        <div className="mt-3 mb-2">
-          <Button variant="outline-primary" size="sm" onClick={handleShow}>
-            <span>
-              <IconUserPlus size={14} className="sidebar-icon" />
-              &nbsp; Invite team member
-            </span>
-          </Button>
-        </div>
-      </div>
-      <Table hover>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email Address</th>
-            <th>Role</th>
-            <th>Member Since</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {teamMembers !== undefined &&
-            teamMembers?.activeMembers.map((fieldMapping, i) => (
-              <tr key={i}>
-                <td>{fieldMapping.name}</td>
-                <td>{fieldMapping.email}</td>
-                <td>
-                  {/* {fieldMapping.role} */}
-                  <Select
-                    options={roles?.map((role) => {
-                      return { label: role, value: role };
-                    })}
-                    value={{
-                      label: fieldMapping.role || "",
-                      value: fieldMapping.role || "",
-                    }}
-                    onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
-                  ></Select>
-                </td>
-                <td>{fieldMapping.createdTs}</td>
-                <td>
-                  {fieldMapping.role &&
-                    (fieldMapping.role as any) !== "ADMIN" &&
-                    user?.role === "ADMIN" && (
-                      <IconTrash
-                        size={18}
-                        className="sidebar-icon"
-                        onClick={() => removeMember(fieldMapping.email)}
-                      />
-                    )}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Invite team member</Modal.Title>
