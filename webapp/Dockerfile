@@ -7,8 +7,6 @@ ARG ARG_API_BASE_URL
 ENV API_BASE=${ARG_API_BASE}
 ENV API_BASE_URL=${ARG_API_BASE_URL}
 
-ENV NODE_ENV production
-
 # Set working directory
 WORKDIR /usr/webapp
 
@@ -20,6 +18,8 @@ COPY package.json yarn.lock ./
 
 # Install dependencies
 RUN yarn install --immutable --immutable-cache --check-cache
+
+ENV NODE_ENV production
 
 # Copy all files
 COPY --chown=node:node . .
