@@ -18,6 +18,7 @@ import { IconUserPlus, IconTrash, IconX } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { AxiosResponse } from "axios";
 import Select from "react-select";
+import moment from "moment";
 
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
@@ -192,28 +193,32 @@ const MembersTab = () => {
                 <td>{fieldMapping.name}</td>
                 <td>{fieldMapping.email}</td>
                 <td>
-                  <Select
-                    options={roles?.map((role) => {
-                      return { label: role, value: role };
-                    })}
-                    value={{
-                      label: fieldMapping.role || "",
-                      value: fieldMapping.role || "",
-                    }}
-                    onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
-                  ></Select>
+                  <div style={{ width: "110px", height: "30px" }}>
+                    <Select
+                      options={roles?.map((role) => {
+                        return { label: role, value: role };
+                      })}
+                      value={{
+                        label: fieldMapping.role || "",
+                        value: fieldMapping.role || "",
+                      }}
+                      onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
+                    ></Select>
+                  </div>
                 </td>
-                <td>{fieldMapping.createdTs}</td>
+                <td>
+                  {moment(fieldMapping.createdTs).format("DD MMM YYYY HH:mm A")}
+                </td>
                 <td>
                   {fieldMapping.role &&
                     (fieldMapping.role as any) !== "ADMIN" &&
                     user?.role === "ADMIN" && (
                       <Button
                         variant="link"
-                        className="bnt-red"
+                        className="btn-link-danger"
                         onClick={() => removeMember(fieldMapping.email)}
                       >
-                        Remove
+                        Revoke
                       </Button>
                     )}
                 </td>
@@ -230,7 +235,7 @@ const MembersTab = () => {
           <Table hover>
             <thead>
               <tr>
-                <th>Email</th>
+                <th>Email address</th>
                 <th></th>
                 <th></th>
               </tr>
