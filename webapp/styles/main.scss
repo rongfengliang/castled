@@ -318,3 +318,17 @@ form {
     font-size: $font-size-sm;
   }
 }
+
+.integrated-doc {
+  font-size: $font-size-sm;
+  max-height: 600px;
+  overflow: scroll;
+  h1 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+  h2 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+  }
+}

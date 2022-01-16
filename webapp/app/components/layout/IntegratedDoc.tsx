@@ -11,11 +11,12 @@ export interface IntegratedDocProps {
 const IntegratedDoc = ({ category, connectorType }: IntegratedDocProps) => {
   const [markdown, setMarkdown] = useState<string>("");
   useEffect(() => {
-    documentationService
-      .load(category, connectorType)
-      .then((markdown) => setMarkdown(markdown));
+    documentationService.load(category, connectorType).then((markdown) => {
+      const metaPos = markdown.lastIndexOf("\n---\n");
+      setMarkdown(metaPos === -1 ? markdown : markdown.substring(metaPos + 5));
+    });
   }, [category, connectorType]);
-  return <ReactMarkdown>{markdown}</ReactMarkdown>;
+  return <ReactMarkdown className="integrated-doc">{markdown}</ReactMarkdown>;
 };
 
 export default IntegratedDoc;
