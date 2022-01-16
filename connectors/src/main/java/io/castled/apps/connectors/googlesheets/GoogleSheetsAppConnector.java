@@ -41,7 +41,7 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     public void validateAppConfig(GoogleSheetsAppConfig appConfig) throws InvalidConfigException {
         try {
             if (!GoogleSheetUtils.validSpreadSheetUrl(appConfig.getSpreadSheetId())) {
-                throw new InvalidConfigException("SpreadSheet Url should be in the format: https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=0");
+                throw new InvalidConfigException("SpreadSheet Url should be in the format: https://docs.google.com/spreadsheets/d/spreadsheetId/edit.*");
             }
             Sheets sheets = GoogleSheetUtils.getSheets(appConfig.getServiceAccount());
             sheets.spreadsheets().get(GoogleSheetUtils.getSpreadSheetId(appConfig.getSpreadSheetId())).execute();

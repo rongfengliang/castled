@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class GoogleSheetUtils {
 
-    private static final Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets/d/(.*)/edit#gid=0");
+    private static final Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets/d/(.*)/edit.*");
 
     public static Sheets getSheets(ServiceAccountDetails serviceAccountDetails) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
