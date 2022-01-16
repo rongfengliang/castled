@@ -2,7 +2,6 @@ import { TeamDTO } from "@/app/common/dtos/TeamDTO";
 import settingService from "@/app/services/settingService";
 import authService from "@/app/services/authService";
 import eventService from "@/app/services/eventService";
-import { UserDTO } from "@/app/common/dtos/UserDTO";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -14,31 +13,10 @@ import {
   Form,
   Toast,
 } from "react-bootstrap";
-import { IconUserPlus, IconTrash, IconX, IconLoader } from "@tabler/icons";
+import { IconUserPlus, IconX, IconLoader } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { AxiosResponse } from "axios";
-import Select from "react-select";
 import moment from "moment";
-import { removeListener } from "process";
-
-const customStyles = {
-  menu: (provided: any, state: any) => ({
-    ...provided,
-    width: state.selectProps.width,
-    color: state.selectProps.menuColor,
-    padding: 20,
-  }),
-
-  control: (_: any, { selectProps: { width } }) => ({
-    width: width,
-  }),
-  singleValue: (provided: any, state: any) => {
-    const opacity = state.isDisabled ? 0.5 : 1;
-    const transition = "opacity 300ms";
-
-    return { ...provided, opacity, transition };
-  },
-};
 
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
@@ -224,8 +202,12 @@ const MembersTab = () => {
           {teamMembers !== undefined &&
             teamMembers?.activeMembers.map((fieldMapping, i) => (
               <tr key={i}>
-                <td>{fieldMapping.name}</td>
-                <td>{fieldMapping.email}</td>
+                <td>
+                  <div style={{ width: "150px" }}>{fieldMapping.name}</div>
+                </td>
+                <td>
+                  <div style={{ width: "150px" }}>{fieldMapping.email}</div>
+                </td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "110px" }}>
@@ -252,13 +234,19 @@ const MembersTab = () => {
                         })}
                       </Form.Select>
                     </div>
-                    {updateRoleFlag === i && (
-                      <IconLoader className="spinner-icon" />
-                    )}
+                    <div style={{ width: "25px" }}>
+                      {updateRoleFlag === i && (
+                        <IconLoader size={12} className="spinner-icon" />
+                      )}
+                    </div>
                   </div>
                 </td>
                 <td>
-                  {moment(fieldMapping.createdTs).format("DD MMM YYYY HH:mm A")}
+                  <div style={{ width: "150px" }}>
+                    {moment(fieldMapping.createdTs).format(
+                      "DD MMM YYYY HH:mm A"
+                    )}
+                  </div>
                 </td>
                 <td>
                   {fieldMapping.role &&
