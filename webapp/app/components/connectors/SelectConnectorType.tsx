@@ -27,9 +27,8 @@ const SelectConnectorType = ({
       <div className="grid-categories">
         <Row xs={3}>
           {typeList?.map((type, i) => (
-            <ListGroup>
+            <ListGroup key={i}>
               <ListGroup.Item
-                key={i}
                 className="rounded"
                 onClick={() => onSelect(type)}
               >

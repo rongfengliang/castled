@@ -8,6 +8,7 @@ interface LayoutProps extends HeaderProps {
   children: React.ReactNode;
   steps?: WizardSteps;
   stepGroups?: WizardSteps;
+  rightHelp?: React.ReactNode;
 }
 
 const Layout = ({
@@ -19,23 +20,49 @@ const Layout = ({
   children,
   steps,
   stepGroups,
+  rightHelp,
 }: LayoutProps) => {
   return (
     <div className="layout-holder">
       <HeadCommon title={typeof title === "string" ? title : pageTitle || ""} />
       <LeftSidebar />
-      <main>
-        <Header
-          title={title}
-          centerTitle={centerTitle}
-          navLinks={navLinks}
-          rightBtn={rightBtn}
-          steps={steps}
-          stepGroups={stepGroups}
-        />
-        <div className="container-fluid container-main">{children}</div>
-      </main>
+      <Header
+        title={title}
+        centerTitle={centerTitle}
+        navLinks={navLinks}
+        rightBtn={rightBtn}
+        steps={steps}
+        stepGroups={stepGroups}
+      />
+      {renderChildren(children, rightHelp)}
     </div>
   );
 };
+
+const renderChildren = (
+  children: React.ReactNode,
+  rightHelp: React.ReactNode
+) => {
+  if (rightHelp) {
+    return (
+      <>
+        <main className="row">
+          <div className="container-fluid container-main row">
+            <div className="col-8">{children}</div>
+            <div className="col-4">{rightHelp}</div>
+          </div>
+        </main>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <main>
+          <div className="container-fluid container-main">{children}</div>
+        </main>
+      </>
+    );
+  }
+};
+
 export default Layout;
