@@ -46,7 +46,6 @@ const WarehouseModel = ({
     }
     updateDemoQueries(warehouseId!);
   }, []);
-  if (!warehouseId || !demoQueries) return <Loading />;
   const getQueryResults = (queryId: string) => {
     warehouseService
       .executeQueryResults(queryId)
@@ -67,7 +66,7 @@ const WarehouseModel = ({
       steps={steps}
       stepGroups={stepGroups}
     >
-      {demoQueries.length > 0 && (
+      {!!demoQueries?.length && (
         <Card>
           <Card.Body>
             Please run <code>SELECT * FROM USERS</code> or{" "}
