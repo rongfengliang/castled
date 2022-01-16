@@ -14,11 +14,31 @@ import {
   Form,
   Toast,
 } from "react-bootstrap";
-import { IconUserPlus, IconTrash, IconX } from "@tabler/icons";
+import { IconUserPlus, IconTrash, IconX, IconLoader } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { AxiosResponse } from "axios";
 import Select from "react-select";
 import moment from "moment";
+import { removeListener } from "process";
+
+const customStyles = {
+  menu: (provided: any, state: any) => ({
+    ...provided,
+    width: state.selectProps.width,
+    color: state.selectProps.menuColor,
+    padding: 20,
+  }),
+
+  control: (_: any, { selectProps: { width } }) => ({
+    width: width,
+  }),
+  singleValue: (provided: any, state: any) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = "opacity 300ms";
+
+    return { ...provided, opacity, transition };
+  },
+};
 
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
@@ -30,6 +50,7 @@ const MembersTab = () => {
   const [user, setUser] = useState<LoggedInUserDto | null>();
   const [roles, setRoles] = useState<string[] | null | undefined>([]);
   const [selectedRole, setSelectedRole] = useState<string[] | null>();
+  const [updateRoleFlag, setUpdateRoleFlag] = useState<number | undefined>();
   useEffect(() => {
     if (user === undefined) {
       authService
@@ -94,6 +115,8 @@ const MembersTab = () => {
       })
       .catch((err: any) => {
         console.log(err);
+        setErrorMessage(err.message);
+        setShowA(true);
       });
   };
   const cancelInvitation = (email: string) => {
@@ -111,7 +134,8 @@ const MembersTab = () => {
       })
       .catch((err: any) => {
         console.log(err);
-        // setIsValid(true);
+        setErrorMessage(err.message);
+        setShowA(true);
       });
   };
   const removeMember = (email: string) => {
@@ -129,6 +153,8 @@ const MembersTab = () => {
       })
       .catch((err: any) => {
         console.log(err);
+        setErrorMessage(err.message);
+        setShowA(true);
       });
   };
 
@@ -137,15 +163,20 @@ const MembersTab = () => {
     setIsValid(false);
     setErrorMessage("");
   };
-  const toggleShowA = () => setShowA(!showA);
+  const toggleShowA = () => {
+    setShowA(!showA);
+    setMessage("");
+    setErrorMessage("");
+  };
   const onChangeRole = (event: any, email: string) => {
     let obj = teamMembers?.activeMembers?.find(
       (mem: any) => mem.email === email
     );
-    if (obj) obj.role = event.value;
+    if (obj) obj.role = event.target.value;
     const index = teamMembers?.activeMembers?.findIndex(
       (mem: any) => mem.email === email
     );
+    setUpdateRoleFlag(index);
     index !== undefined &&
       index >= 0 &&
       teamMembers?.activeMembers?.splice(index, 1);
@@ -153,13 +184,16 @@ const MembersTab = () => {
       index >= 0 &&
       teamMembers?.activeMembers?.splice(index, 0, obj as any);
     settingService
-      .updateRole(event.value, email)
+      .updateRole(event.target.value, email)
       .then(() => {
         setMessage("Role Updated Successfully");
         setShowA(true);
+        setUpdateRoleFlag(undefined);
       })
       .catch((err: any) => {
         console.log(err);
+        setErrorMessage(err.message);
+        setShowA(true);
       });
   };
 
@@ -193,17 +227,34 @@ const MembersTab = () => {
                 <td>{fieldMapping.name}</td>
                 <td>{fieldMapping.email}</td>
                 <td>
-                  <div style={{ width: "110px", height: "30px" }}>
-                    <Select
-                      options={roles?.map((role) => {
-                        return { label: role, value: role };
-                      })}
-                      value={{
-                        label: fieldMapping.role || "",
-                        value: fieldMapping.role || "",
-                      }}
-                      onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
-                    ></Select>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ width: "110px" }}>
+                      {/* <Select
+                        options={roles?.map((role) => {
+                          return { label: role, value: role };
+                        })}
+                        value={{
+                          label: fieldMapping.role || "",
+                          value: fieldMapping.role || "",
+                        }}
+                        onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
+                      ></Select> */}
+                      <Form.Select
+                        size="sm"
+                        disabled={updateRoleFlag === i}
+                        value={fieldMapping.role}
+                        onChange={(e: any) =>
+                          onChangeRole(e, fieldMapping.email)
+                        }
+                      >
+                        {roles?.map((role) => {
+                          return <option value={role}>{role}</option>;
+                        })}
+                      </Form.Select>
+                    </div>
+                    {updateRoleFlag === i && (
+                      <IconLoader className="spinner-icon" />
+                    )}
                   </div>
                 </td>
                 <td>
@@ -246,21 +297,25 @@ const MembersTab = () => {
                   <tr key={i}>
                     <td>{fieldMapping.email}</td>
                     <td>
-                      <Button
-                        variant="link"
-                        onClick={() => resendInvitation(fieldMapping.email)}
-                      >
-                        Resend invitation
-                      </Button>
+                      {user?.role === "ADMIN" && (
+                        <Button
+                          variant="link"
+                          onClick={() => resendInvitation(fieldMapping.email)}
+                        >
+                          Resend invitation
+                        </Button>
+                      )}
                     </td>
                     <td>
-                      <Button
-                        variant="link"
-                        className="btn-link-danger"
-                        onClick={() => cancelInvitation(fieldMapping.email)}
-                      >
-                        Revoke
-                      </Button>
+                      {user?.role === "ADMIN" && (
+                        <Button
+                          variant="link"
+                          className="btn-link-danger"
+                          onClick={() => cancelInvitation(fieldMapping.email)}
+                        >
+                          Revoke
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -300,10 +355,14 @@ const MembersTab = () => {
       </Modal>
 
       <ToastContainer className="p-3" position="top-center">
-        <Toast show={showA} onClose={toggleShowA}>
-          <Toast.Body>
+        <Toast
+          show={showA}
+          onClose={toggleShowA}
+          bg={message ? "success" : "danger"}
+        >
+          <Toast.Body className="text-white">
             <div className="d-flex justify-content-between">
-              {message}
+              {message || errorMessage}
               <IconX
                 size={18}
                 className="sidebar-icon"

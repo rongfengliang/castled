@@ -96,6 +96,10 @@ body {
   color: $red;
 }
 
+.mySelect__control {
+  min-height: 30px;
+  height: 30px;
+}
 
 .title-fs {
   font-size: $title-fs;
