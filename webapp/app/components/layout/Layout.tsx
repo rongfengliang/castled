@@ -26,15 +26,17 @@ const Layout = ({
     <div className="layout-holder">
       <HeadCommon title={typeof title === "string" ? title : pageTitle || ""} />
       <LeftSidebar />
-      <Header
-        title={title}
-        centerTitle={centerTitle}
-        navLinks={navLinks}
-        rightBtn={rightBtn}
-        steps={steps}
-        stepGroups={stepGroups}
-      />
-      {renderChildren(children, rightHelp)}
+      <main>
+        <Header
+          title={title}
+          centerTitle={centerTitle}
+          navLinks={navLinks}
+          rightBtn={rightBtn}
+          steps={steps}
+          stepGroups={stepGroups}
+        />
+        {renderChildren(children, rightHelp)}
+      </main>
     </div>
   );
 };
@@ -45,23 +47,13 @@ const renderChildren = (
 ) => {
   if (rightHelp) {
     return (
-      <>
-        <main className="row">
-          <div className="container-fluid container-main row">
-            <div className="col-8">{children}</div>
-            <div className="col-4">{rightHelp}</div>
-          </div>
-        </main>
-      </>
+      <div className="container-fluid container-main row">
+        <div className="col-8">{children}</div>
+        <div className="col-4">{rightHelp}</div>
+      </div>
     );
   } else {
-    return (
-      <>
-        <main>
-          <div className="container-fluid container-main">{children}</div>
-        </main>
-      </>
-    );
+    return <div className="container-fluid container-main">{children}</div>;
   }
 };
 
