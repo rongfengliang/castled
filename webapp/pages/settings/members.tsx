@@ -253,6 +253,7 @@ const MembersTab = () => {
                     (fieldMapping.role as any) !== "ADMIN" &&
                     user?.role === "ADMIN" && (
                       <Button
+                        size="sm"
                         variant="link"
                         className="btn-link-danger"
                         onClick={() => removeMember(fieldMapping.email)}
@@ -287,6 +288,7 @@ const MembersTab = () => {
                     <td>
                       {user?.role === "ADMIN" && (
                         <Button
+                          size="sm"
                           variant="link"
                           onClick={() => resendInvitation(fieldMapping.email)}
                         >
@@ -297,6 +299,7 @@ const MembersTab = () => {
                     <td>
                       {user?.role === "ADMIN" && (
                         <Button
+                          size="sm"
                           variant="link"
                           className="btn-link-danger"
                           onClick={() => cancelInvitation(fieldMapping.email)}
