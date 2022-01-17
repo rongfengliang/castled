@@ -3,24 +3,34 @@ import { GetServerSidePropsContext } from "next";
 import routerUtils from "@/app/common/utils/routerUtils";
 import PipelineWizard from "@/app/components/pipeline/PipelineWizard";
 import PipelineWizardProvider, {
-  usePipelineWizContext
+  usePipelineWizContext,
 } from "@/app/common/context/pipelineWizardContext";
 import { useRouter } from "next/router";
 import wizardUtils from "@/app/common/utils/wizardUtils";
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   const wizardStep = routerUtils.getString(query.wizardStep);
+  const demo = routerUtils.getBoolean(query.demo);
   return {
-    props: { wizardStepKey: wizardStep, appBaseUrl: process.env.APP_BASE_URL }
+    props: {
+      wizardStepKey: wizardStep,
+      appBaseUrl: process.env.APP_BASE_URL,
+      demo,
+    },
   };
 }
 
 interface PipelineCreateProps {
   wizardStepKey: string;
   appBaseUrl: string;
+  demo: boolean;
 }
 
-const PipelineCreate = ({ wizardStepKey, appBaseUrl }: PipelineCreateProps) => {
+const PipelineCreate = ({
+  wizardStepKey,
+  appBaseUrl,
+  demo,
+}: PipelineCreateProps) => {
   const router = useRouter();
   const { setPipelineWizContext } = usePipelineWizContext();
   const [wizardStepGroup, wizardStep] =
@@ -31,31 +41,32 @@ const PipelineCreate = ({ wizardStepKey, appBaseUrl }: PipelineCreateProps) => {
         appBaseUrl={appBaseUrl}
         curWizardStepGroup={wizardStepGroup}
         curWizardStep={wizardStep}
+        demo={demo}
         steps={{
           source: {
             title: "Configure Source",
             description: "",
-            stepKey: "source:selectType"
+            stepKey: "source:selectType",
           },
           destination: {
             title: "Configure Destination",
             description: "",
-            stepKey: "destination:selectType"
+            stepKey: "destination:selectType",
           },
           mapping: {
             title: "Mapping",
             description: "",
-            stepKey: "mapping"
+            stepKey: "mapping",
           },
           settings: {
             title: "Final Settings",
             description: "",
-            stepKey: "settings"
-          }
+            stepKey: "settings",
+          },
         }}
-        onFinish={() => {
+        onFinish={(id) => {
           if (process.browser) {
-            router.push("/pipelines").then(() => {
+            router.push(`/pipelines/${id}`).then(() => {
               setPipelineWizContext({});
             });
           }

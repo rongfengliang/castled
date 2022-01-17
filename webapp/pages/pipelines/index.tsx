@@ -26,17 +26,31 @@ const Pipelines = () => {
   return (
     <Layout
       title="Pipelines"
-      rightBtn={{
-        id: "create_pipeline_button",
-        title: "Create",
-        href: "/pipelines/create?wizardStep=source:selectType",
-      }}
+      rightBtn={
+        pipelines?.length
+          ? {
+              id: "create_pipeline_button",
+              title: "Create",
+              href: "/pipelines/create",
+            }
+          : undefined
+      }
     >
       {!pipelines && <Loading />}
       {pipelines && pipelines.length === 0 && (
-        <Alert variant="light" className="text-center">
-          No app connections created yet!
-        </Alert>
+        <>
+          <h2>Set up your first pipeline</h2>
+          <p>
+            <Link href="/pipelines/create?demo=1">
+              <a>Create Pipeline using a demo warehouse</a>
+            </Link>
+          </p>
+          <p>
+            <Link href="/pipelines/create">
+              <a>Create Pipeline using your warehouse</a>
+            </Link>
+          </p>
+        </>
       )}
       {pipelines && pipelines.length > 0 && (
         <div className="table-responsive">

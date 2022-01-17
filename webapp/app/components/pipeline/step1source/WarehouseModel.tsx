@@ -43,9 +43,10 @@ const WarehouseModel = ({
     const warehouseId = pipelineWizContext.values?.warehouseId;
     if (!warehouseId) {
       setCurWizardStep("source", "selectType");
+    } else {
+      updateDemoQueries(warehouseId!);
     }
-    updateDemoQueries(warehouseId!);
-  }, []);
+  }, [warehouseId]);
   const getQueryResults = (queryId: string) => {
     warehouseService
       .executeQueryResults(queryId)
