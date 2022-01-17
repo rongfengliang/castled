@@ -6,6 +6,9 @@ export default {
   teamMember: (): Promise<AxiosResponse<void>> => {
     return http.get("/v1/users/team-members");
   },
+  roleList: (): Promise<AxiosResponse<void>> => {
+    return http.get("/v1/users/get-roles");
+  },
   inviteMember: (data: UserDTO[]): Promise<AxiosResponse<void>> => {
     return http.post("/v1/users/invite-member", { inviteeDetails: data });
   },
@@ -23,8 +26,5 @@ export default {
     email: string
   ): Promise<AxiosResponse<void>> => {
     return http.post("/v1/users/change-role", { email, userRole });
-  },
-  roleList: (): Promise<AxiosResponse<void>> => {
-    return http.get("/v1/users/get-roles");
-  },
+  }
 };

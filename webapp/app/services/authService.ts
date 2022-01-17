@@ -6,6 +6,7 @@ import { RegisterUserDTO } from "@/app/common/dtos/RegisterUserDTO";
 import { AxiosResponse } from "axios";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { UserRegistrationResponse } from "../common/dtos/UserRegistrationResponse";
+import { ActivateUserDTO } from "../common/dtos/ActivateUserDTO";
 
 export default {
   login: (request: LoginRequestDto): Promise<AxiosResponse<void>> => {
@@ -16,6 +17,9 @@ export default {
     return http.post("/v1/users/redirect", request);
   },
 
+  activateUser: (request: ActivateUserDTO): Promise<AxiosResponse<any>> => {
+    return http.post("/v1/users/activate-user", request);
+  },
   logout: (): Promise<AxiosResponse<void>> => {
     return http.post("/v1/users/logout");
   },
