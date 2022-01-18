@@ -110,7 +110,6 @@ public class GoogleSheetUtils {
             default:
                 return field.getValue();
         }
-
     }
 
     public static String getRange(String sheetName, long rowNo) {
