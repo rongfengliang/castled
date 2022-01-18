@@ -9,9 +9,7 @@ import {
   Table,
   Modal,
   FormControl,
-  // ToastContainer,
   Form,
-  // Toast,
 } from "react-bootstrap";
 import { IconUserPlus, IconX, IconLoader } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
@@ -72,11 +70,15 @@ const MembersTab = () => {
       .inviteMember([{ email }])
       .then(() => {
         bannerNotificationService.success("Invitation sent successfully");
-        teamMembers?.pendingInvitees?.push({ email });
+        const pendingInvitees = [
+          ...(teamMembers?.pendingInvitees as any),
+          { email },
+        ];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
         handleClose();
       })
       .catch((err: any) => {
-        bannerNotificationService.error('Something went wrong!')
+        bannerNotificationService.error("Something went wrong!");
         setIsValid(true);
       });
   };
@@ -101,6 +103,8 @@ const MembersTab = () => {
         index !== undefined &&
           index >= 0 &&
           teamMembers?.pendingInvitees?.splice(index, 1);
+        const pendingInvitees = teamMembers?.pendingInvitees || [];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
         bannerNotificationService.success("Cancelled invitation");
       })
       .catch((err: any) => {
@@ -119,8 +123,8 @@ const MembersTab = () => {
         index !== undefined &&
           index >= 0 &&
           teamMembers?.activeMembers?.splice(index, 1);
-          const activeMembers = teamMembers?.activeMembers || [];
-          setTeamMembers({...teamMembers, activeMembers} as any);
+        const activeMembers = teamMembers?.activeMembers || [];
+        setTeamMembers({ ...teamMembers, activeMembers } as any);
       })
       .catch((err: any) => {
         console.log(err);
@@ -131,13 +135,8 @@ const MembersTab = () => {
   const handleChange = (event: any) => {
     setEmail(event.target.value);
     setIsValid(false);
-    // setErrorMessage("");
   };
-  // const toggleShowA = () => {
-  //   setShowA(!showA);
-  //   setMessage("");
-  //   setErrorMessage("");
-  // };
+
   const onChangeRole = (event: any, email: string) => {
     let obj = teamMembers?.activeMembers?.find(
       (mem: any) => mem.email === email
@@ -201,16 +200,6 @@ const MembersTab = () => {
                 <td>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "110px" }}>
-                      {/* <Select
-                        options={roles?.map((role) => {
-                          return { label: role, value: role };
-                        })}
-                        value={{
-                          label: fieldMapping.role || "",
-                          value: fieldMapping.role || "",
-                        }}
-                        onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
-                      ></Select> */}
                       <Form.Select
                         size="sm"
                         disabled={updateRoleFlag === i}
@@ -320,10 +309,6 @@ const MembersTab = () => {
               {"Enter a valid email address"}
             </FormControl.Feedback>
           </InputGroup>
-          {/* <p>
-            New users will be able to create workspaces and invite other team
-            members.
-          </p> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-danger" onClick={handleClose}>
@@ -334,25 +319,6 @@ const MembersTab = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* <ToastContainer className="p-3" position="top-center">
-        <Toast
-          show={showA}
-          onClose={toggleShowA}
-          bg={message ? "success" : "danger"}
-        >
-          <Toast.Body className="text-white">
-            <div className="d-flex justify-content-between">
-              {message || errorMessage}
-              <IconX
-                size={18}
-                className="sidebar-icon"
-                onClick={toggleShowA}
-              ></IconX>
-            </div>
-          </Toast.Body>
-        </Toast>
-      </ToastContainer> */}
     </div>
   );
 };

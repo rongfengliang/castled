@@ -85,18 +85,6 @@ function ActivateUser(props: serverSideProps) {
             <ButtonSubmit className="form-control" />
           </Form>)}
       </Formik>
-      {/* <div className="mt-3 text-center">
-        <Button
-          href={authUtils.getExternalLoginUrl(
-            props.appBaseUrl,
-            ExternalLoginType.GOOGLE,
-            router.pathname
-          )}
-          onClick={buttonHandler({ id: "signup_with_google" })}
-        >
-          Sign up with Google
-        </Button>
-      </div> */}
     </GuestLayout>
   );
 }
@@ -124,8 +112,6 @@ const handleActivateUser = async (
       lastName: registerForm.lastName,
       password: registerForm.password
     }).then((res: AxiosResponse<any>) => {
-      // setUser(res.data);
-      // router.push(`/`);
       redirectHome(setUser, router);
     });
   }

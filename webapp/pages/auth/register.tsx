@@ -141,7 +141,6 @@ const handleRegisterUser = async (
       password: registerForm.password,
       clusterLocation: registerForm.clusterLocation,
     }).then((res: AxiosResponse<UserRegistrationResponse>) => {
-      // router.push(`${res.data.clusterUrl}/auth/login`);
       redirectHome(setUser, router);
     });
   }
