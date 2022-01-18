@@ -17,6 +17,7 @@ import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContex
 import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
 import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
+import { useSession } from "@/app/common/context/sessionContext";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -47,6 +48,8 @@ const ConnectorForm = ({
   const id = routerUtils.getInt(router.query.id);
   const type = connectorType || routerUtils.getInt(router.query.type);
   const [formFields, setFormFields] = useState<FormFieldsDto | undefined>();
+  const { isOss } = useSession();
+
   useEffect(() => {
     if (!pipelineWizContext) return;
     if (id) {
@@ -69,18 +72,19 @@ const ConnectorForm = ({
     category === "Warehouse"
       ? warehouseService.create
       : isOauth
-        ? appsService.createOauth
-        : appsService.create;
+      ? appsService.createOauth
+      : appsService.create;
   const updateConnector: any =
     category === "Warehouse"
       ? warehouseService.update
       : isOauth
-        ? appsService.updateOauth
-        : appsService.update;
+      ? appsService.updateOauth
+      : appsService.update;
   const fetcher = editConnector
     ? (data: any) => updateConnector(editConnector.id, data)
     : createConnector;
   const onSubmit = formHandler(
+    isOss,
     {
       id: "connector_form",
       pickFieldsForEvent: ["name", "config.type"],
@@ -98,26 +102,28 @@ const ConnectorForm = ({
     undefined,
     (values: any): any => {
       if (isOauth) {
-        const defaultOauthUrl = `${appBaseUrl}${(location?.pathname || router.pathname) +
+        const defaultOauthUrl = `${appBaseUrl}${
+          (location?.pathname || router.pathname) +
           "?wizardStep=" +
           wizardStep +
           "&type=" +
           values.config.type +
           "&success=1"
-          }`;
+        }`;
 
         return {
           ...values,
           successUrl: oauthCallback
             ? `${appBaseUrl}${oauthCallback}`
             : defaultOauthUrl,
-          failureUrl: `${appBaseUrl}${oauthCallback +
+          failureUrl: `${appBaseUrl}${
+            oauthCallback +
             "?wizardStep=" +
             wizardStep +
             "&type=" +
             values.config.type +
             "&failed=1"
-            }`,
+          }`,
           serverUrl: `${appBaseUrl}${API_BASE}`,
         };
       }
@@ -128,8 +134,8 @@ const ConnectorForm = ({
   const submitLabel = !editConnector
     ? `Add ${category}`
     : isOauth
-      ? "Reauthorize"
-      : "Save";
+    ? "Reauthorize"
+    : "Save";
 
   const getCodeBlock = (formFields: FormFieldsDto, values: FormikValues) => {
     if (
@@ -165,9 +171,9 @@ const ConnectorForm = ({
       return null;
     }
     return (
-        <div className="mb-1">
+      <div className="mb-1">
         {stringUtils.replaceTemplate(formFields.helpText!.value, values.config)}
-        </div>
+      </div>
     );
   };
 
@@ -199,9 +205,9 @@ const ConnectorForm = ({
               setFieldValue={setFieldValue}
               values={values}
               dataFetcher={(optionsRef) =>
-                category === "Warehouse" ? warehouseService.configOptions(optionsRef, values) :
-                  appsService.configOptions(optionsRef, values)
-
+                category === "Warehouse"
+                  ? warehouseService.configOptions(optionsRef, values)
+                  : appsService.configOptions(optionsRef, values)
               }
             />
           )}

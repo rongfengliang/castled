@@ -27,10 +27,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GoogleSheetUtils {
+
+    private static final Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets(/u/[0-9]+)?/d/([^/]+)/edit.*");
 
     public static Sheets getSheets(ServiceAccountDetails serviceAccountDetails) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -42,6 +45,19 @@ public class GoogleSheetUtils {
         return new Sheets.Builder(HTTP_TRANSPORT, JacksonFactory.getDefaultInstance(), new HttpCredentialsAdapter(googleCredentials))
                 .setApplicationName("Castled")
                 .build();
+    }
+
+    public static String getSpreadSheetId(String spreadsheetUrl) {
+
+        Matcher matcher = SPREADSHEET_PATTERN.matcher(spreadsheetUrl);
+        if (matcher.find()) {
+            return matcher.group(2);
+        }
+        return spreadsheetUrl;
+    }
+
+    public static boolean validSpreadSheetUrl(String spreadsheetUrl) {
+        return SPREADSHEET_PATTERN.matcher(spreadsheetUrl).find();
     }
 
     public static List<SheetRow> getRows(Sheets sheetsService, String spreadSheetId, String sheetName) throws IOException {
@@ -94,7 +110,6 @@ public class GoogleSheetUtils {
             default:
                 return field.getValue();
         }
-
     }
 
     public static String getRange(String sheetName, long rowNo) {

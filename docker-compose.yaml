@@ -18,14 +18,11 @@ services:
       - MYSQL_PASSWORD=${DATABASE_PASSWORD}
       - MYSQL_DATABASE=${DATABASE_DB}
       - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
-    ports:
-      - ${DATABASE_PORT}:3306
     volumes:
       - db_vol:/var/lib/mysql
 
   app:
     image: castled/app:${VERSION}
-    platform: linux/amd64
     container_name: castled-app
     restart: unless-stopped
     logging: *default-logging
@@ -43,8 +40,8 @@ services:
       - APP_LOG_LEVEL=${LOG_LEVEL}
       - S3_BUCKET=${S3_BUCKET}
       - S3_BUCKET_REGION=${S3_BUCKET_REGION}
-    ports:
-      - 7050:7050
+    volumes:
+      - ./container/config.yml:/app/configs/config.yml
 
   zookeeper:
     image: confluentinc/cp-zookeeper:5.3.0
@@ -94,6 +91,7 @@ services:
       - API_BASE=${API_BASE}
       - API_BASE_URL=${API_BASE_URL}
       - APP_BASE_URL=${APP_BASE_URL}
+      - IS_OSS=${IS_OSS}
     ports:
       - 3000:3000
 

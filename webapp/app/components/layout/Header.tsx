@@ -41,7 +41,7 @@ const Header = ({
   stepGroups,
 }: HeaderProps) => {
   const router = useRouter();
-  const { user } = useSession();
+  const { user, isOss } = useSession();
 
   return (
     <>
@@ -52,7 +52,7 @@ const Header = ({
               <SearchForm />
             </div>
             <ul className="navbar-nav d-flex">
-              {user && (
+              {user && !isOss && (
                 <Dropdown align="end">
                   <Dropdown.Toggle
                     as={DropdownCaretDown}
@@ -95,6 +95,7 @@ const Header = ({
                 {rightBtn && (
                   <button
                     onClick={buttonHandler(
+                      isOss,
                       { id: rightBtn.id },
                       rightBtn.href
                         ? () => {
