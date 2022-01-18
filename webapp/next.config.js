@@ -1,17 +1,13 @@
 const withPWA = require("next-pwa");
 module.exports = withPWA({
   pwa: {
-    dest: "public",
+    dest: "public"
   },
   env: {
     // Commenting to avoid inlining of this env variable. Will be fetched using getServerSideProps from pages where its required
     // APP_BASE_URL: process.env.APP_BASE_URL,
     API_BASE: process.env.API_BASE,
-    DEBUG: process.env.DEBUG,
-  },
-  publicRuntimeConfig: {
-    // Will be available on both server and client
-    isOss: process.env.IS_OSS,
+    DEBUG: process.env.DEBUG
   },
   async rewrites() {
     const backendBaseUrl = process.env.API_BASE_URL;
@@ -19,20 +15,20 @@ module.exports = withPWA({
     return [
       {
         source: "/swagger/:path*",
-        destination: `${backendBaseUrl}${apiBase}/swagger/:path*`,
+        destination: `${backendBaseUrl}${apiBase}/swagger/:path*`
       },
       {
         source: "/swagger-static/:path*",
-        destination: `${backendBaseUrl}${apiBase}/swagger-static/:path*`,
+        destination: `${backendBaseUrl}${apiBase}/swagger-static/:path*`
       },
       {
         source: "/swagger.json/:path*",
-        destination: `${backendBaseUrl}${apiBase}/swagger.json/:path*`,
+        destination: `${backendBaseUrl}${apiBase}/swagger.json/:path*`
       },
       {
         source: `${apiBase}/:path*`,
-        destination: `${backendBaseUrl}${apiBase}/:path*`,
-      },
+        destination: `${backendBaseUrl}${apiBase}/:path*`
+      }
     ];
-  },
+  }
 });

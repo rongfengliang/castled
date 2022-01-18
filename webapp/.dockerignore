@@ -1,6 +1,7 @@
 .gitignore
-.next                # Existing Next.js builds
+.next/                # Existing Next.js builds
 .dockerignore
 Dockerfile
-node_modules         # Installed inside container
-.env                 # Passed during build and runtime
+node_modules/         # Installed inside container
+nginx/                # We'll create this directory soon
+.env                  # Passed during build and runtime

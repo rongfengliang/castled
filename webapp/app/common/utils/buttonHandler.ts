@@ -6,18 +6,12 @@ export interface ButtonMeta {
   dataLayer?: StringAnyMap;
 }
 
-function buttonHandler(
-  isOss: boolean,
-  buttonMeta: ButtonMeta,
-  onClick?: () => void
-) {
+function buttonHandler(buttonMeta: ButtonMeta, onClick?: () => void) {
   return () => {
-    if (!isOss) {
-      eventService.send({
-        event: buttonMeta.id + "_clicked",
-        ...buttonMeta.dataLayer,
-      });
-    }
+    eventService.send({
+      event: buttonMeta.id + "_clicked",
+      ...buttonMeta.dataLayer,
+    });
     onClick?.();
   };
 }

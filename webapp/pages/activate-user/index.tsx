@@ -122,12 +122,19 @@ const handleActivateUser = async (
       token: router.query.token as string,
       firstName: registerForm.firstName,
       lastName: registerForm.lastName,
-      password: registerForm.password,
+      password: registerForm.password
     }).then((res: AxiosResponse<any>) => {
-      setUser(res.data);
-      router.push(`/`);
+      // setUser(res.data);
+      // router.push(`/`);
+      redirectHome(setUser, router);
     });
   }
 };
+
+const redirectHome = async (setUser: any, router: any) => {
+  const res = await authService.whoAmI();
+  setUser(res.data);
+  await router.push("/");
+}
 
 export default ActivateUser;

@@ -9,26 +9,23 @@ import {
   Table,
   Modal,
   FormControl,
-  ToastContainer,
+  // ToastContainer,
   Form,
-  Toast,
+  // Toast,
 } from "react-bootstrap";
 import { IconUserPlus, IconX, IconLoader } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 import { removeListener } from "process";
+import bannerNotificationService from "@/app/services/bannerNotificationService";
 
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
   const [email, setEmail] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [showA, setShowA] = useState<boolean>(false);
   const [user, setUser] = useState<LoggedInUserDto | null>();
   const [roles, setRoles] = useState<string[] | null | undefined>([]);
-  const [selectedRole, setSelectedRole] = useState<string[] | null>();
   const [updateRoleFlag, setUpdateRoleFlag] = useState<number | undefined>();
   useEffect(() => {
     if (user === undefined) {
@@ -74,14 +71,12 @@ const MembersTab = () => {
     settingService
       .inviteMember([{ email }])
       .then(() => {
-        setMessage("Invitation sent successfully");
-        setShowA(true);
+        bannerNotificationService.success("Invitation sent successfully");
         teamMembers?.pendingInvitees?.push({ email });
         handleClose();
       })
       .catch((err: any) => {
-        console.log(err);
-        setErrorMessage(err.message);
+        bannerNotificationService.error('Something went wrong!')
         setIsValid(true);
       });
   };
@@ -89,64 +84,60 @@ const MembersTab = () => {
     settingService
       .resendInvitation([{ email }])
       .then(() => {
-        setMessage("Resent invitation");
-        setShowA(true);
+        bannerNotificationService.success("Resent invitation");
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
   const cancelInvitation = (email: string) => {
     settingService
       .cancelInvitation([email])
       .then(() => {
-        setMessage("Cancelled invitation");
         const index = teamMembers?.pendingInvitees?.findIndex(
           (mem: any) => mem.email === email
         );
         index !== undefined &&
           index >= 0 &&
           teamMembers?.pendingInvitees?.splice(index, 1);
-        setShowA(true);
+        bannerNotificationService.success("Cancelled invitation");
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
   const removeMember = (email: string) => {
     settingService
       .removeMember([email])
       .then(() => {
-        setMessage("Removed member");
-        setShowA(true);
+        bannerNotificationService.success("Removed member");
         const index = teamMembers?.activeMembers?.findIndex(
           (mem: any) => mem.email === email
         );
         index !== undefined &&
           index >= 0 &&
           teamMembers?.activeMembers?.splice(index, 1);
+          const activeMembers = teamMembers?.activeMembers || [];
+          setTeamMembers({...teamMembers, activeMembers} as any);
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
 
   const handleChange = (event: any) => {
     setEmail(event.target.value);
     setIsValid(false);
-    setErrorMessage("");
+    // setErrorMessage("");
   };
-  const toggleShowA = () => {
-    setShowA(!showA);
-    setMessage("");
-    setErrorMessage("");
-  };
+  // const toggleShowA = () => {
+  //   setShowA(!showA);
+  //   setMessage("");
+  //   setErrorMessage("");
+  // };
   const onChangeRole = (event: any, email: string) => {
     let obj = teamMembers?.activeMembers?.find(
       (mem: any) => mem.email === email
@@ -165,14 +156,12 @@ const MembersTab = () => {
     settingService
       .updateRole(event.target.value, email)
       .then(() => {
-        setMessage("Role Updated Successfully");
-        setShowA(true);
+        bannerNotificationService.success("Role Updated Successfully");
         setUpdateRoleFlag(undefined);
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
 
@@ -328,7 +317,7 @@ const MembersTab = () => {
               onChange={handleChange}
             />
             <FormControl.Feedback type="invalid">
-              {errorMessage || "Enter a valid email address"}
+              {"Enter a valid email address"}
             </FormControl.Feedback>
           </InputGroup>
           {/* <p>
@@ -346,7 +335,7 @@ const MembersTab = () => {
         </Modal.Footer>
       </Modal>
 
-      <ToastContainer className="p-3" position="top-center">
+      {/* <ToastContainer className="p-3" position="top-center">
         <Toast
           show={showA}
           onClose={toggleShowA}
@@ -363,7 +352,7 @@ const MembersTab = () => {
             </div>
           </Toast.Body>
         </Toast>
-      </ToastContainer>
+      </ToastContainer> */}
     </div>
   );
 };

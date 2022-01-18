@@ -11,7 +11,6 @@ export interface FormMeta {
 }
 
 function formHandler<REQ, RES>(
-  isOss: boolean,
   formMeta: FormMeta,
   service: (values: REQ) => Promise<AxiosResponse<RES>>,
   onSuccess?: (res: RES) => void,
@@ -33,12 +32,10 @@ function formHandler<REQ, RES>(
         ? await service(onBeforeSubmit(values))
         : await service(values);
       if (res.status >= 200 && res.status < 300) {
-        if (!isOss) {
-          eventService.send({
-            event: formMeta.id + "_success",
-            ...eventProps,
-          });
-        }
+        eventService.send({
+          event: formMeta.id + "_success",
+          ...eventProps,
+        });
         onSuccess?.(res.data);
       }
     } catch (e: any) {
