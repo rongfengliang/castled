@@ -15,6 +15,7 @@ import lombok.Setter;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TextBoxProps.class, name = "TEXT_BOX"),
+        @JsonSubTypes.Type(value = TextBoxProps.class, name = "PASSWORD_BOX"),
         @JsonSubTypes.Type(value = DropDownProps.class, name = "DROP_DOWN"),
         @JsonSubTypes.Type(value = MappingProps.class, name = "MAPPING"),
         @JsonSubTypes.Type(value = HiddenProps.class, name = "HIDDEN"),
