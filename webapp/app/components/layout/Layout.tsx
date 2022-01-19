@@ -9,6 +9,7 @@ interface LayoutProps extends HeaderProps {
   steps?: WizardSteps;
   stepGroups?: WizardSteps;
   rightHelp?: React.ReactNode;
+  hideHeader?: boolean;
 }
 
 const Layout = ({
@@ -21,20 +22,23 @@ const Layout = ({
   steps,
   stepGroups,
   rightHelp,
+  hideHeader,
 }: LayoutProps) => {
   return (
     <div className="layout-holder">
       <HeadCommon title={typeof title === "string" ? title : pageTitle || ""} />
       <LeftSidebar />
       <main>
-        <Header
-          title={title}
-          centerTitle={centerTitle}
-          navLinks={navLinks}
-          rightBtn={rightBtn}
-          steps={steps}
-          stepGroups={stepGroups}
-        />
+        {!hideHeader && (
+          <Header
+            title={title}
+            centerTitle={centerTitle}
+            navLinks={navLinks}
+            rightBtn={rightBtn}
+            steps={steps}
+            stepGroups={stepGroups}
+          />
+        )}
         {renderChildren(children, rightHelp)}
       </main>
     </div>

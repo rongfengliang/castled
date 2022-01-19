@@ -6,12 +6,14 @@ import { PipelineResponseDto } from "@/app/common/dtos/PipelineResponseDto";
 import Link from "next/link";
 import DefaultErrorPage from "next/error";
 import Loading from "@/app/components/common/Loading";
+import { useRouter } from "next/router";
 
 const Pipelines = () => {
   const [pipelines, setPipelines] = useState<
     PipelineResponseDto[] | undefined | null
   >();
   const headers = ["#", "Name", "Source", "Destination", "Status"];
+  const router = useRouter();
   useEffect(() => {
     pipelineService
       .get()
@@ -23,6 +25,10 @@ const Pipelines = () => {
       });
   }, []);
   if (pipelines === null) return <DefaultErrorPage statusCode={404} />;
+  if (pipelines && pipelines.length === 0) {
+    router.push("/welcome");
+    return null;
+  }
   return (
     <Layout
       title="Pipelines"
@@ -37,21 +43,6 @@ const Pipelines = () => {
       }
     >
       {!pipelines && <Loading />}
-      {pipelines && pipelines.length === 0 && (
-        <>
-          <h2>Set up your first pipeline</h2>
-          <p>
-            <Link href="/pipelines/create?demo=1">
-              <a>Create Pipeline using a demo warehouse</a>
-            </Link>
-          </p>
-          <p>
-            <Link href="/pipelines/create">
-              <a>Create Pipeline using your warehouse</a>
-            </Link>
-          </p>
-        </>
-      )}
       {pipelines && pipelines.length > 0 && (
         <div className="table-responsive">
           <Table hover>
