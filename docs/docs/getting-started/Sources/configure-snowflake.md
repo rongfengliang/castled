@@ -38,7 +38,10 @@ Scripts mentioned below covers the following
     GRANT ROLE CASTLED_ROLE TO USER CASTLED;
 -----------------------------------USER CREATON ENDS------------------------------------------------------------
 
+```
 
+Replace the < your database > and < your schema > with your applicable database and schema names before executing them
+```
 -----------------------------------GRANT TABLE READ ONLY ACCESS STARTS------------------------------------------
 -- Grant Usage on the warehouse to CASTLED_ROLE. This will allow the CASTLED user to run all the required queries in this warehouse.
  GRANT USAGE ON WAREHOUSE COMPUTE_WH TO ROLE CASTLED_ROLE;

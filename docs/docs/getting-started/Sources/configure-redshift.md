@@ -42,7 +42,7 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA CASTLED TO CASTLED;
 -----------------------------------BOOK KEEPING SCHEMA ACCESS ENDS---------------------------------------------
 ```
 
-Replace the < your schema> with your applicable schema for the below scripts before executing them
+Replace the < your schema> with your applicable schema name before executing them
 ```
 -----------------------------------GRANT TABLE READ ONLY ACCESS STARTS------------------------------------------
 -- Give access to CASTLED user to SEE your schema

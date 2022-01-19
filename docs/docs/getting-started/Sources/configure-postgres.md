@@ -36,8 +36,10 @@ GRANT ALL ON SCHEMA CASTLED TO CASTLED;
 -- Give CASTLED user access to all objects existing n the bookkeeping schema
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA CASTLED TO CASTLED;
 -----------------------------------BOOK KEEPING SCHEMA ACCESS ENDS---------------------------------------------
+```
 
-
+Replace the < your schema> with your applicable schema name before executing them
+```
 -----------------------------------GRANT TABLE READ ONLY ACCESS STARTS------------------------------------------
 -- Give access to CASTLED user to SEE your schema
 GRANT USAGE ON SCHEMA "<your schema>" TO CASTLED;
