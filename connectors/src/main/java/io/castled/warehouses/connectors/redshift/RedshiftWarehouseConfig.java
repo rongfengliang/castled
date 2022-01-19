@@ -25,7 +25,7 @@ public class RedshiftWarehouseConfig extends TunneledWarehouseConfig {
     @FormField(description = "Database User", title = "Database User", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String dbUser;
 
-    @FormField(description = "Database Password", title = "Database Password", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Database Password", title = "Database Password", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.PASSWORD_BOX)
     private String dbPassword;
 
     @FormField(description = "S3 Bucket to be used as the staging area", title = "S3 Bucket", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)

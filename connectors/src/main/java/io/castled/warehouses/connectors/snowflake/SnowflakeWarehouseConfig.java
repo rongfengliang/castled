@@ -24,7 +24,7 @@ public class SnowflakeWarehouseConfig extends WarehouseConfig {
     @FormField(description = "Database User", title = "Database User", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String dbUser;
 
-    @FormField(description = "Database password", title = "Database Password", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Database password", title = "Database Password", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.PASSWORD_BOX)
     private String dbPassword;
 
     @FormField(description = "Schema", title = "Schema Name", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
