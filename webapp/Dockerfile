@@ -37,4 +37,4 @@ RUN yarn build
 # Expose the listening port
 EXPOSE 3000
 
-CMD tools/bin/startup.sh
+ENTRYPOINT ["sh", "-c", "tools/bin/startup.sh"]

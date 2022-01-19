@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class GoogleSheetUtils {
 
-    private static final Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets/d/(.*)/edit#gid=0");
+    private static final Pattern SPREADSHEET_PATTERN = Pattern.compile("https://docs.google.com/spreadsheets(/u/[0-9]+)?/d/([^/]+)/edit.*");
 
     public static Sheets getSheets(ServiceAccountDetails serviceAccountDetails) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -51,7 +51,7 @@ public class GoogleSheetUtils {
 
         Matcher matcher = SPREADSHEET_PATTERN.matcher(spreadsheetUrl);
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(2);
         }
         return spreadsheetUrl;
     }
@@ -110,11 +110,9 @@ public class GoogleSheetUtils {
             default:
                 return field.getValue();
         }
-
     }
 
     public static String getRange(String sheetName, long rowNo) {
         return String.format("%s!%d:%d", sheetName, rowNo, rowNo);
     }
-
 }
