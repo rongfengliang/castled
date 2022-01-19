@@ -40,8 +40,10 @@ GRANT ALL ON SCHEMA CASTLED TO CASTLED;
 -- Give CASTLED user access to all objects existing n the bookkeeping schema
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA CASTLED TO CASTLED;
 -----------------------------------BOOK KEEPING SCHEMA ACCESS ENDS---------------------------------------------
+```
 
-
+Replace the < your schema> with your applicable schema for the below scripts before executing them
+```
 -----------------------------------GRANT TABLE READ ONLY ACCESS STARTS------------------------------------------
 -- Give access to CASTLED user to SEE your schema
 GRANT USAGE ON SCHEMA "<your schema>" TO CASTLED;
@@ -91,7 +93,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
 
 1. If the sync involves more than one schema in your database GRANT mentioned above needs to be given for each of those schemas.
 2. If the views in your schema references tables of another schema in your database, GRANT needs to be given for those schemas as well.
-3. Castled connects to Redshift from the following ip adresses. Please make sure these ips are allowed inbound traffic to the Redshift port. You can choose a set of ips to allow inbound traffic based on the Castled cluster location you are using.
+:::
+
+## Whitelisting Castled IP Address
+
+Castled connects to Redshift from the following ip adresses. Please make sure these ips are allowed inbound traffic to the Redshift port. You can choose a set of ips to allow inbound traffic based on the Castled cluster location you are using.
 
    |  US cluster   | India cluster  |
    | :-----------: | :------------: |
@@ -99,8 +105,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
    | 3.235.238.174 |  3.110.46.16   |
    | 44.200.47.23  | 13.233.183.147 |
    | 18.215.16.193 |   65.2.131.7   |
-
-:::
 
 ## Connecting to SSH Tunnel
 
