@@ -342,6 +342,49 @@ form {
   }
 }
 
+.welcome-wrapper {
+  padding-top: 10%;
+  width: 83%;
+
+  .mb-0:first-child {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-light;
+  }
+
+  h3 {
+    font-weight: $font-weight-bold;
+    color: inherit;
+  }
+  p {
+    color: initial;
+    font-weight: $font-weight-light;
+  }
+  .card {
+    .text-muted {
+      position: absolute;
+      right: 1rem;
+      top: 43%;
+    }
+  }
+  .card:hover {
+    background: $gray-000;
+    border-color: $primary-color;
+    box-shadow: 3px 3px 3px $gray-100;
+    transition: all 0.5s;
+  }
+  img {
+    opacity: 0.85;
+  }
+
+  .badge {
+    position: absolute;
+    left: -2px;
+    top: 12px;
+    text-transform: uppercase;
+    transform: rotate(315deg);
+  }
+}
+
 .bnt-red {
   color: red !important;
 }
