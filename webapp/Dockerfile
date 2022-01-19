@@ -32,11 +32,4 @@ RUN yarn build
 # Expose the listening port
 EXPOSE 3000
 
-# Hack: set_api_url.sh will update the API_BASE_URL at runtime
-RUN chown -R node .next
-
-# Run container as non-root (unprivileged) user
-# The node user is provided in the Node.js Alpine base image
-USER node
-
-CMD tools/bin/set_api_url.sh && yarn start
+ENTRYPOINT ["sh", "-c", "tools/bin/startup.sh"]

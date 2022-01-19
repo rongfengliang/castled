@@ -64,7 +64,7 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
       {!connectors && <Loading />}
       {connectors && connectors.length === 0 && (
         <Alert variant="light" className="text-center">
-          No app connections created yet!
+          No {category} connections created yet!
         </Alert>
       )}
       {connectors && connectors.length > 0 && (
