@@ -22,6 +22,8 @@ public @interface FormField {
 
     String group() default FormGroups.DEFAULT_GROUP;
 
+    String loadingText() default "";
+
     GroupActivator groupActivator() default @GroupActivator();
 
     OptionsRef optionsRef() default @OptionsRef();

@@ -9,10 +9,12 @@ import lombok.Setter;
 public class HiddenProps extends FormFieldProps {
 
     private final String optionsRef;
+    private final String loadingText;
 
-    public HiddenProps(String optionsRef) {
+    public HiddenProps(String optionsRef, String loadingText) {
         super(FormFieldType.HIDDEN);
         this.optionsRef = optionsRef;
+        this.loadingText = loadingText;
     }
 
 }

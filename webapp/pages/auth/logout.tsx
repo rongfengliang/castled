@@ -14,7 +14,7 @@ const Logout = () => {
       })
       .catch(() => {})
       .finally(() => {
-        router?.push("/");
+        router?.push("/auth/login");
       });
   });
   return <p>Redirecting...</p>;

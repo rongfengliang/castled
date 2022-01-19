@@ -17,6 +17,8 @@ public class OptionsReferences {
 
     public static final String BQ_SERVICE_ACCOUNT = "BQ Service Account";
 
+    public static final String GSHEETS_SERVICE_ACCOUNT = "GSheets Service Account";
+
     //static options references
 
     public static final String BQ_LOCATIONS = "BQ_LOCATIONS";

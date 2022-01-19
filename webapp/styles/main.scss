@@ -1,14 +1,14 @@
 @import "../node_modules/bootstrap-avatar/dist/avatar";
 @import "./variables-custom";
 @import "./variables-light";
-@import "./variables-dark";
+// @import "./variables-dark";
 @import "./bootstrap-custom";
 @import "./light";
 @import "./colors";
 
-@include color-scheme-alt(alternative-color-scheme($default-color-scheme)) {
-  @import "./dark";
-}
+// @include color-scheme-alt(alternative-color-scheme($default-color-scheme)) {
+//   @import "./dark";
+// }
 
 @import "../node_modules/nprogress/nprogress";
 @import "../node_modules/react-notifications-component/dist/theme";
@@ -90,6 +90,15 @@ body {
 
 .btn {
   text-transform: uppercase;
+}
+
+.btn-link-danger {
+  color: $red;
+}
+
+.mySelect__control {
+  min-height: 30px;
+  height: 30px;
 }
 
 .title-fs {
@@ -317,4 +326,7 @@ form {
   .error {
     font-size: $font-size-sm;
   }
+}
+.bnt-red {
+  color: red !important;
 }

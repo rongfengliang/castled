@@ -13,5 +13,6 @@ public class FormFieldsDTO {
 
     private Map<String, FormFieldDTO> fields;
     private CodeBlockDTO codeBlock;
+    private HelpTextDTO helpText;
     private Map<String, GroupActivatorDTO> groupActivators;
 }

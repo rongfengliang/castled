@@ -1,5 +1,6 @@
 package io.castled.apps.connectors.googlesheets;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
@@ -8,6 +9,8 @@ import com.google.inject.Singleton;
 import io.castled.ObjectRegistry;
 import io.castled.apps.ExternalAppConnector;
 import io.castled.apps.models.ExternalAppSchema;
+import io.castled.exceptions.CastledRuntimeException;
+import io.castled.exceptions.connect.InvalidConfigException;
 import io.castled.forms.dtos.FormFieldOption;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,16 +25,35 @@ public class GoogleSheetsAppConnector implements ExternalAppConnector<GoogleShee
     @Override
     public List<FormFieldOption> getAllObjects(GoogleSheetsAppConfig config, GoogleSheetsAppSyncConfig mappingConfig) {
         try {
-            Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccountDetails());
-            Spreadsheet spreadsheet = sheetsService.spreadsheets().get(config.getSpreadSheetId()).execute();
+            Sheets sheetsService = GoogleSheetUtils.getSheets(config.getServiceAccount());
+            Spreadsheet spreadsheet = sheetsService.spreadsheets()
+                    .get(GoogleSheetUtils.getSpreadSheetId(config.getSpreadSheetId())).execute();
             return spreadsheet.getSheets().stream().map(Sheet::getProperties)
                     .map(sheetProperties -> new FormFieldOption(new GoogleSheetsSyncObject(sheetProperties.getSheetId(), sheetProperties.getTitle()),
                             sheetProperties.getTitle()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("failed", e);
+            log.error("Gsheets get objects failed for {}", config.getServiceAccount().getClientEmail(), e);
+            throw new CastledRuntimeException(e);
         }
-        return Lists.newArrayList();
+    }
+
+    public void validateAppConfig(GoogleSheetsAppConfig appConfig) throws InvalidConfigException {
+        try {
+            if (!GoogleSheetUtils.validSpreadSheetUrl(appConfig.getSpreadSheetId())) {
+                throw new InvalidConfigException("SpreadSheet Url should be in the format: https://docs.google.com/spreadsheets/[/u/1]/d/spreadsheetId/edit.*");
+            }
+            Sheets sheets = GoogleSheetUtils.getSheets(appConfig.getServiceAccount());
+            sheets.spreadsheets().get(GoogleSheetUtils.getSpreadSheetId(appConfig.getSpreadSheetId())).execute();
+        } catch (Exception e) {
+            if (e instanceof GoogleJsonResponseException) {
+                GoogleJsonResponseException gre = (GoogleJsonResponseException) e;
+                if (gre.getStatusCode() == 403) {
+                    throw new InvalidConfigException("Service account does not sufficient privileges to access the spreadsheet");
+                }
+            }
+            throw new InvalidConfigException(e.getMessage());
+        }
     }
 
     @Override

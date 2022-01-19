@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,10 @@ public class MessageUtils {
         Map<String, Object> messageMap = message.getRecord().getFields()
                 .stream().collect(Collectors.toMap(Field::getName, MessageUtils::getJsonValue));
         return JsonUtils.objectToByteArray(messageMap);
+    }
+
+    public static List<String> getFields(Message message) {
+        return message.getRecord().getFields().stream().map(Field::getName).collect(Collectors.toList());
     }
 
     public static Object getJsonValue(Field field) {

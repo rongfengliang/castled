@@ -15,6 +15,7 @@ import { Table } from "react-bootstrap";
 import _ from "lodash";
 import InputField from "@/app/components/forminputs/InputField";
 import { Button } from "react-bootstrap";
+import { useSession } from "@/app/common/context/sessionContext";
 
 const WarehouseModel = ({
   curWizardStep,
@@ -31,13 +32,13 @@ const WarehouseModel = ({
   if (!pipelineWizContext) return <Loading />;
   const [query, setQuery] = useState<string | undefined>();
   const warehouseId = pipelineWizContext.values?.warehouseId;
+  const { isOss } = useSession();
 
   const updateDemoQueries = (whId: number) => {
-    warehouseService.demoQueries(whId)
-      .then(({ data }) => {
-        setDemoQueries(data);
-      });
-  }
+    warehouseService.demoQueries(whId).then(({ data }) => {
+      setDemoQueries(data);
+    });
+  };
   useEffect(() => {
     const warehouseId = pipelineWizContext.values?.warehouseId;
     if (!warehouseId) {
@@ -66,9 +67,14 @@ const WarehouseModel = ({
       steps={steps}
       stepGroups={stepGroups}
     >
-      {demoQueries.length > 0 && (<Card>
-        <Card.Body>Please run <code>SELECT * FROM USERS</code> or <code>SELECT * FROM COMPANIES</code> on our demo database</Card.Body>
-      </Card>)}
+      {demoQueries.length > 0 && (
+        <Card>
+          <Card.Body>
+            Please run <code>SELECT * FROM USERS</code> or{" "}
+            <code>SELECT * FROM COMPANIES</code> on our demo database
+          </Card.Body>
+        </Card>
+      )}
       <Formik
         key={pipelineWizContext.values?.sourceQuery}
         initialValues={
@@ -78,6 +84,7 @@ const WarehouseModel = ({
           } as ExecuteQueryRequestDto
         }
         onSubmit={formHandler(
+          isOss,
           {
             id: "warehouse_query_form",
             pickFieldsForEvent: ["query"],

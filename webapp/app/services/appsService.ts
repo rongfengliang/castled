@@ -57,4 +57,13 @@ export default {
       { ...data }
     );
   },
+  configOptions: (
+    optionsRef: string,
+    data: ConnectorRequestDto | undefined
+  ): Promise<AxiosResponse<DataFetcherResponseDto>> => {
+    return http.post(
+      "/v1/apps/config-options" + httpUtils.param({ optionsRef }),
+      { ...data }
+    );
+  },
 };

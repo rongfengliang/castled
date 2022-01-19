@@ -7,6 +7,8 @@ import { AxiosResponse } from "axios";
 
 import { ObjectUtils } from "@/app/common/utils/objectUtils";
 
+import { Spinner } from "react-bootstrap";
+
 import { DataFetcherResponseDto } from "@/app/common/dtos/DataFetcherResponseDto";
 import Select from "react-select";
 import cn from "classnames";
@@ -27,6 +29,7 @@ export interface InputSelectOptions extends InputBaseProps {
     optionsRef: string
   ) => Promise<AxiosResponse<DataFetcherResponseDto>>;
   hidden?: boolean;
+  loadingText?: string;
 }
 
 const InputSelect = ({
@@ -69,41 +72,54 @@ const InputSelect = ({
     }
   }, [optionsRef, ...depValues]);
   return (
-    <div className={cn("mb-3", { "d-none": props.hidden })}>
-      {title && (
-        <label htmlFor={props.id || props.name} className="form-label">
-          {title}
-          {required && "*"}
-        </label>
-      )}
-      <Select
-        {...props}
-        options={
-          !optionsDynamic
-            ? [{ label: "Loading.." }]
-            : optionsDynamic.map((o) => ({
+    <div>
+      {optionsLoading && props.hidden &&
+        <div className="mb-1">
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          <span className="ml-2">{props.loadingText}</span>
+        </div>}
+      <div className={cn("mb-3", { "d-none": props.hidden })}>
+        {title && (
+          <label htmlFor={props.id || props.name} className="form-label">
+            {title}
+            {required && "*"}
+          </label>
+        )}
+        <Select
+          {...props}
+          options={
+            !optionsDynamic
+              ? [{ label: "Loading.." }]
+              : optionsDynamic.map((o) => ({
                 value: o.value,
                 label: o.title,
               }))
-        }
-        onChange={(v) => setFieldValue?.(field.name, v?.value)}
-        onBlur={() => setFieldTouched?.(field.name, true)}
-        value={
-          optionsLoading || !optionsDynamic
-            ? { label: "Loading..." }
-            : {
+          }
+          onChange={(v) => setFieldValue?.(field.name, v?.value)}
+          onBlur={() => setFieldTouched?.(field.name, true)}
+          value={
+            optionsLoading || !optionsDynamic
+              ? { label: "Loading..." }
+              : {
                 value: field.value,
                 label: optionsDynamic
                   .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
                   .map((o) => o.title),
               }
-        }
-      />
-      {meta.touched && meta.error ? (
-        <div className="error">
-          {meta.error}
-        </div>
-      ) : null}
+          }
+        />
+        {meta.touched && meta.error ? (
+          <div className="error">
+            {meta.error}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };

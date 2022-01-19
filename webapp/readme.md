@@ -6,6 +6,7 @@ Create `.env` file in the root with following contents
 API_BASE=/backend
 APP_BASE_URL=http://localhost:3000
 API_BASE_URL=https://test.castled.io
+IS_OSS=true
 DEBUG=false
 ```
 

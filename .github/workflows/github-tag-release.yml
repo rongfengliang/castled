@@ -1,0 +1,35 @@
+name: Castled Github Tag And Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  github-tag-release:
+    name: "Github Tag And Release"
+    runs-on: "ubuntu-latest"
+    if: contains(github.event.head_commit.message , 'Bumping Castled version')
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get Tag Version
+        id: fetch_tag_version
+        run: echo ::set-output name=VERSION::$(grep VERSION .env | cut -d"=" -f2)
+
+      - name: Push Tag
+        id: tag_version
+        uses: "mathieudutour/github-tag-action@v6.0"
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "latest"
+          custom_tag: ${{ steps.fetch_tag_version.outputs.VERSION }}
+          tag_prefix: "v"
+
+      - name: Github Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "v${{ steps.fetch_tag_version.outputs.VERSION }}"
+          prerelease: false

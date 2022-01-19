@@ -3,8 +3,8 @@
 set -e
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [[ "$BRANCH" != "community" ]]; then
-  echo 'Script has to be run from community branch after release_version.sh!';
+if [[ "$BRANCH" != "main" ]]; then
+  echo 'Script has to be run from main immediately after a release_version.sh!';
   exit 1;
 fi
 

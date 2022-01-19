@@ -24,6 +24,7 @@ import io.castled.apps.connectors.restapi.RestApiAppConnector;
 import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridListsOptionsFetcher;
+import io.castled.apps.optionfetchers.AppOptionsFetcher;
 import io.castled.forms.StaticOptionsFetcher;
 import io.castled.jdbc.JdbcConnectionType;
 import io.castled.jdbc.JdbcQueryHelper;
@@ -37,7 +38,6 @@ import io.castled.warehouses.WarehouseConnector;
 import io.castled.warehouses.WarehouseConnectorConfig;
 import io.castled.warehouses.WarehouseType;
 import io.castled.warehouses.connectors.bigquery.BQLocationsFetcher;
-import io.castled.warehouses.connectors.bigquery.BQServiceAccountOptionsFetcher;
 import io.castled.warehouses.connectors.bigquery.BigQueryConnector;
 import io.castled.warehouses.connectors.postgres.PostgresQueryHelper;
 import io.castled.warehouses.connectors.postgres.PostgresWarehouseConnector;
@@ -63,6 +63,7 @@ public class ConnectorsModule extends AbstractModule {
         bindStaticOptionFetchers();
         bindWarehouseOptionFetchers();
         bindAppConnectors();
+        bindAppOptionFetchers();
     }
 
 
@@ -89,7 +90,11 @@ public class ConnectorsModule extends AbstractModule {
     private void bindWarehouseOptionFetchers() {
         MapBinder<String, WarehouseOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
                 String.class, WarehouseOptionsFetcher.class);
-        warehouseOptionFetchers.addBinding(OptionsReferences.BQ_SERVICE_ACCOUNT).to(BQServiceAccountOptionsFetcher.class);
+    }
+
+    private void bindAppOptionFetchers() {
+        MapBinder<String, AppOptionsFetcher> warehouseOptionFetchers = MapBinder.newMapBinder(binder(),
+                String.class, AppOptionsFetcher.class);
     }
 
     private void bindJdbcQueryHelpers() {

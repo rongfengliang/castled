@@ -35,7 +35,7 @@ const Pipelines = () => {
       {!pipelines && <Loading />}
       {pipelines && pipelines.length === 0 && (
         <Alert variant="light" className="text-center">
-          No app connections created yet!
+          No sync pipelines created yet!
         </Alert>
       )}
       {pipelines && pipelines.length > 0 && (

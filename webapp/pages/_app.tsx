@@ -6,15 +6,14 @@ import Router, { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import NProgress from "nprogress";
 import ReactNotification from "react-notifications-component";
-import { IntercomProvider, useIntercom } from 'react-use-intercom';
+import { IntercomProvider, useIntercom } from "react-use-intercom";
 import { SWRConfig } from "swr";
-import eventService from "@/app/services/eventService";
 import axios from "axios";
 import SessionProvider, {
   useSession,
 } from "@/app/common/context/sessionContext";
 import jsUtils from "@/app/common/utils/jsUtils";
-import { domain } from "process";
+import getConfig from "next/config";
 
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
@@ -25,8 +24,13 @@ Router.events.on("routeChangeComplete", () => {
 });
 Router.events.on("routeChangeError", () => NProgress.done());
 
+interface OssProps {
+  isOss: boolean;
+}
+
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
+
   return (
     <SWRConfig
       value={{
@@ -40,36 +44,47 @@ const App = ({ Component, pageProps }: AppProps) => {
         disableTransitionOnChange
       >
         <SessionProvider>
+          <EnvLoader isOss={pageProps.isOss} />
           <Meta />
           <ReactNotification />
-          <IntercomProvider appId='ak93xau2'>
+          <IntercomProvider appId="ak93xau2">
             <IntercomLoader />
             <Component {...pageProps} router={router} />
           </IntercomProvider>
-
         </SessionProvider>
       </ThemeProvider>
     </SWRConfig>
   );
 };
 
-const EventLoader = () => {
-  const { user } = useSession();
+App.getInitialProps = async (ctx: any) => {
+  const { publicRuntimeConfig } = getConfig();
+  return { pageProps: { isOss: publicRuntimeConfig.isOss === "true" } };
+};
+
+const EnvLoader = ({ isOss }: OssProps) => {
+  const { setIsOss } = useSession();
   useEffect(() => {
-    eventService.load(user);
-  }, [user]);
+    setIsOss(isOss);
+  }, []);
+
   return null;
 };
 
 const IntercomLoader = () => {
-  const { boot } = useIntercom();
-  const { user } = useSession();
+  const { boot, hardShutdown } = useIntercom();
+  const { user, isOss } = useSession();
   useEffect(() => {
-    boot({
-      email: user?.email,
-      name: user?.name,
-    });
-  }, [user]);
+    // Shutdown Intercom in OSS mode.
+    if (isOss) {
+      hardShutdown();
+    } else {
+      boot({
+        email: user?.email,
+        name: user?.name,
+      });
+    }
+  }, [user, isOss]);
   return null;
 };
 

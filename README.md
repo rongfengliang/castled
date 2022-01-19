@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://cdn.castled.io/logo/castled_original_on_black.svg" alt="Castled-logo" width="300" />
-  <p align="center">Open source reverse-ETL platform to operationalize your data warehouse</p>
+  <p align="center">Open source reverse-ETL platform to operationalise your data warehouse</p>
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 
 ## Introduction
 
-Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying on your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing Snowflake, BigQuery, Redshift and Postgres as the data source and some of the most popular sales, marketing and support solutions such as Salesforce, Hubspot, Intercom, Google Ads etc as the destination.
+Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying in your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing **Snowflake**, **BigQuery**, **Redshift** and **Postgres** as the data source and some of the most popular sales, marketing and support solutions such as **Salesforce**, **Hubspot**, **Intercom**, **Google Ads** etc as the destination.
 
 <p align="center">
   <img src="https://cdn.castled.io/content/readme/castled_overview.svg" alt="Castled-logo" width="800" />
@@ -38,7 +38,7 @@ cd castled
 docker compose up
 ```
 
-You can access castled app at http://localhost:3000. Happy castling!!
+You can access castled app at http://localhost:3000. Happy castling!!!
 
 ## Documentation
 
@@ -46,20 +46,20 @@ You can access the documentation at: https://docs.castled.io/
 
 ## Community Support
 
-- [Slack](https://castled.slack.com) - For any discussions or if any help needed in getting started with Castled or the very least to say hi to us :wave:
-- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requets please use Github. We will get back to you in no time!
+- [Discord](https://discord.gg/7aJ3DWP9pz) - For any discussions or help needed in getting started with Castled or just to hang out.
+- [Github](https://github.com/castledio/castled) - If you need to raise any bugs or feature requests please use Github. We will get back to you in no time!
 
 ## Performance
 
 The throughput/latency of a data pipeline depends mostly on the destination api limitations and/or rate limits. We do make the best effort to tune it to provide the most optimal throughput possible. But to give an indication of the throughput we support, publishing a bench mark we did to transfer upto 100 million records from BigQuery to Apache Kafka.
 
-![kafka benchmark](https://cdn.castled.io/content/kafka_benchmark.png)
+![kafka benchmark](https://cdn.castled.io/content/readme/kafka_benchmark_shaded.png)
 
 ## Contribute to us
 
 We are a huge fan of the open source community and we value your contributions. We have spent an insane amount of time customizing our framework to reduce the amount of time required to built a new connector. Here is all you need to do to add your own custom connector.
 
-1. Implement java interfaces ([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
+1. Implement java interfaces ([ExternalAppConnector](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/ExternalAppConnector.java) and [DataSink](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/DataSink.java)) on the backend.
 
 2. Customize the mapping configuration and app configuration on the UI using our java annotation based framework. Refer the [mapping configuration](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppSyncConfig.java) and [app configuration](https://github.com/castledio/castled/blob/main/connectors/src/main/java/io/castled/apps/connectors/customerio/CustomerIOAppConfig.java) of our _CustomerIO_ connector for more info.
 

@@ -81,7 +81,13 @@ public class PostgresSyncFailureListener extends WarehouseSyncFailureListener {
 
     @Override
     public void cleanupResources(String pipelineUUID, Long pipelineRunId, WarehouseConfig warehouseConfig) {
-
+        try {
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+        } catch (Exception e) {
+            log.error("Failed to close postgres connection for pipeline {}", pipelineUUID);
+        }
     }
 
     @Override

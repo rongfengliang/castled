@@ -14,6 +14,7 @@ import io.castled.models.AppAggregate;
 import io.castled.models.users.User;
 import io.castled.resources.validators.ResourceAccessController;
 import io.castled.services.PipelineService;
+import io.castled.warehouses.dtos.WarehouseAttributes;
 import io.dropwizard.auth.Auth;
 import lombok.extern.slf4j.Slf4j;
 
@@ -114,6 +115,12 @@ public class ExternalAppResource {
         List<AppAggregate> appAggregates = this.pipelineService.getAppAggregates(user.getTeamId());
         return externalApps.stream().map(externalApp -> ExternalAppDTOMapper.INSTANCE.toDTO(externalApp, appAggregates))
                 .collect(Collectors.toList());
+    }
+
+    @POST
+    @Path("/config-options")
+    public FieldOptionsDTO getWarehouseConfigOptions(ExternalAppAttributes externalAppAttributes, @QueryParam("optionsRef") String optionsReference) {
+        return this.externalAppService.getConfigOptions(externalAppAttributes.getConfig(), optionsReference);
     }
 
     @GET

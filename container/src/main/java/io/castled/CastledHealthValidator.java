@@ -1,11 +1,5 @@
 package io.castled;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import io.castled.apps.ExternalAppType;
-import io.castled.apps.connectors.kafka.KafkaAppConfig;
-import io.castled.apps.models.GenericSyncObject;
-import io.castled.forms.dtos.FormFieldOption;
 import io.castled.kafka.KafkaApplicationConfig;
 import io.castled.utils.ThreadUtils;
 import io.castled.utils.TimeUtils;
@@ -15,7 +9,6 @@ import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.KafkaFuture;
 
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,11 +30,12 @@ public class CastledHealthValidator {
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaApplicationConfig.getBootstrapServers());
         try (AdminClient adminClient = KafkaAdminClient.create(properties)) {
             KafkaFuture<Set<String>> topics = adminClient.listTopics().names();
+            ThreadUtils.interruptIgnoredSleep(TimeUtils.secondsToMillis(1));
             while (!topics.isDone()) {
                 log.info("Waiting for kafka service to come up!!");
                 ThreadUtils.interruptIgnoredSleep(TimeUtils.secondsToMillis(10));
+
             }
         }
-
     }
 }

@@ -14,7 +14,6 @@ import io.castled.exceptions.CastledRuntimeException;
 import io.castled.filestorage.GcsClient;
 import io.castled.utils.JsonUtils;
 import io.castled.commons.models.ServiceAccountDetails;
-import io.castled.warehouses.connectors.bigquery.daos.ServiceAccountDetailsDAO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,6 @@ public class GcpClientFactory {
 
     private final Cache<CacheKey, BigQuery> bigQueryClientCache;
     private final Cache<CacheKey, GcsClient> gcsClientCache;
-    private final ServiceAccountDetailsDAO serviceAccountDetailsDAO;
 
     @Inject
     public GcpClientFactory(Jdbi jdbi) {
@@ -44,7 +42,6 @@ public class GcpClientFactory {
         this.gcsClientCache = Caffeine.newBuilder()
                 .expireAfterWrite(3, TimeUnit.HOURS)
                 .maximumSize(1000).build();
-        this.serviceAccountDetailsDAO = jdbi.onDemand(ServiceAccountDetailsDAO.class);
     }
 
     @Data
@@ -58,9 +55,8 @@ public class GcpClientFactory {
         private String projectId;
     }
 
-    public BigQuery getBigQuery(String serviceAccount, String projectId) {
+    public BigQuery getBigQuery(ServiceAccountDetails serviceAccountDetails, String projectId) {
 
-        ServiceAccountDetails serviceAccountDetails = serviceAccountDetailsDAO.getServiceAccount(serviceAccount).getServiceAccountDetails();
         CacheKey cacheKey = new CacheKey(serviceAccountDetails.getClientId(), serviceAccountDetails.getClientEmail(),
                 serviceAccountDetails.getProjectId(), projectId);
         return this.bigQueryClientCache.get(cacheKey, cacheKeyRef -> {
@@ -75,9 +71,8 @@ public class GcpClientFactory {
     }
 
 
-    public GcsClient getGcsClient(String serviceAccount, String projectId) {
+    public GcsClient getGcsClient(ServiceAccountDetails serviceAccountDetails, String projectId) {
 
-        ServiceAccountDetails serviceAccountDetails = serviceAccountDetailsDAO.getServiceAccount(serviceAccount).getServiceAccountDetails();
         CacheKey cacheKey = new CacheKey(serviceAccountDetails.getClientId(), serviceAccountDetails.getClientEmail(),
                 serviceAccountDetails.getProjectId(), projectId);
         return this.gcsClientCache.get(cacheKey, cacheKeyRef -> new GcsClient(StorageOptions.newBuilder().setProjectId(projectId)

@@ -6,6 +6,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: container
+      args:
+        - ARG_VERSION=${VERSION}
       labels:
         io.castled.git-revision: ${GIT_REVISION}
 
@@ -17,7 +19,5 @@ services:
       args:
         - ARG_API_BASE=${API_BASE}
         - ARG_API_BASE_URL=${API_BASE_URL}
-        - ARG_APP_BASE_URL=${APP_BASE_URL}
       labels:
         io.castled.git-revision: ${GIT_REVISION}
-
