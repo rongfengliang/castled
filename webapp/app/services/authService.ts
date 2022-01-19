@@ -1,8 +1,6 @@
 import http from "@/app/services/http";
 import { LoginRequestDto } from "@/app/common/dtos/LoginRequestDto";
-
 import { RegisterUserDTO } from "@/app/common/dtos/RegisterUserDTO";
-
 import { AxiosResponse } from "axios";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { UserRegistrationResponse } from "../common/dtos/UserRegistrationResponse";
@@ -13,7 +11,9 @@ export default {
     return http.post("/v1/users/custom-signin", request);
   },
 
-  register: (request: RegisterUserDTO): Promise<AxiosResponse<UserRegistrationResponse>> => {
+  register: (
+    request: RegisterUserDTO
+  ): Promise<AxiosResponse<UserRegistrationResponse>> => {
     return http.post("/v1/users/redirect", request);
   },
 

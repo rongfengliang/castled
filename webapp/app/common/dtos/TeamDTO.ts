@@ -4,6 +4,6 @@ export interface TeamDTO {
   teamId: number;
   teamName: string;
   teamTier: string;
-  activeMembers: Array<UserDTO>;
-  pendingInvitees: Array<UserDTO>;
+  activeMembers: Array<UserDTO> | [];
+  pendingInvitees: Array<UserDTO> | [];
 }
