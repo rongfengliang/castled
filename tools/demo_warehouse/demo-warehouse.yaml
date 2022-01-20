@@ -1,0 +1,18 @@
+# Use postgres/example user/password credentials
+version: "3.8"
+
+services:
+  demo_wh:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: test_db
+    volumes:
+      - ./setup:/docker-entrypoint-initdb.d
+
+networks:
+  default:
+    external: true
+    name: castled_default
