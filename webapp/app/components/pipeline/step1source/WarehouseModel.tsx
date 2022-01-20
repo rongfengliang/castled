@@ -68,11 +68,7 @@ const WarehouseModel = ({
       stepGroups={stepGroups}
     >
       {!!demoQueries?.length && (
-        <Card>
-          <Card.Body>
-            <p>You can use the prefilled query below for the demo warehouse</p>
-          </Card.Body>
-        </Card>
+        <p>You can use the prefilled query below for the demo warehouse</p>
       )}
       <Formik
         key={pipelineWizContext.values?.sourceQuery}

@@ -14,10 +14,10 @@ const Welcome = () => {
             <a className="row">
               <div className="col-3">
                 <img
-                  src="https://www.postgresql.org/media/img/about/press/elephant.png"
+                  src="/images/demo-warehouse.png"
                   className="card-img-top"
                 />
-                <Badge bg="warning">demo</Badge>
+                {/* <Badge bg="warning">demo</Badge> */}
               </div>
 
               <div className="col-8">
@@ -40,7 +40,7 @@ const Welcome = () => {
           <Link href="/pipelines/create?wizardStep=source:selectType">
             <a className="row">
               <div className="col-3">
-                <img className="card-img-top" />
+                <img src="/images/warehouses.png" className="card-img-top" />
               </div>
 
               <div className="col-8">

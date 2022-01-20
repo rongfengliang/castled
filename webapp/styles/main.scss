@@ -373,7 +373,9 @@ form {
     transition: all 0.5s;
   }
   img {
-    opacity: 0.85;
+    border: 1px solid $gray-100;
+    padding: 15%;
+    border-radius: 2px;
   }
 
   .badge {
