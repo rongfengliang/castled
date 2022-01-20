@@ -13,5 +13,7 @@ public class TestRedshiftCsvSchemaMapper {
         RedshiftCsvSchemaMapper redshiftCsvSchemaMapper = new RedshiftCsvSchemaMapper();
         redshiftCsvSchemaMapper.transformValue("2021-05-22 03:16:40.105", TimestampSchema.builder().build());
         redshiftCsvSchemaMapper.transformValue("2021-05-22 03:16:40", TimestampSchema.builder().build());
+        redshiftCsvSchemaMapper.transformValue("2021-05-22 03:16:40.1", TimestampSchema.builder().build());
+        redshiftCsvSchemaMapper.transformValue("2021-05-22 03:16:40.15", TimestampSchema.builder().build());
     }
 }

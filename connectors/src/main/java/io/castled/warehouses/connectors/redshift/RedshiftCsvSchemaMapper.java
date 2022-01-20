@@ -39,7 +39,16 @@ public class RedshiftCsvSchemaMapper extends SchemaMapper {
             try {
                 return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             } catch (DateTimeParseException e) {
-                return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+                try {
+                    return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+                } catch (DateTimeParseException e1) {
+                    try {
+                        return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS"));
+                    } catch (DateTimeParseException e2) {
+                        return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                    }
+
+                }
             }
         }
 
