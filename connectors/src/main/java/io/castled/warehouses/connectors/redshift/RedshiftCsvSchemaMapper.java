@@ -36,7 +36,11 @@ public class RedshiftCsvSchemaMapper extends SchemaMapper {
         }
 
         if (SchemaUtils.isTimestampSchema(schema)) {
-            return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            try {
+                return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            } catch (DateTimeParseException e) {
+                return LocalDateTime.parse(valueAsStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+            }
         }
 
         if (schema.getType() == SchemaType.ZONED_TIMESTAMP) {
