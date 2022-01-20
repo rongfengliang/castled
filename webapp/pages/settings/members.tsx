@@ -65,12 +65,15 @@ const MembersTab = () => {
       .inviteMember([{ email }])
       .then(() => {
         bannerNotificationService.success("Invitation sent successfully");
-        const pendingInvitees = [...teamMembers?.pendingInvitees as any, { email }];
-        setTeamMembers({...teamMembers, pendingInvitees} as any);
+        const pendingInvitees = [
+          ...(teamMembers?.pendingInvitees as any),
+          { email },
+        ];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
         handleClose();
       })
       .catch((err: any) => {
-        bannerNotificationService.error('Something went wrong.')
+        bannerNotificationService.error("Something went wrong.");
         setIsValid(true);
       });
   };
@@ -95,9 +98,9 @@ const MembersTab = () => {
         index !== undefined &&
           index >= 0 &&
           teamMembers?.pendingInvitees?.splice(index, 1);
-          const pendingInvitees = teamMembers?.pendingInvitees || [];
-          setTeamMembers({...teamMembers, pendingInvitees} as any);
-          bannerNotificationService.success("Cancelled invitation");
+        const pendingInvitees = teamMembers?.pendingInvitees || [];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
+        bannerNotificationService.success("Cancelled invitation");
       })
       .catch((err: any) => {
         console.log(err);
@@ -115,8 +118,8 @@ const MembersTab = () => {
         index !== undefined &&
           index >= 0 &&
           teamMembers?.activeMembers?.splice(index, 1);
-          const activeMembers = teamMembers?.activeMembers || [];
-          setTeamMembers({...teamMembers, activeMembers} as any);
+        const activeMembers = teamMembers?.activeMembers || [];
+        setTeamMembers({ ...teamMembers, activeMembers } as any);
       })
       .catch((err: any) => {
         console.log(err);
@@ -128,7 +131,7 @@ const MembersTab = () => {
     setEmail(event.target.value);
     setIsValid(false);
   };
- 
+
   const onChangeRole = (event: any, email: string) => {
     let obj = teamMembers?.activeMembers?.find(
       (mem: any) => mem.email === email
@@ -184,28 +187,32 @@ const MembersTab = () => {
             teamMembers?.activeMembers.map((fieldMapping, i) => (
               <tr key={i}>
                 <td>
-                  <div style={{ width: "150px" }}>{fieldMapping.name}</div>
+                  <div style={{ width: "115px" }}>{fieldMapping.name}</div>
                 </td>
                 <td>
                   <div style={{ width: "150px" }}>{fieldMapping.email}</div>
                 </td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <div style={{ width: "110px" }}>
-                      <Form.Select
-                        size="sm"
-                        disabled={updateRoleFlag === i}
-                        value={fieldMapping.role}
-                        onChange={(e: any) =>
-                          onChangeRole(e, fieldMapping.email)
-                        }
-                      >
-                        {roles?.map((role) => {
-                          return <option value={role}>{role}</option>;
-                        })}
-                      </Form.Select>
+                    <div style={{ width: "90px" }}>
+                      {user?.role === "ADMIN" ? (
+                        <Form.Select
+                          size="sm"
+                          disabled={updateRoleFlag === i}
+                          value={fieldMapping.role}
+                          onChange={(e: any) =>
+                            onChangeRole(e, fieldMapping.email)
+                          }
+                        >
+                          {roles?.map((role) => {
+                            return <option value={role}>{role}</option>;
+                          })}
+                        </Form.Select>
+                      ) : (
+                        fieldMapping.role
+                      )}
                     </div>
-                    <div style={{ width: "25px" }}>
+                    <div style={{ width: "14px" }}>
                       {updateRoleFlag === i && (
                         <IconLoader size={12} className="spinner-icon" />
                       )}
