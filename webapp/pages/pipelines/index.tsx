@@ -27,7 +27,11 @@ const Pipelines = () => {
   if (pipelines === null) return <DefaultErrorPage statusCode={404} />;
   if (pipelines && pipelines.length === 0) {
     router.push("/welcome");
-    return null;
+    return (
+      <Layout title="Loading Welcome..." hideHeader={true}>
+        <Loading />
+      </Layout>
+    );
   }
   return (
     <Layout

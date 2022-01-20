@@ -70,8 +70,7 @@ const WarehouseModel = ({
       {!!demoQueries?.length && (
         <Card>
           <Card.Body>
-            Please run <code>SELECT * FROM USERS</code> or{" "}
-            <code>SELECT * FROM COMPANIES</code> on our demo database
+            <p>You can use the prefilled query below for the demo warehouse</p>
           </Card.Body>
         </Card>
       )}
@@ -80,7 +79,8 @@ const WarehouseModel = ({
         initialValues={
           {
             warehouseId,
-            query: pipelineWizContext.values?.sourceQuery,
+            query:
+              pipelineWizContext.values?.sourceQuery || "SELECT * FROM USERS",
           } as ExecuteQueryRequestDto
         }
         onSubmit={formHandler(
