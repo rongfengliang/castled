@@ -58,7 +58,9 @@ const ConnectorWizard = ({
       steps={steps}
       stepGroups={stepGroups}
       rightHelp={
-        curWizardStep === "configure" && typeOption ? (
+        curWizardStep === "configure" &&
+        typeOption &&
+        process.env.INTEGRATED_DOC ? (
           <IntegratedDoc category={category} connectorType={typeOption.value} />
         ) : undefined
       }

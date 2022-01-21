@@ -11,6 +11,7 @@ import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContex
 import routerUtils from "@/app/common/utils/routerUtils";
 import _ from "lodash";
 import { AccessType } from "@/app/common/enums/AccessType";
+import { PipelineWizardContextDto } from "@/app/common/dtos/context/PipelineWizardContextDto";
 
 interface PipelineWizardProps {
   appBaseUrl: string;
@@ -31,7 +32,7 @@ export interface PipelineWizardStepProps {
   onFinish?: (id: number) => void;
 }
 
-const demoContext = {
+const demoContext: PipelineWizardContextDto = {
   warehouseType: {
     value: "POSTGRES",
     title: "Postgres",
@@ -45,6 +46,7 @@ const demoContext = {
     warehouseId: 4,
     appSyncConfig: {},
   },
+  isDemo: true,
 };
 
 const PipelineWizard = ({
