@@ -27,7 +27,11 @@ const SelectConnectorType = ({
   return (
     <>
       {pipelineWizContext?.isDemo && category === "App" && (
-        <div>Consider using Google Sheets</div>
+        <div className="help-message">
+          <Badge bg="warning" className="badge badge-warning">
+            Google Sheets is the most used app for testing demo pipelines.
+          </Badge>
+        </div>
       )}
       <div className="grid-categories">
         <Row xs={3}>

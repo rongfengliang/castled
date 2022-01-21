@@ -16,6 +16,7 @@ import _ from "lodash";
 import InputField from "@/app/components/forminputs/InputField";
 import { Button } from "react-bootstrap";
 import { useSession } from "@/app/common/context/sessionContext";
+import { IconChevronRight, IconLoader, IconPlayerPlay } from "@tabler/icons";
 
 const WarehouseModel = ({
   curWizardStep,
@@ -73,6 +74,11 @@ const WarehouseModel = ({
         bannerNotificationService.error("Query failed unexpectedly");
       });
   };
+  const nextStep = (): void => {
+    _.set(pipelineWizContext, "values.sourceQuery", query);
+    setPipelineWizContext(pipelineWizContext);
+    setCurWizardStep("destination", "selectType");
+  };
   return (
     <Layout
       title={steps[curWizardStep].title}
@@ -81,7 +87,9 @@ const WarehouseModel = ({
       stepGroups={stepGroups}
     >
       {!!demoQueries?.length && (
-        <p>You can use the prefilled query below for the demo warehouse</p>
+        <p className="mb-1">
+          Use the prefilled query below for the demo warehouse.
+        </p>
       )}
       <Formik
         key={pipelineWizContext.values?.sourceQuery}
@@ -116,7 +124,34 @@ const WarehouseModel = ({
               placeholder="Enter Query..."
               className="border-0 border-bottom mono-font"
             />
-            <ButtonSubmit submitting={isSubmitting}>Run Query</ButtonSubmit>
+            <div className="d-flex align-items-center">
+              {/* <ButtonSubmit submitting={isSubmitting}>Run Query</ButtonSubmit> */}
+              <Button
+                type="submit"
+                className="btn mt-2"
+                disabled={isSubmitting}
+                variant="outline-primary"
+              >
+                Run Query
+                <IconPlayerPlay size={14} style={{ marginRight: "5px" }} />
+                {isSubmitting === true ? (
+                  <IconLoader className="spinner-icon" />
+                ) : (
+                  ""
+                )}
+              </Button>
+              {queryResults && queryResults.status !== "PENDING" && (
+                <Button
+                  type="button"
+                  className="btn btn-primary mt-2 ms-2"
+                  variant="outline-primary"
+                  onClick={nextStep}
+                >
+                  Next
+                  <IconChevronRight size={18} />
+                </Button>
+              )}
+            </div>
           </Form>
         )}
       </Formik>
@@ -165,11 +200,6 @@ function renderQueryResults(
   } else if (result.queryResults) {
     return (
       <>
-        <div className="d-flex justify-content-end pt-2">
-          <Button className="btn" variant="outline-primary" onClick={nextStep}>
-            Next
-          </Button>
-        </div>
         <div className="table-responsive mx-auto mt-2">
           <Table hover>
             <thead>
