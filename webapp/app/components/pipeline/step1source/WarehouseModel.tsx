@@ -31,7 +31,9 @@ const WarehouseModel = ({
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
   if (!pipelineWizContext) return <Loading />;
   const [query, setQuery] = useState<string | undefined>();
-  const warehouseId = pipelineWizContext.values?.warehouseId;
+  const [warehouseId, setWarehouseId] = useState<any>(
+    pipelineWizContext.values?.warehouseId
+  );
   const { isOss } = useSession();
 
   const updateDemoQueries = (whId: number) => {
@@ -40,13 +42,24 @@ const WarehouseModel = ({
     });
   };
   useEffect(() => {
-    const warehouseId = pipelineWizContext.values?.warehouseId;
+    setWarehouseId(pipelineWizContext.values?.warehouseId);
     if (!warehouseId) {
       setCurWizardStep("source", "selectType");
     } else {
+      getDemoQuery(warehouseId!);
+    }
+  }, []);
+
+  const getDemoQuery = async (warehouseId: number) => {
+    const res = await warehouseService.get();
+    const warehouseRes = res.data.find((d: any) => d.demo);
+    if (warehouseRes!.id) {
+      setWarehouseId(warehouseRes!.id);
+      updateDemoQueries(warehouseRes!.id);
+    } else {
       updateDemoQueries(warehouseId!);
     }
-  }, [warehouseId]);
+  };
   const getQueryResults = (queryId: string) => {
     warehouseService
       .executeQueryResults(queryId)
@@ -90,6 +103,7 @@ const WarehouseModel = ({
             getQueryResults(res.queryId);
           }
         )}
+        enableReinitialize
       >
         {({ isSubmitting }) => (
           <Form>
