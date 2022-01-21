@@ -1,7 +1,6 @@
 import { TeamDTO } from "@/app/common/dtos/TeamDTO";
 import settingService from "@/app/services/settingService";
 import authService from "@/app/services/authService";
-import eventService from "@/app/services/eventService";
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -9,26 +8,20 @@ import {
   Table,
   Modal,
   FormControl,
-  ToastContainer,
   Form,
-  Toast,
 } from "react-bootstrap";
 import { IconUserPlus, IconX, IconLoader } from "@tabler/icons";
 import { LoggedInUserDto } from "@/app/common/dtos/LoggedInUserDto";
 import { AxiosResponse } from "axios";
 import moment from "moment";
-import { removeListener } from "process";
+import bannerNotificationService from "@/app/services/bannerNotificationService";
 
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
   const [email, setEmail] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [showA, setShowA] = useState<boolean>(false);
   const [user, setUser] = useState<LoggedInUserDto | null>();
   const [roles, setRoles] = useState<string[] | null | undefined>([]);
-  const [selectedRole, setSelectedRole] = useState<string[] | null>();
   const [updateRoleFlag, setUpdateRoleFlag] = useState<number | undefined>();
   useEffect(() => {
     if (user === undefined) {
@@ -36,9 +29,6 @@ const MembersTab = () => {
         .whoAmI()
         .then((res: AxiosResponse<LoggedInUserDto>) => {
           setUser(res.data);
-          eventService.send({
-            event: "login",
-          });
         })
         .catch(() => {
           setUser(null);
@@ -74,14 +64,16 @@ const MembersTab = () => {
     settingService
       .inviteMember([{ email }])
       .then(() => {
-        setMessage("Invitation sent successfully");
-        setShowA(true);
-        teamMembers?.pendingInvitees?.push({ email });
+        bannerNotificationService.success("Invitation sent successfully");
+        const pendingInvitees = [
+          ...(teamMembers?.pendingInvitees as any),
+          { email },
+        ];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
         handleClose();
       })
       .catch((err: any) => {
-        console.log(err);
-        setErrorMessage(err.message);
+        bannerNotificationService.error("Something went wrong.");
         setIsValid(true);
       });
   };
@@ -89,64 +81,57 @@ const MembersTab = () => {
     settingService
       .resendInvitation([{ email }])
       .then(() => {
-        setMessage("Resent invitation");
-        setShowA(true);
+        bannerNotificationService.success("Resent invitation");
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
   const cancelInvitation = (email: string) => {
     settingService
       .cancelInvitation([email])
       .then(() => {
-        setMessage("Cancelled invitation");
         const index = teamMembers?.pendingInvitees?.findIndex(
           (mem: any) => mem.email === email
         );
         index !== undefined &&
           index >= 0 &&
           teamMembers?.pendingInvitees?.splice(index, 1);
-        setShowA(true);
+        const pendingInvitees = teamMembers?.pendingInvitees || [];
+        setTeamMembers({ ...teamMembers, pendingInvitees } as any);
+        bannerNotificationService.success("Cancelled invitation");
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
   const removeMember = (email: string) => {
     settingService
       .removeMember([email])
       .then(() => {
-        setMessage("Removed member");
-        setShowA(true);
+        bannerNotificationService.success("Removed member");
         const index = teamMembers?.activeMembers?.findIndex(
           (mem: any) => mem.email === email
         );
         index !== undefined &&
           index >= 0 &&
           teamMembers?.activeMembers?.splice(index, 1);
+        const activeMembers = teamMembers?.activeMembers || [];
+        setTeamMembers({ ...teamMembers, activeMembers } as any);
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
 
   const handleChange = (event: any) => {
     setEmail(event.target.value);
     setIsValid(false);
-    setErrorMessage("");
   };
-  const toggleShowA = () => {
-    setShowA(!showA);
-    setMessage("");
-    setErrorMessage("");
-  };
+
   const onChangeRole = (event: any, email: string) => {
     let obj = teamMembers?.activeMembers?.find(
       (mem: any) => mem.email === email
@@ -165,14 +150,12 @@ const MembersTab = () => {
     settingService
       .updateRole(event.target.value, email)
       .then(() => {
-        setMessage("Role Updated Successfully");
-        setShowA(true);
+        bannerNotificationService.success("Role Updated Successfully");
         setUpdateRoleFlag(undefined);
       })
       .catch((err: any) => {
         console.log(err);
-        setErrorMessage(err.message);
-        setShowA(true);
+        bannerNotificationService.error(err.message);
       });
   };
 
@@ -204,38 +187,32 @@ const MembersTab = () => {
             teamMembers?.activeMembers.map((fieldMapping, i) => (
               <tr key={i}>
                 <td>
-                  <div style={{ width: "150px" }}>{fieldMapping.name}</div>
+                  <div style={{ width: "115px" }}>{fieldMapping.name}</div>
                 </td>
                 <td>
                   <div style={{ width: "150px" }}>{fieldMapping.email}</div>
                 </td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <div style={{ width: "110px" }}>
-                      {/* <Select
-                        options={roles?.map((role) => {
-                          return { label: role, value: role };
-                        })}
-                        value={{
-                          label: fieldMapping.role || "",
-                          value: fieldMapping.role || "",
-                        }}
-                        onChange={(e: any) => onChangeRole(e, fieldMapping.email)}
-                      ></Select> */}
-                      <Form.Select
-                        size="sm"
-                        disabled={updateRoleFlag === i}
-                        value={fieldMapping.role}
-                        onChange={(e: any) =>
-                          onChangeRole(e, fieldMapping.email)
-                        }
-                      >
-                        {roles?.map((role) => {
-                          return <option value={role}>{role}</option>;
-                        })}
-                      </Form.Select>
+                    <div style={{ width: "90px" }}>
+                      {user?.role === "ADMIN" ? (
+                        <Form.Select
+                          size="sm"
+                          disabled={updateRoleFlag === i}
+                          value={fieldMapping.role}
+                          onChange={(e: any) =>
+                            onChangeRole(e, fieldMapping.email)
+                          }
+                        >
+                          {roles?.map((role) => {
+                            return <option value={role}>{role}</option>;
+                          })}
+                        </Form.Select>
+                      ) : (
+                        fieldMapping.role
+                      )}
                     </div>
-                    <div style={{ width: "25px" }}>
+                    <div style={{ width: "14px" }}>
                       {updateRoleFlag === i && (
                         <IconLoader size={12} className="spinner-icon" />
                       )}
@@ -328,13 +305,9 @@ const MembersTab = () => {
               onChange={handleChange}
             />
             <FormControl.Feedback type="invalid">
-              {errorMessage || "Enter a valid email address"}
+              {"Enter a valid email address"}
             </FormControl.Feedback>
           </InputGroup>
-          {/* <p>
-            New users will be able to create workspaces and invite other team
-            members.
-          </p> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-danger" onClick={handleClose}>
@@ -345,25 +318,6 @@ const MembersTab = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <ToastContainer className="p-3" position="top-center">
-        <Toast
-          show={showA}
-          onClose={toggleShowA}
-          bg={message ? "success" : "danger"}
-        >
-          <Toast.Body className="text-white">
-            <div className="d-flex justify-content-between">
-              {message || errorMessage}
-              <IconX
-                size={18}
-                className="sidebar-icon"
-                onClick={toggleShowA}
-              ></IconX>
-            </div>
-          </Toast.Body>
-        </Toast>
-      </ToastContainer>
     </div>
   );
 };
