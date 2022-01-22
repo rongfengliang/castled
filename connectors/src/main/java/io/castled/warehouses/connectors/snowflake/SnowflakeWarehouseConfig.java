@@ -2,8 +2,8 @@ package io.castled.warehouses.connectors.snowflake;
 
 import com.amazonaws.regions.Regions;
 import io.castled.forms.FormField;
-import io.castled.forms.FormFieldType;
 import io.castled.forms.FormFieldSchema;
+import io.castled.forms.FormFieldType;
 import io.castled.warehouses.WarehouseConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,22 +12,22 @@ import lombok.Setter;
 @Setter
 public class SnowflakeWarehouseConfig extends WarehouseConfig {
 
-    @FormField(description = "Account Name", title = "Account Name", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "URL Prefix https://<account_name>.snowflake-computing.com", title = "Account Name", placeholder = "e.g ab12345.us-east-2.aws", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String accountName;
 
-    @FormField(description = "Warehouse Name", title = "Warehouse Name", placeholder = "", schema = FormFieldSchema.NUMBER, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Warehouse Name", title = "Warehouse Name", placeholder = "e.g COMPUTE_WH", schema = FormFieldSchema.NUMBER, type = FormFieldType.TEXT_BOX)
     private String warehouseName;
 
-    @FormField(description = "Database name", title = "Database Name", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Database name", title = "Database Name", placeholder = "e.g demo_db", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String dbName;
 
-    @FormField(description = "Database User", title = "Database User", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Database User", title = "Database User", placeholder = "e.g demo_user", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String dbUser;
 
     @FormField(description = "Database password", title = "Database Password", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String dbPassword;
 
-    @FormField(description = "Schema", title = "Schema Name", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Schema", title = "Schema Name", placeholder = "e.g demo_schema", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String schemaName;
 
     @FormField(description = "S3 Bucket to be used as the staging area", title = "S3 Bucket", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
