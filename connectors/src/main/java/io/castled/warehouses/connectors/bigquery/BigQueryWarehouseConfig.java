@@ -7,8 +7,6 @@ import io.castled.warehouses.WarehouseConfig;
 import lombok.Getter;
 import lombok.Setter;
 
-import static io.castled.forms.FormGroups.TUNNEL_GROUP;
-
 @Getter
 @Setter
 @CodeBlock(title = "Run the following commands on the google cloud console",
@@ -16,10 +14,10 @@ import static io.castled.forms.FormGroups.TUNNEL_GROUP;
         , snippets = {@CodeSnippet(title = "BQ Data Viewer Role", ref = "bq_data_viewer_access"),
         @CodeSnippet(title = "BQ User Role", ref = "bq_data_user_access"),
         @CodeSnippet(title = "GCP Storage Admin Role", ref = "gcp_storage_admin_access")})
-@GroupActivator(dependencies = {"projectId","bucketName","location"}, group = "service_account")
+@GroupActivator(dependencies = {"projectId", "bucketName", "location"}, group = "service_account")
 public class BigQueryWarehouseConfig extends WarehouseConfig {
 
-    @FormField(description = "Project Id", title = "Project Id", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Project Id", title = "Project Id", placeholder = "e.g demo-project-12345", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String projectId;
 
     @FormField(description = "GCS Bucket Name", title = "GCS Bucket Name", placeholder = "", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
