@@ -9,11 +9,10 @@ import {
   ScheduleType,
   SchedulTimeUnitLabel,
 } from "@/app/common/enums/ScheduleType";
-
 import { QueryMode, QueryModeLabel } from "@/app/common/enums/QueryMode";
-
 import { PipelineSchedule } from "@/app/common/dtos/PipelineCreateRequestDto";
-import { title } from "process";
+import { Col, Row } from "react-bootstrap";
+import pipelineScheduleUtils from "@/app/common/utils/pipelineScheduleUtils";
 
 export interface PipelineSettingsProps {
   initialValues: PipelineSettingsConfig;
@@ -42,19 +41,6 @@ function PipelineSettingsForm({
   onSubmit,
   submitLabel,
 }: PipelineSettingsProps) {
-  const getFrequencySecs = (frequency: number, timeUnit: ScheduleTimeUnit) => {
-    if (timeUnit == ScheduleTimeUnit.MINUTES) {
-      return frequency * 60;
-    }
-    if (timeUnit == ScheduleTimeUnit.HOURS) {
-      return frequency * 60 * 60;
-    }
-    if (timeUnit == ScheduleTimeUnit.DAYS) {
-      return frequency * 24 * 60 * 60;
-    }
-    return frequency;
-  };
-
   const handleSubmit = (
     pipelineSettings: PipelineSettingsConfig,
     { setSubmitting }: FormikHelpers<any>
@@ -64,7 +50,7 @@ function PipelineSettingsForm({
       pipelineSettings.name!,
       {
         type: ScheduleType.FREQUENCY,
-        frequency: getFrequencySecs(
+        frequency: pipelineScheduleUtils.getFrequencySecs(
           pipelineSettings.schedule.frequency!,
           pipelineSettings.schedule.timeUnit!
         ),
@@ -74,11 +60,7 @@ function PipelineSettingsForm({
     );
   };
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      enableReinitialize
-    >
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ values, setFieldValue, setFieldTouched, isSubmitting }) => (
         <Form>
           <InputField title="Pipeline Name" type="text" name="name" />
@@ -91,20 +73,26 @@ function PipelineSettingsForm({
             name="queryMode"
           />
           <label className="form-label mb-3">Pipeline Schedule</label>
-
-          <InputField
-            title="Frequency"
-            type="number"
-            name="schedule.frequency"
-          />
-          <InputSelect
-            title="Time Unit"
-            options={renderUtils.selectOptions(SchedulTimeUnitLabel)}
-            values={values}
-            setFieldValue={setFieldValue}
-            setFieldTouched={setFieldTouched}
-            name="schedule.timeUnit"
-          />
+          <Row>
+            <Col>
+              <InputField
+                title="Frequency"
+                type="number"
+                name="schedule.frequency"
+                inputClassName="form-control-lg"
+              />
+            </Col>
+            <Col>
+              <InputSelect
+                title="Time Unit"
+                options={renderUtils.selectOptions(SchedulTimeUnitLabel)}
+                values={values}
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                name="schedule.timeUnit"
+              />
+            </Col>
+          </Row>
           <ButtonSubmit submitting={isSubmitting}>{submitLabel}</ButtonSubmit>
         </Form>
       )}

@@ -30,6 +30,7 @@ import _ from "lodash";
 import DropdownPlain from "@/app/components/bootstrap/DropdownPlain";
 import { NextRouter, useRouter } from "next/router";
 import PipelineSettingsView from "@/app/components/pipeline/PipelineSettingsView";
+import { ScheduleType } from "@/app/common/enums/ScheduleType";
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   const pipelineId = routerUtils.getInt(query.pipelineId);
