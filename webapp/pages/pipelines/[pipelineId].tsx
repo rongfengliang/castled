@@ -10,7 +10,7 @@ import {
   Tab,
 } from "react-bootstrap";
 import pipelineService from "@/app/services/pipelineService";
-
+import cn from "classnames";
 import PipelineRunView from "@/app/components/pipeline/PipelineRunView";
 import PipelineMappingView from "@/app/components/pipeline/PipelineMappingView";
 import { PipelineResponseDto } from "@/app/common/dtos/PipelineResponseDto";
@@ -47,6 +47,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
   const MAX_RELOAD_COUNT = 20;
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [reloadCount, setReloadCount] = useState<number>(0);
+  const [recordsSynced, setRecordsSynced] = useState<number>(0);
   const [pipeline, setPipeline] = useState<
     PipelineResponseDto | undefined | null
   >();
@@ -67,6 +68,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
       .getByPipelineId(pipelineId)
       .then(({ data }) => {
         setPipelineRuns(data);
+        setRecordsSynced(data[data.length - 1].pipelineSyncStats.recordsSynced);
         if (
           data.length &&
           data[data.length - 1].pipelineSyncStats.recordsSynced === 0 &&
@@ -111,7 +113,20 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
           <span>{pipeline.app.name}</span>
         </div>
       )}
-
+      {pipelineRuns && !recordsSynced && (
+        <div className="sync-info sync-success">
+          <h2>Waiting for data to sync..</h2>
+          <p>This may take some time</p>
+        </div>
+      )}
+      {pipelineRuns && !!recordsSynced && (
+        <div className="sync-info sync-pending">
+          <h2>Data sync successful!</h2>
+          <p>
+            Go to <strong>{pipeline?.app.name}</strong> to check the data synced
+          </p>
+        </div>
+      )}
       <Tabs defaultActiveKey="Runs" className="mb-3">
         <Tab eventKey="Runs" title="Runs">
           <PipelineRunView pipelineRuns={pipelineRuns}></PipelineRunView>
