@@ -6,4 +6,5 @@ export interface PipelineWizardContextDto {
   warehouseType?: ConnectorTypeDto;
   appType?: ConnectorTypeDto;
   mappingInfo?: any;
+  isDemo?: boolean;
 }

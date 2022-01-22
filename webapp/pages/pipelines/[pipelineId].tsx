@@ -5,14 +5,12 @@ import {
   Dropdown,
   Form,
   OverlayTrigger,
-  Table,
   Tooltip,
-  Button,
   Tabs,
   Tab,
 } from "react-bootstrap";
 import pipelineService from "@/app/services/pipelineService";
-
+import cn from "classnames";
 import PipelineRunView from "@/app/components/pipeline/PipelineRunView";
 import PipelineMappingView from "@/app/components/pipeline/PipelineMappingView";
 import { PipelineResponseDto } from "@/app/common/dtos/PipelineResponseDto";
@@ -31,8 +29,6 @@ import {
 import _ from "lodash";
 import DropdownPlain from "@/app/components/bootstrap/DropdownPlain";
 import { NextRouter, useRouter } from "next/router";
-import renderUtils from "@/app/common/utils/renderUtils";
-import PipelineSettings from "@/app/components/pipeline/step4settings/PipelineSettings";
 import PipelineSettingsView from "@/app/components/pipeline/PipelineSettingsView";
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
@@ -48,7 +44,10 @@ interface PipelineInfoProps {
 
 const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
   const router = useRouter();
+  const MAX_RELOAD_COUNT = 20;
   const [reloadKey, setReloadKey] = useState<number>(0);
+  const [reloadCount, setReloadCount] = useState<number>(0);
+  const [recordsSynced, setRecordsSynced] = useState<number>(0);
   const [pipeline, setPipeline] = useState<
     PipelineResponseDto | undefined | null
   >();
@@ -69,13 +68,24 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
       .getByPipelineId(pipelineId)
       .then(({ data }) => {
         setPipelineRuns(data);
+        setRecordsSynced(data[data.length - 1].pipelineSyncStats.recordsSynced);
+        if (
+          data.length &&
+          data[data.length - 1].pipelineSyncStats.recordsSynced === 0 &&
+          reloadCount < MAX_RELOAD_COUNT
+        ) {
+          console.log("Will retry again");
+          setTimeout(() => {
+            setReloadCount(reloadCount + 1);
+            setReloadKey(reloadKey + 1);
+          }, 2000);
+        }
         setIsLoading(false);
       })
       .catch(() => {
         setPipelineRuns(null);
       });
   }, [reloadKey]);
-
 
   if (pipeline === null) return <DefaultErrorPage statusCode={404} />;
   return (
@@ -103,7 +113,20 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
           <span>{pipeline.app.name}</span>
         </div>
       )}
-
+      {pipelineRuns && !recordsSynced && (
+        <div className="card p-2 mb-2 bg-light">
+          <h2>Waiting for data to sync..</h2>
+          <p>This may take some time</p>
+        </div>
+      )}
+      {pipelineRuns && !!recordsSynced && (
+        <div className="card p-2 mb-2 bg-light">
+          <h2>Data sync successful!</h2>
+          <p>
+            Go to <strong>{pipeline?.app.name}</strong> to check the data synced
+          </p>
+        </div>
+      )}
       <Tabs defaultActiveKey="Runs" className="mb-3">
         <Tab eventKey="Runs" title="Runs">
           <PipelineRunView pipelineRuns={pipelineRuns}></PipelineRunView>
@@ -119,7 +142,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
             pipelineId={pipeline?.id}
             name={pipeline?.name}
             schedule={pipeline?.jobSchedule}
-            queryMode = {pipeline?.queryMode}
+            queryMode={pipeline?.queryMode}
           ></PipelineSettingsView>
         </Tab>
       </Tabs>

@@ -268,6 +268,7 @@ form {
 .list-group-item:hover {
   transform: scale(1.01);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+  border: 1px solid $primary-color;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -327,6 +328,71 @@ form {
     font-size: $font-size-sm;
   }
 }
-.bnt-red {
-  color: red !important;
+
+.integrated-doc {
+  font-size: $font-size-sm;
+  max-height: 600px;
+  overflow: scroll;
+  h1 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
+  h2 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+  }
+}
+
+.welcome-wrapper {
+  padding-top: 10%;
+  width: 83%;
+
+  .mb-0:first-child {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-light;
+  }
+
+  h3 {
+    font-weight: $font-weight-bold;
+    color: inherit;
+  }
+  p {
+    color: initial;
+    font-weight: $font-weight-light;
+  }
+  .card {
+    .text-muted {
+      position: absolute;
+      right: 1rem;
+      top: 43%;
+    }
+  }
+  .card:hover {
+    background: $gray-000;
+    border-color: $primary-color;
+    box-shadow: 3px 3px 3px $gray-100;
+    transition: all 0.5s;
+  }
+  img {
+    border: 1px solid $gray-100;
+    padding: 15%;
+    border-radius: 2px;
+  }
+
+  .badge {
+    position: absolute;
+    left: -2px;
+    top: 12px;
+    text-transform: uppercase;
+    transform: rotate(315deg);
+  }
+}
+
+.help-message {
+  .badge {
+    color: inherit;
+    margin-left: -0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
 }

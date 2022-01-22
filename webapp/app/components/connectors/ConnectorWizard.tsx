@@ -9,6 +9,7 @@ import SelectExistingConnector from "@/app/components/connectors/SelectExistingC
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import Loading from "@/app/components/common/Loading";
 import _ from "lodash";
+import IntegratedDoc from "../layout/IntegratedDoc";
 
 interface ConnectorWizardProps {
   appBaseUrl: string;
@@ -33,7 +34,7 @@ const ConnectorWizard = ({
   setCurWizardStep,
   onConnectorTypeSelect,
   oauthCallback,
-  onFinish
+  onFinish,
 }: ConnectorWizardProps) => {
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
   if (!pipelineWizContext) return <Loading />;
@@ -56,6 +57,13 @@ const ConnectorWizard = ({
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
+      rightHelp={
+        curWizardStep === "configure" &&
+        typeOption &&
+        process.env.INTEGRATED_DOC ? (
+          <IntegratedDoc category={category} connectorType={typeOption.value} />
+        ) : undefined
+      }
     >
       <>
         {curWizardStep === "selectType" && (

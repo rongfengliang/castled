@@ -10,6 +10,8 @@ import PipelineSettings from "@/app/components/pipeline/step4settings/PipelineSe
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import routerUtils from "@/app/common/utils/routerUtils";
 import _ from "lodash";
+import { AccessType } from "@/app/common/enums/AccessType";
+import { PipelineWizardContextDto } from "@/app/common/dtos/context/PipelineWizardContextDto";
 
 interface PipelineWizardProps {
   appBaseUrl: string;
@@ -17,6 +19,7 @@ interface PipelineWizardProps {
   curWizardStep: string;
   steps: WizardSteps;
   stepGroups?: WizardSteps;
+  demo: boolean;
   onFinish: (id: number) => void;
 }
 
@@ -29,12 +32,30 @@ export interface PipelineWizardStepProps {
   onFinish?: (id: number) => void;
 }
 
+const demoContext: PipelineWizardContextDto = {
+  warehouseType: {
+    value: "POSTGRES",
+    title: "Postgres",
+    accessType: AccessType.PASSWORD,
+    logoUrl: "https://cdn.castled.io/warehouses/postgres.png",
+    docUrl:
+      "https://docs.castled.io/getting-started/Sources/configure-postgres",
+    count: 1,
+  },
+  values: {
+    warehouseId: 4,
+    appSyncConfig: {},
+  },
+  isDemo: true,
+};
+
 const PipelineWizard = ({
   appBaseUrl,
   curWizardStepGroup,
   curWizardStep,
   onFinish,
-  steps
+  steps,
+  demo,
 }: PipelineWizardProps) => {
   const router = useRouter();
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
@@ -44,12 +65,18 @@ const PipelineWizard = ({
   };
   useEffect(() => {
     if (!pipelineWizContext) return;
-    if (wizardStepKey === "source:selectType") {
+    if (!wizardStepKey && demo) {
+      setPipelineWizContext(demoContext);
+    } else if (wizardStepKey === "source:selectType") {
       setPipelineWizContext({});
     }
-  }, [wizardStepKey, !!pipelineWizContext]);
+  }, [wizardStepKey, !!pipelineWizContext, demo]);
   if (!curWizardStepGroup && !curWizardStep) {
-    setCurWizardStep("source", "selectType");
+    if (demo) {
+      setCurWizardStep("source", "model");
+    } else {
+      setCurWizardStep("source", "selectType");
+    }
     return <Loading />;
   }
   return (
@@ -62,22 +89,22 @@ const PipelineWizard = ({
           steps={{
             selectType: {
               title: "Select Warehouse Type",
-              description: "Which warehouse do you own?"
+              description: "Which warehouse do you own?",
             },
             selectExisting: {
               title: "Select Existing or Create New",
               description:
-                "Choose from your existing warehouse or create a new one"
+                "Choose from your existing warehouse or create a new one",
             },
             configure: {
               title: "Configure Warehouse",
               description:
-                "Follow the guide on the right to set up your Source or invite a team member to do it for you"
+                "Follow the guide on the right to set up your Source or invite a team member to do it for you",
             },
             model: {
               title: "Configure Model",
-              description: "Write a query to fetch data from source warehouse"
-            }
+              description: "Write a query to fetch data from source warehouse",
+            },
           }}
           setCurWizardStep={setCurWizardStep}
         />
@@ -90,21 +117,21 @@ const PipelineWizard = ({
           steps={{
             selectType: {
               title: "Select App Type",
-              description: "Which app do you wish to connect to?"
+              description: "Which app do you wish to connect to?",
             },
             selectExisting: {
               title: "Select Existing or Create New",
-              description: "Choose from your existing app or create a new one"
+              description: "Choose from your existing app or create a new one",
             },
             configure: {
               title: "Configure App",
               description:
-                "Follow the guide on the right to set up your Source or invite a team member to do it for you"
+                "Follow the guide on the right to set up your Source or invite a team member to do it for you",
             },
             settings: {
               title: "App Sync Settings",
-              description: "Configure how you wish to load data into the app"
-            }
+              description: "Configure how you wish to load data into the app",
+            },
           }}
           setCurWizardStep={setCurWizardStep}
         />
@@ -117,8 +144,8 @@ const PipelineWizard = ({
           steps={{
             mapping: {
               title: "Map fields",
-              description: "Map source fields to destination"
-            }
+              description: "Map source fields to destination",
+            },
           }}
           setCurWizardStep={setCurWizardStep}
         />
@@ -131,8 +158,8 @@ const PipelineWizard = ({
           steps={{
             settings: {
               title: "Final Settings",
-              description: "You are almost there. Setup pipeline frequency"
-            }
+              description: "You are almost there. Setup pipeline frequency",
+            },
           }}
           setCurWizardStep={setCurWizardStep}
           onFinish={onFinish}

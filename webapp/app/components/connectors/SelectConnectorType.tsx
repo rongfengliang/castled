@@ -4,6 +4,7 @@ import { Badge, Col, ListGroup, Row } from "react-bootstrap";
 import { ConnectorCategory } from "@/app/common/utils/types";
 import appsService from "@/app/services/appsService";
 import warehouseService from "@/app/services/warehouseService";
+import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 
 export interface SelectConnectorTypeProps {
   category: ConnectorCategory;
@@ -15,6 +16,7 @@ const SelectConnectorType = ({
   onSelect,
 }: SelectConnectorTypeProps) => {
   const [typeList, setTypeList] = useState<ConnectorTypeDto[] | undefined>();
+  const { pipelineWizContext } = usePipelineWizContext();
   useEffect(() => {
     const fetcher =
       category === "App" ? appsService.types : warehouseService.types;
@@ -24,12 +26,18 @@ const SelectConnectorType = ({
   }, [category]);
   return (
     <>
+      {pipelineWizContext?.isDemo && category === "App" && (
+        <div className="help-message">
+          <Badge bg="warning" className="badge badge-warning">
+            Google Sheets is the most used app for testing demo pipelines.
+          </Badge>
+        </div>
+      )}
       <div className="grid-categories">
         <Row xs={3}>
           {typeList?.map((type, i) => (
-            <ListGroup>
+            <ListGroup key={i}>
               <ListGroup.Item
-                key={i}
                 className="rounded"
                 onClick={() => onSelect(type)}
               >

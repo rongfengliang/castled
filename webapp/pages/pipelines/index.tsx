@@ -6,12 +6,14 @@ import { PipelineResponseDto } from "@/app/common/dtos/PipelineResponseDto";
 import Link from "next/link";
 import DefaultErrorPage from "next/error";
 import Loading from "@/app/components/common/Loading";
+import { useRouter } from "next/router";
 
 const Pipelines = () => {
   const [pipelines, setPipelines] = useState<
     PipelineResponseDto[] | undefined | null
   >();
   const headers = ["#", "Name", "Source", "Destination", "Status"];
+  const router = useRouter();
   useEffect(() => {
     pipelineService
       .get()
@@ -23,21 +25,28 @@ const Pipelines = () => {
       });
   }, []);
   if (pipelines === null) return <DefaultErrorPage statusCode={404} />;
+  if (pipelines && pipelines.length === 0) {
+    router.push("/welcome");
+    return (
+      <Layout title="Loading Welcome..." hideHeader={true}>
+        <Loading />
+      </Layout>
+    );
+  }
   return (
     <Layout
       title="Pipelines"
-      rightBtn={{
-        id: "create_pipeline_button",
-        title: "Create",
-        href: "/pipelines/create?wizardStep=source:selectType",
-      }}
+      rightBtn={
+        pipelines?.length
+          ? {
+              id: "create_pipeline_button",
+              title: "Create",
+              href: "/pipelines/create",
+            }
+          : undefined
+      }
     >
       {!pipelines && <Loading />}
-      {pipelines && pipelines.length === 0 && (
-        <Alert variant="light" className="text-center">
-          No sync pipelines created yet!
-        </Alert>
-      )}
       {pipelines && pipelines.length > 0 && (
         <div className="table-responsive">
           <Table hover>
