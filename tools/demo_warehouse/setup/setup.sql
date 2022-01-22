@@ -3,19 +3,20 @@ CREATE SCHEMA TEST_SCHEMA;
 CREATE TABLE TEST_SCHEMA.LEADS (
 	business_name VARCHAR ( 255 ) UNIQUE NOT NULL,
 	category VARCHAR ( 255 ) NOT NULL,
-	contact_name VARCHAR ( 255 ) NOT NULL,
+	contact_fname VARCHAR ( 255 ) NOT NULL,
+	contact_lname VARCHAR ( 255 ) NOT NULL,
 	email VARCHAR ( 255 ) PRIMARY KEY
 );
 
-INSERT INTO TEST_SCHEMA.LEADS (business_name, category, contact_name, email)
+INSERT INTO TEST_SCHEMA.LEADS (business_name, category, contact_fname, contact_lname, email)
 VALUES
-('Wayne Enterprises', 'Manufacturing', 'Bruce Wayne', 'bruce@wayne.com'),
-('Duff Beer', 'Food and beverages', 'Jane Doe', 'jane@duff.com'),
-('Skynet', 'Robotics',	'Serena Kogan', 'serena@skynet.com'),
-('Bubba Gump', 'Restaurant', 'Tim Forest', 'tim@bubba.com'),
-('Sterling Cooper',	'Marketing', 'Roger Sterling', 'roger@sc.com'),
-('Oscorp',	'Technology', 'Noram Osborn', 'norman@oscorp.com'),
-('Pawtucket Brewery',	'Food and beverages', 'Peter Griffin', 'peter@pb.com');
+('Wayne Enterprises', 'Manufacturing', 'Bruce', 'Wayne', 'bruce@wayne.com'),
+('Duff Beer', 'Food and beverages', 'Jane', 'Doe', 'jane@duff.com'),
+('Skynet', 'Robotics',	'Serena', 'Kogan', 'serena@skynet.com'),
+('Bubba Gump', 'Restaurant', 'Tim', 'Forest', 'tim@bubba.com'),
+('Sterling Cooper',	'Marketing', 'Roger', 'Sterling', 'roger@sc.com'),
+('Oscorp',	'Technology', 'Noram', 'Osborn', 'norman@oscorp.com'),
+('Pawtucket Brewery',	'Food and beverages', 'Peter', 'Griffin', 'peter@pb.com');
 
 -- Following steps mentioned here => https://docs.castled.io/getting-started/Sources/configure-postgres to enable access for Castled
 
