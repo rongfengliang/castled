@@ -85,8 +85,15 @@ const MembersTab = () => {
         bannerNotificationService.success("Resent invitation");
       })
       .catch((err: any) => {
-        console.log(err);
-        bannerNotificationService.error(err.message);
+        console.log(err.response);
+        if (
+          err &&
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          bannerNotificationService.error(err.response.data.message);
+        }
       });
   };
   const cancelInvitation = (email: string) => {
