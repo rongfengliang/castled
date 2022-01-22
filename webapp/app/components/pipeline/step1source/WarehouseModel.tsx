@@ -17,6 +17,7 @@ import InputField from "@/app/components/forminputs/InputField";
 import { Button } from "react-bootstrap";
 import { useSession } from "@/app/common/context/sessionContext";
 import { IconChevronRight, IconLoader, IconPlayerPlay } from "@tabler/icons";
+import * as yup from "yup";
 
 const WarehouseModel = ({
   curWizardStep,
@@ -27,11 +28,11 @@ const WarehouseModel = ({
   const [queryResults, setQueryResults] = useState<
     ExecuteQueryResultsDto | undefined
   >();
-
+  const DEMO_QUERY = "SELECT * FROM USERS";
   const [demoQueries, setDemoQueries] = useState<string[] | undefined>();
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
   if (!pipelineWizContext) return <Loading />;
-  const [query, setQuery] = useState<string | undefined>();
+  const [query, setQuery] = useState<string>(DEMO_QUERY);
   const [warehouseId, setWarehouseId] = useState<any>(
     pipelineWizContext.values?.warehouseId
   );
@@ -75,6 +76,10 @@ const WarehouseModel = ({
       });
   };
   const nextStep = (): void => {
+    if (!query) {
+      bannerNotificationService.error("Please enter a query");
+      return;
+    }
     _.set(pipelineWizContext, "values.sourceQuery", query);
     setPipelineWizContext(pipelineWizContext);
     setCurWizardStep("destination", "selectType");
@@ -92,14 +97,15 @@ const WarehouseModel = ({
         </p>
       )}
       <Formik
-        key={pipelineWizContext.values?.sourceQuery}
         initialValues={
           {
             warehouseId,
-            query:
-              pipelineWizContext.values?.sourceQuery || "SELECT * FROM USERS",
+            query,
           } as ExecuteQueryRequestDto
         }
+        validationSchema={yup
+          .object()
+          .shape({ query: yup.string().required("Enter a query") })}
         onSubmit={formHandler(
           isOss,
           {
@@ -125,7 +131,6 @@ const WarehouseModel = ({
               className="border-0 border-bottom mono-font"
             />
             <div className="d-flex align-items-center">
-              {/* <ButtonSubmit submitting={isSubmitting}>Run Query</ButtonSubmit> */}
               <Button
                 type="submit"
                 className="btn mt-2"
@@ -134,11 +139,7 @@ const WarehouseModel = ({
               >
                 Run Query
                 <IconPlayerPlay size={14} style={{ marginRight: "5px" }} />
-                {isSubmitting === true ? (
-                  <IconLoader className="spinner-icon" />
-                ) : (
-                  ""
-                )}
+                {isSubmitting && <IconLoader className="spinner-icon" />}
               </Button>
               {queryResults && queryResults.status !== "PENDING" && (
                 <Button
@@ -155,20 +156,12 @@ const WarehouseModel = ({
           </Form>
         )}
       </Formik>
-      {queryResults &&
-        renderQueryResults(queryResults, () => {
-          _.set(pipelineWizContext, "values.sourceQuery", query);
-          setPipelineWizContext(pipelineWizContext);
-          setCurWizardStep("destination", "selectType");
-        })}
+      {queryResults && renderQueryResults(queryResults)}
     </Layout>
   );
 };
 
-function renderQueryResults(
-  result: ExecuteQueryResultsDto,
-  nextStep: () => void
-) {
+function renderQueryResults(result: ExecuteQueryResultsDto) {
   if (result.status === "PENDING") {
     return (
       <div>

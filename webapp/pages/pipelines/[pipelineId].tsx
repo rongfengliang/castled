@@ -5,9 +5,7 @@ import {
   Dropdown,
   Form,
   OverlayTrigger,
-  Table,
   Tooltip,
-  Button,
   Tabs,
   Tab,
 } from "react-bootstrap";
@@ -31,8 +29,6 @@ import {
 import _ from "lodash";
 import DropdownPlain from "@/app/components/bootstrap/DropdownPlain";
 import { NextRouter, useRouter } from "next/router";
-import renderUtils from "@/app/common/utils/renderUtils";
-import PipelineSettings from "@/app/components/pipeline/step4settings/PipelineSettings";
 import PipelineSettingsView from "@/app/components/pipeline/PipelineSettingsView";
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
@@ -48,7 +44,9 @@ interface PipelineInfoProps {
 
 const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
   const router = useRouter();
+  const MAX_RELOAD_COUNT = 20;
   const [reloadKey, setReloadKey] = useState<number>(0);
+  const [reloadCount, setReloadCount] = useState<number>(0);
   const [pipeline, setPipeline] = useState<
     PipelineResponseDto | undefined | null
   >();
@@ -69,13 +67,23 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
       .getByPipelineId(pipelineId)
       .then(({ data }) => {
         setPipelineRuns(data);
+        if (
+          data.length &&
+          data[data.length - 1].pipelineSyncStats.recordsSynced === 0 &&
+          reloadCount < MAX_RELOAD_COUNT
+        ) {
+          console.log("Will retry again");
+          setTimeout(() => {
+            setReloadCount(reloadCount + 1);
+            setReloadKey(reloadKey + 1);
+          }, 2000);
+        }
         setIsLoading(false);
       })
       .catch(() => {
         setPipelineRuns(null);
       });
   }, [reloadKey]);
-
 
   if (pipeline === null) return <DefaultErrorPage statusCode={404} />;
   return (
@@ -119,7 +127,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
             pipelineId={pipeline?.id}
             name={pipeline?.name}
             schedule={pipeline?.jobSchedule}
-            queryMode = {pipeline?.queryMode}
+            queryMode={pipeline?.queryMode}
           ></PipelineSettingsView>
         </Tab>
       </Tabs>
