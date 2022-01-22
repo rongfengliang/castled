@@ -19,6 +19,7 @@ import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
 import { useSession } from "@/app/common/context/sessionContext";
 import ReactMarkdown from "react-markdown";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -188,9 +189,9 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
-      // validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
-      //   name: yup.string().required("Name is required"),
-      // })}
+      validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
+        name: yup.string().required("Name is required"),
+      })}
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => (

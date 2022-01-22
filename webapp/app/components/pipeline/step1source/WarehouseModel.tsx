@@ -3,11 +3,9 @@ import Layout from "@/app/components/layout/Layout";
 import { Form, Formik } from "formik";
 import formHandler from "@/app/common/utils/formHandler";
 import React, { useEffect, useState } from "react";
-import ButtonSubmit from "@/app/components/forminputs/ButtonSubmit";
 import warehouseService from "@/app/services/warehouseService";
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import Loading from "@/app/components/common/Loading";
-import Card from "react-bootstrap/Card";
 import { ExecuteQueryRequestDto } from "@/app/common/dtos/ExecuteQueryRequestDto";
 import bannerNotificationService from "@/app/services/bannerNotificationService";
 import { ExecuteQueryResultsDto } from "@/app/common/dtos/ExecuteQueryResultsDto";
@@ -32,7 +30,9 @@ const WarehouseModel = ({
   const [demoQueries, setDemoQueries] = useState<string[] | undefined>();
   const { pipelineWizContext, setPipelineWizContext } = usePipelineWizContext();
   if (!pipelineWizContext) return <Loading />;
-  const [query, setQuery] = useState<string>(DEMO_QUERY);
+  const [query, setQuery] = useState<string | undefined>(
+    pipelineWizContext.isDemo ? DEMO_QUERY : undefined
+  );
   const [warehouseId, setWarehouseId] = useState<any>(
     pipelineWizContext.values?.warehouseId
   );
