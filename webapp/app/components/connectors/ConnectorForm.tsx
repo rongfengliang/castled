@@ -189,9 +189,9 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
-      validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
-        name: yup.string().required("Name is required"),
-      })}
+      // validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
+      //   name: yup.string().required("Name is required"),
+      // })}
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => (
