@@ -114,13 +114,13 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
         </div>
       )}
       {pipelineRuns && !recordsSynced && (
-        <div className="sync-info sync-success">
+        <div className="card p-2 mb-2 bg-light">
           <h2>Waiting for data to sync..</h2>
           <p>This may take some time</p>
         </div>
       )}
       {pipelineRuns && !!recordsSynced && (
-        <div className="sync-info sync-pending">
+        <div className="card p-2 mb-2 bg-light">
           <h2>Data sync successful!</h2>
           <p>
             Go to <strong>{pipeline?.app.name}</strong> to check the data synced
