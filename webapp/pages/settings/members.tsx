@@ -68,7 +68,14 @@ const MembersTab = () => {
         handleClose();
       })
       .catch((err: any) => {
-        bannerNotificationService.error("Something went wrong.");
+        if (
+          err &&
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          bannerNotificationService.error(err.response.data.message);
+        }
       });
   };
   const resendInvitation = (email: string) => {
