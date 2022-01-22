@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@HelpText(value = "Provide Editor access of your google sheets to email ${serviceAccount.client_email}", dependencies = {"spreadSheetId", "serviceAccount"})
+@HelpText(value = "Provide Editor access of your google sheets to this email: \n ```${serviceAccount.client_email}```", dependencies = {"spreadSheetId", "serviceAccount"})
 @GroupActivator(dependencies = {"spreadSheetId"}, group = "service_account")
 public class GoogleSheetsAppConfig extends AppConfig {
 
