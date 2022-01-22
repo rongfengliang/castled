@@ -18,6 +18,7 @@ import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
 import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
 import { useSession } from "@/app/common/context/sessionContext";
+import ReactMarkdown from "react-markdown";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -172,7 +173,12 @@ const ConnectorForm = ({
     }
     return (
       <div className="mb-1">
-        {stringUtils.replaceTemplate(formFields.helpText!.value, values.config)}
+        <ReactMarkdown>
+          {stringUtils.replaceTemplate(
+            formFields.helpText!.value,
+            values.config
+          )}
+        </ReactMarkdown>
       </div>
     );
   };
