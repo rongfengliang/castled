@@ -49,11 +49,8 @@ const InputSelect = ({
 }: InputSelectOptions) => {
   const [field, meta] = useField(props);
   const [optionsDynamic, setOptionsDynamic] = useState(options);
-
   const [optionsLoading, setOptionsLoading] = useState(false);
-
   const depValues = dValues ? dValues : [];
-
   useEffect(() => {
     if (optionsRef) {
       setOptionsLoading(true);
@@ -72,8 +69,8 @@ const InputSelect = ({
     }
   }, [optionsRef, ...depValues]);
   return (
-    <div>
-      {optionsLoading && props.hidden &&
+    <div className={props.className}>
+      {optionsLoading && props.hidden && (
         <div className="mb-1">
           <Spinner
             as="span"
@@ -83,7 +80,8 @@ const InputSelect = ({
             aria-hidden="true"
           />
           <span className="ml-2">{props.loadingText}</span>
-        </div>}
+        </div>
+      )}
       <div className={cn("mb-3", { "d-none": props.hidden })}>
         {title && (
           <label htmlFor={props.id || props.name} className="form-label">
@@ -97,9 +95,9 @@ const InputSelect = ({
             !optionsDynamic
               ? [{ label: "Loading.." }]
               : optionsDynamic.map((o) => ({
-                value: o.value,
-                label: o.title,
-              }))
+                  value: o.value,
+                  label: o.title,
+                }))
           }
           onChange={(v) => setFieldValue?.(field.name, v?.value)}
           onBlur={() => setFieldTouched?.(field.name, true)}
@@ -107,17 +105,17 @@ const InputSelect = ({
             optionsLoading || !optionsDynamic
               ? { label: "Loading..." }
               : {
-                value: field.value,
-                label: optionsDynamic
-                  .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
-                  .map((o) => o.title),
-              }
+                  value: field.value,
+                  label: optionsDynamic
+                    .filter((o) =>
+                      ObjectUtils.objectEquals(o.value, field.value)
+                    )
+                    .map((o) => o.title),
+                }
           }
         />
         {meta.touched && meta.error ? (
-          <div className="error">
-            {meta.error}
-          </div>
+          <div className="error">{meta.error}</div>
         ) : null}
       </div>
     </div>

@@ -93,7 +93,7 @@ const WarehouseModel = ({
     >
       {!!demoQueries?.length && (
         <p className="mb-1">
-          Use the prefilled query below for the demo warehouse.
+          Run the prefilled query below for the demo warehouse.
         </p>
       )}
       <Formik

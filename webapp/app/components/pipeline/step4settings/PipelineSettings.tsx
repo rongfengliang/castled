@@ -13,6 +13,12 @@ import PipelineSettingsForm, {
   PipelineSettingsConfig,
 } from "@/app/components/pipeline/PipelineSettingsForm";
 import { QueryMode } from "@/app/common/enums/QueryMode";
+import { ScheduleTimeUnit } from "@/app/common/enums/ScheduleType";
+
+const defaultPipelineSettings = {
+  queryMode: QueryMode.INCREMENTAL,
+  schedule: { frequency: 60, timeUnit: ScheduleTimeUnit.MINUTES },
+} as PipelineSettingsConfig;
 
 const PipelineSettings = ({
   curWizardStep,
@@ -56,9 +62,7 @@ const PipelineSettings = ({
       stepGroups={stepGroups}
     >
       <PipelineSettingsForm
-        initialValues={
-          { queryMode: QueryMode.INCREMENTAL } as PipelineSettingsConfig
-        }
+        initialValues={defaultPipelineSettings}
         onSubmit={(
           name: string,
           pipelineSchedule: PipelineSchedule,
@@ -69,14 +73,17 @@ const PipelineSettings = ({
             console.log("Not submitting because context is not set");
             return;
           }
-
           pipelineWizContext.values = {
             ...pipelineWizContext.values,
             name: name,
             queryMode: queryMode,
             schedule: pipelineSchedule,
           };
-          pipelineCreateFinish(pipelineWizContext.values!, onFinish, setSubmitting);
+          pipelineCreateFinish(
+            pipelineWizContext.values!,
+            onFinish,
+            setSubmitting
+          );
         }}
       ></PipelineSettingsForm>
     </Layout>

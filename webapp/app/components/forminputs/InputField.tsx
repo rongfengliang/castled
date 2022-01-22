@@ -73,7 +73,7 @@ function getInput(
           field.onChange(e);
           onChange?.(e.currentTarget.value);
         }}
-        className={cn(props.className, "form-control", {
+        className={cn(props.inputClassName, "form-control", {
           "required-field": meta.touched && meta.error,
         })}
         defaultValue={field.value}
@@ -88,7 +88,7 @@ function getInput(
         }}
         onBlur={field.onBlur}
         {...props}
-        className={cn(props.className, "form-control", {
+        className={cn(props.inputClassName, "form-control", {
           "required-field": meta.touched && meta.error,
         })}
         value={field.value}
