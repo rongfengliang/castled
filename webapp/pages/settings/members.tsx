@@ -19,7 +19,6 @@ import bannerNotificationService from "@/app/services/bannerNotificationService"
 const MembersTab = () => {
   const [teamMembers, setTeamMembers] = useState<TeamDTO | undefined | null>();
   const [email, setEmail] = useState<string>("");
-  const [isValid, setIsValid] = useState<boolean>(false);
   const [user, setUser] = useState<LoggedInUserDto | null>();
   const [roles, setRoles] = useState<string[] | null | undefined>([]);
   const [updateRoleFlag, setUpdateRoleFlag] = useState<number | undefined>();
@@ -57,10 +56,6 @@ const MembersTab = () => {
   const handleShow = () => setShow(true);
 
   const sendInvite = () => {
-    if (!email) {
-      setIsValid(true);
-      return;
-    }
     settingService
       .inviteMember([{ email }])
       .then(() => {
@@ -73,8 +68,14 @@ const MembersTab = () => {
         handleClose();
       })
       .catch((err: any) => {
-        bannerNotificationService.error("Something went wrong.");
-        setIsValid(true);
+        if (
+          err &&
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          bannerNotificationService.error(err.response.data.message);
+        }
       });
   };
   const resendInvitation = (email: string) => {
@@ -84,8 +85,15 @@ const MembersTab = () => {
         bannerNotificationService.success("Resent invitation");
       })
       .catch((err: any) => {
-        console.log(err);
-        bannerNotificationService.error(err.message);
+        console.log(err.response);
+        if (
+          err &&
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          bannerNotificationService.error(err.response.data.message);
+        }
       });
   };
   const cancelInvitation = (email: string) => {
@@ -129,7 +137,6 @@ const MembersTab = () => {
 
   const handleChange = (event: any) => {
     setEmail(event.target.value);
-    setIsValid(false);
   };
 
   const onChangeRole = (event: any, email: string) => {
@@ -163,14 +170,16 @@ const MembersTab = () => {
     <div>
       <div className="d-flex justify-content-between">
         <h3 className="mb-1 mt-4 font-weight-bold">Members</h3>
-        <div className="mt-3 mb-2">
-          <Button variant="outline-primary" size="sm" onClick={handleShow}>
-            <span>
-              <IconUserPlus size={14} className="sidebar-icon" />
-              &nbsp; Invite team member
-            </span>
-          </Button>
-        </div>
+        {user?.role === "ADMIN" && (
+          <div className="mt-3 mb-2">
+            <Button variant="outline-primary" size="sm" onClick={handleShow}>
+              <span>
+                <IconUserPlus size={14} className="sidebar-icon" />
+                &nbsp; Invite team member
+              </span>
+            </Button>
+          </div>
+        )}
       </div>
       <Table hover>
         <thead>
@@ -300,13 +309,9 @@ const MembersTab = () => {
           <InputGroup className="mb-3">
             <FormControl
               type="email"
-              isInvalid={!!isValid}
               placeholder="Email address"
               onChange={handleChange}
             />
-            <FormControl.Feedback type="invalid">
-              {"Enter a valid email address"}
-            </FormControl.Feedback>
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
