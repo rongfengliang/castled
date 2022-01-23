@@ -44,23 +44,31 @@ const WarehouseModel = ({
     });
   };
   useEffect(() => {
-    setWarehouseId(pipelineWizContext.values?.warehouseId);
-    if (!warehouseId) {
+    if (!pipelineWizContext) return;
+    if (pipelineWizContext.isDemo) {
+      warehouseService.get().then(({ data }) => {
+        const demoWarehouseId = data.find((d) => d.demo)?.id;
+        if (!demoWarehouseId) {
+          setCurWizardStep("source", "selectType");
+        } else {
+          getDemoQuery(demoWarehouseId);
+          setWarehouseId(demoWarehouseId);
+          _.set(pipelineWizContext, "values.warehouseId", demoWarehouseId);
+          setPipelineWizContext(pipelineWizContext);
+        }
+      });
+    } else if (!warehouseId) {
       setCurWizardStep("source", "selectType");
     } else {
-      getDemoQuery(warehouseId!);
+      setWarehouseId(pipelineWizContext.values?.warehouseId);
     }
-  }, []);
-
+  }, [
+    !!pipelineWizContext,
+    warehouseId,
+    pipelineWizContext.values?.warehouseId,
+  ]);
   const getDemoQuery = async (warehouseId: number) => {
-    const res = await warehouseService.get();
-    const warehouseRes = res.data.find((d: any) => d.demo);
-    if (warehouseRes!.id) {
-      setWarehouseId(warehouseRes!.id);
-      updateDemoQueries(warehouseRes!.id);
-    } else {
-      updateDemoQueries(warehouseId!);
-    }
+    updateDemoQueries(warehouseId!);
   };
   const getQueryResults = (queryId: string) => {
     warehouseService
@@ -87,6 +95,7 @@ const WarehouseModel = ({
   return (
     <Layout
       title={steps[curWizardStep].title}
+      subTitle={steps[curWizardStep].description}
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
@@ -148,7 +157,7 @@ const WarehouseModel = ({
                   variant="outline-primary"
                   onClick={nextStep}
                 >
-                  Next
+                  Continue
                   <IconChevronRight size={18} />
                 </Button>
               )}

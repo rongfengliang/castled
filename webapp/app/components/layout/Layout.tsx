@@ -14,6 +14,7 @@ interface LayoutProps extends HeaderProps {
 
 const Layout = ({
   title,
+  subTitle,
   centerTitle,
   pageTitle,
   navLinks,
@@ -32,6 +33,7 @@ const Layout = ({
         {!hideHeader && (
           <Header
             title={title}
+            subTitle={subTitle}
             centerTitle={centerTitle}
             navLinks={navLinks}
             rightBtn={rightBtn}

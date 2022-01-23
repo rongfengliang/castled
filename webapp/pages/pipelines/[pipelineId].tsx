@@ -92,6 +92,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
   return (
     <Layout
       title={renderTitle(pipeline, router, setPipeline, setReloadKey)}
+      subTitle={undefined}
       pageTitle={pipeline ? "Pipeline " + pipeline.name : ""}
       rightBtn={{
         id: "sync_pipeline_button",
@@ -140,6 +141,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
         </Tab>
         <Tab eventKey="Schedule" title="Schedule">
           <PipelineSettingsView
+            key={pipeline?.id}
             pipelineId={pipeline?.id}
             name={pipeline?.name}
             schedule={pipeline?.jobSchedule}

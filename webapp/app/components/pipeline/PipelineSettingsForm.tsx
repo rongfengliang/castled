@@ -16,7 +16,7 @@ import pipelineScheduleUtils from "@/app/common/utils/pipelineScheduleUtils";
 
 export interface PipelineSettingsProps {
   initialValues: PipelineSettingsConfig;
-  submitLabel?: string;
+  submitLabel: string;
   onSubmit: (
     name: string,
     pipelineSchedule: PipelineSchedule,
