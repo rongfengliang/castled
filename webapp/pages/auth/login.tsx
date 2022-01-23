@@ -33,24 +33,12 @@ interface serverSideProps {
 const Login = (props: serverSideProps) => {
   const { setUser } = useSession();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   console.log('logging router query' + query.failure_message);
-  //   if (query.failure_message) {
-  //     bannerNotificationService.error(query.failure_message);
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (!router.isReady) return;
-    console.log("logging router query" + router.query.failure_message);
     if (router.query.failure_message) {
       bannerNotificationService.error(router.query.failure_message);
     }
-
-    // codes using router.query
   }, [router.isReady]);
-
   return (
     <GuestLayout>
       <Formik

@@ -15,11 +15,9 @@ import routerUtils from "@/app/common/utils/routerUtils";
 import { Card } from "react-bootstrap";
 import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContext";
 import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
-import * as yup from "yup";
 import stringUtils from "@/app/common/utils/stringUtils";
 import { useSession } from "@/app/common/context/sessionContext";
 import ReactMarkdown from "react-markdown";
-import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -28,7 +26,6 @@ export interface ConnectorFormProps {
   editConnector?: ConnectorDto | null;
   category: ConnectorCategory;
   connectorType: string;
-  docUrl?: string;
   oauthCallback?: string;
   accessType: AccessType;
   onFinish: (id: number) => void;
@@ -39,7 +36,6 @@ const ConnectorForm = ({
   editConnector,
   category,
   connectorType,
-  docUrl,
   accessType,
   oauthCallback,
   onFinish,
@@ -134,7 +130,7 @@ const ConnectorForm = ({
   );
 
   const submitLabel = !editConnector
-    ? `Add ${category}`
+    ? `Save & Continue`
     : isOauth
     ? "Reauthorize"
     : "Save";
@@ -223,14 +219,6 @@ const ConnectorForm = ({
           <ButtonSubmit submitting={isSubmitting} className="mb-3">
             {submitLabel}
           </ButtonSubmit>
-          {docUrl && (
-            <p>
-              Need help? Read our{" "}
-              <a href={docUrl} target="_blank">
-                doc
-              </a>
-            </p>
-          )}
         </Form>
       )}
     </Formik>

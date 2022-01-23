@@ -38,6 +38,7 @@ const DestinationSettings = ({
   return (
     <Layout
       title={steps[curWizardStep].title}
+      subTitle="Configure settings for how the sync should happen to the destination"
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
@@ -66,7 +67,7 @@ const DestinationSettings = ({
                 )
               }
             />
-            <ButtonSubmit submitting={isSubmitting} />
+            <ButtonSubmit submitting={isSubmitting}>Continue</ButtonSubmit>
           </Form>
         )}
       </Formik>

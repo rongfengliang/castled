@@ -7,6 +7,7 @@ import { ConnectorCategory } from "@/app/common/utils/types";
 import warehouseService from "@/app/services/warehouseService";
 import Loading from "@/app/components/common/Loading";
 import Layout from "@/app/components/layout/Layout";
+import ConnectorHelpSubTitle from "./ConnectorHelpSubTitle";
 
 interface ConnectorEditProps {
   appBaseUrl: string;
@@ -17,7 +18,7 @@ interface ConnectorEditProps {
 const ConnectorEdit = ({
   appBaseUrl,
   category,
-  connectorId
+  connectorId,
 }: ConnectorEditProps) => {
   const [connector, setConnector] = useState<ConnectorDto | undefined | null>();
 
@@ -35,7 +36,17 @@ const ConnectorEdit = ({
 
   if (connector === null) return <DefaultErrorPage statusCode={404} />;
   return (
-    <Layout title={connector?.name || ""}>
+    <Layout
+      title={`Edit ${category}`}
+      centerTitle
+      subTitle={
+        <ConnectorHelpSubTitle
+          description=""
+          curWizardStep="configure"
+          docUrl={connector?.docUrl}
+        />
+      }
+    >
       {!connector && <Loading />}
       {connector && (
         <ConnectorForm
@@ -45,7 +56,6 @@ const ConnectorEdit = ({
           category={category}
           connectorType={connector.type}
           accessType={connector.accessType}
-          docUrl={connector.docUrl}
           onFinish={() => {}}
         />
       )}

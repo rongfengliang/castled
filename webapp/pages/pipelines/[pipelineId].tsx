@@ -92,6 +92,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
   return (
     <Layout
       title={renderTitle(pipeline, router, setPipeline, setReloadKey)}
+      subTitle={undefined}
       pageTitle={pipeline ? "Pipeline " + pipeline.name : ""}
       rightBtn={{
         id: "sync_pipeline_button",

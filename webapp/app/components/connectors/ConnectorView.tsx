@@ -55,6 +55,7 @@ const ConnectorView = ({ category }: ConnectorViewProps) => {
   return (
     <Layout
       title={category + "s"}
+      subTitle={undefined}
       rightBtn={{
         id: `add_${category.toLowerCase()}_button`,
         title: `Add ${category}`,

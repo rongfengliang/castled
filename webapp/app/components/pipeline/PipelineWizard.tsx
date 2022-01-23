@@ -12,6 +12,7 @@ import routerUtils from "@/app/common/utils/routerUtils";
 import _ from "lodash";
 import { AccessType } from "@/app/common/enums/AccessType";
 import { PipelineWizardContextDto } from "@/app/common/dtos/context/PipelineWizardContextDto";
+import warehouseService from "@/app/services/warehouseService";
 
 interface PipelineWizardProps {
   appBaseUrl: string;
@@ -32,7 +33,7 @@ export interface PipelineWizardStepProps {
   onFinish?: (id: number) => void;
 }
 
-const demoContext: PipelineWizardContextDto = {
+let demoContext: PipelineWizardContextDto = {
   warehouseType: {
     value: "POSTGRES",
     title: "Postgres",
@@ -43,7 +44,6 @@ const demoContext: PipelineWizardContextDto = {
     count: 1,
   },
   values: {
-    warehouseId: 4,
     appSyncConfig: {},
   },
   isDemo: true,
@@ -103,7 +103,7 @@ const PipelineWizard = ({
             },
             model: {
               title: "Configure Model",
-              description: "Write a query to fetch data from source warehouse",
+              description: "Enter your query and run it to see a preview",
             },
           }}
           setCurWizardStep={setCurWizardStep}
@@ -144,7 +144,8 @@ const PipelineWizard = ({
           steps={{
             mapping: {
               title: "Map fields",
-              description: "Map source fields to destination",
+              description:
+                "Map source columns to the fields in the destination. Select primary keys based on which deduplication should happen",
             },
           }}
           setCurWizardStep={setCurWizardStep}
@@ -158,7 +159,8 @@ const PipelineWizard = ({
           steps={{
             settings: {
               title: "Final Settings",
-              description: "You are almost there. Setup pipeline frequency",
+              description:
+                "Almost there, give a name to your pipeline and setup a schedule",
             },
           }}
           setCurWizardStep={setCurWizardStep}

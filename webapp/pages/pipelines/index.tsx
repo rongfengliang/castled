@@ -28,7 +28,7 @@ const Pipelines = () => {
   if (pipelines && pipelines.length === 0) {
     router.push("/welcome");
     return (
-      <Layout title="Loading Welcome..." hideHeader={true}>
+      <Layout title="Loading Welcome..." subTitle={undefined} hideHeader={true}>
         <Loading />
       </Layout>
     );
@@ -36,6 +36,7 @@ const Pipelines = () => {
   return (
     <Layout
       title="Pipelines"
+      subTitle={undefined}
       rightBtn={
         pipelines?.length
           ? {
