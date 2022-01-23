@@ -3,24 +3,24 @@ package io.castled.events;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import io.castled.tracking.EventsTrackingClient;
-import io.castled.tracking.TrackingEvent;
+import io.castled.tracking.InstallTrackingClient;
+import io.castled.tracking.InstallTrackingEvent;
 import io.castled.tracking.TrackingEventType;
 
 @Singleton
 public class NewInstallationEventsHandler implements CastledEventsHandler {
 
-    private final EventsTrackingClient eventsTrackingClient;
+    private final InstallTrackingClient installTrackingClient;
 
     @Inject
-    public NewInstallationEventsHandler(EventsTrackingClient eventsTrackingClient) {
-        this.eventsTrackingClient = eventsTrackingClient;
+    public NewInstallationEventsHandler(InstallTrackingClient installTrackingClient) {
+        this.installTrackingClient = installTrackingClient;
     }
 
     @Override
     public void handleCastledEvent(CastledEvent castledEvent) {
         NewInstallationEvent newInstallationEvent = (NewInstallationEvent) castledEvent;
-        this.eventsTrackingClient.trackEvent(new TrackingEvent
+        this.installTrackingClient.trackEvent(new InstallTrackingEvent
                 (TrackingEventType.NEW_INSTALLATION, newInstallationEvent.getInstallationId(), Maps.newHashMap()));
     }
 }

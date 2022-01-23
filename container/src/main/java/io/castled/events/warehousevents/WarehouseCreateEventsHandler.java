@@ -7,8 +7,8 @@ import io.castled.CastledStateStore;
 import io.castled.events.CastledEvent;
 import io.castled.events.CastledEventsHandler;
 import io.castled.tracking.EventTags;
-import io.castled.tracking.EventsTrackingClient;
-import io.castled.tracking.TrackingEvent;
+import io.castled.tracking.InstallTrackingClient;
+import io.castled.tracking.InstallTrackingEvent;
 import io.castled.tracking.TrackingEventType;
 import io.castled.warehouses.WarehouseService;
 import io.castled.warehouses.WarehouseType;
@@ -16,13 +16,13 @@ import io.castled.warehouses.WarehouseType;
 @Singleton
 public class WarehouseCreateEventsHandler implements CastledEventsHandler {
 
-    private final EventsTrackingClient eventsTrackingClient;
+    private final InstallTrackingClient installTrackingClient;
     private final WarehouseService warehouseService;
 
     @Inject
-    public WarehouseCreateEventsHandler(EventsTrackingClient eventsTrackingClient,
+    public WarehouseCreateEventsHandler(InstallTrackingClient installTrackingClient,
                                         WarehouseService warehouseService) {
-        this.eventsTrackingClient = eventsTrackingClient;
+        this.installTrackingClient = installTrackingClient;
         this.warehouseService = warehouseService;
     }
 
@@ -31,7 +31,7 @@ public class WarehouseCreateEventsHandler implements CastledEventsHandler {
         WarehouseCreatedEvent warehouseCreateEvent = (WarehouseCreatedEvent) castledEvent;
         WarehouseType warehouseType = this.warehouseService.getWarehouse(warehouseCreateEvent.getWarehouseId(), true).getType();
 
-        this.eventsTrackingClient.trackEvent(new TrackingEvent
+        this.installTrackingClient.trackEvent(new InstallTrackingEvent
                 (TrackingEventType.WAREHOUSE_CREATED, CastledStateStore.installId, ImmutableMap.of(EventTags.WAREHOUSE_TYPE, warehouseType.toString())));
 
     }

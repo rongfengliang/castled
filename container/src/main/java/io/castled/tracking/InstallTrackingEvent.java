@@ -9,7 +9,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TrackingEvent {
+public class InstallTrackingEvent {
 
     private TrackingEventType eventType;
     private String installId;
