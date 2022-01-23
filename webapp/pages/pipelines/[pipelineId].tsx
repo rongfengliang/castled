@@ -141,6 +141,7 @@ const PipelineInfo = ({ pipelineId }: PipelineInfoProps) => {
         </Tab>
         <Tab eventKey="Schedule" title="Schedule">
           <PipelineSettingsView
+            key={pipeline?.id}
             pipelineId={pipeline?.id}
             name={pipeline?.name}
             schedule={pipeline?.jobSchedule}
