@@ -1,6 +1,6 @@
-CREATE SCHEMA TEST_SCHEMA;
+CREATE SCHEMA DEMO_SCHEMA;
 
-CREATE TABLE TEST_SCHEMA.LEADS (
+CREATE TABLE DEMO_SCHEMA.LEADS (
 	business_name VARCHAR ( 255 ) UNIQUE NOT NULL,
 	category VARCHAR ( 255 ) NOT NULL,
 	contact_fname VARCHAR ( 255 ) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE TEST_SCHEMA.LEADS (
 	email VARCHAR ( 255 ) PRIMARY KEY
 );
 
-INSERT INTO TEST_SCHEMA.LEADS (business_name, category, contact_fname, contact_lname, email)
+INSERT INTO DEMO_SCHEMA.LEADS (business_name, category, contact_fname, contact_lname, email)
 VALUES
 ('Wayne Enterprises', 'Manufacturing', 'Bruce', 'Wayne', 'bruce@wayne.com'),
 ('Duff Beer', 'Food and beverages', 'Jane', 'Doe', 'jane@duff.com'),
@@ -40,17 +40,17 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA CASTLED TO CASTLED;
 
 -----------------------------------GRANT TABLE READ ONLY ACCESS STARTS------------------------------------------
 -- Give access to CASTLED user to SEE your schema
-GRANT USAGE ON SCHEMA TEST_SCHEMA TO CASTLED;
+GRANT USAGE ON SCHEMA DEMO_SCHEMA TO CASTLED;
 
 -- Give READ ONLY access to  CASTLED user to read from all existing tables in your schema
-GRANT SELECT ON ALL TABLES IN SCHEMA TEST_SCHEMA TO CASTLED;
+GRANT SELECT ON ALL TABLES IN SCHEMA DEMO_SCHEMA TO CASTLED;
 
 -- Give READ ONLY access to CASTLED user to read from all the future tables being created in your schema
-ALTER DEFAULT PRIVILEGES IN SCHEMA TEST_SCHEMA GRANT SELECT ON TABLES TO CASTLED;
+ALTER DEFAULT PRIVILEGES IN SCHEMA DEMO_SCHEMA GRANT SELECT ON TABLES TO CASTLED;
 
 -- Give access to  the CASTLED user to execute any existing functions in you schema
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA TEST_SCHEMA TO CASTLED;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA DEMO_SCHEMA TO CASTLED;
 
 -- Give access to  the CASTLED user to execute any new functions added to this schema
-ALTER DEFAULT PRIVILEGES IN SCHEMA TEST_SCHEMA GRANT EXECUTE ON FUNCTIONS TO CASTLED;
+ALTER DEFAULT PRIVILEGES IN SCHEMA DEMO_SCHEMA GRANT EXECUTE ON FUNCTIONS TO CASTLED;
 -----------------------------------GRANT TABLE READ ONLY ACCESS ENDS---------------------------------------------
