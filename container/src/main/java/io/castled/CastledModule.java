@@ -22,7 +22,12 @@ import io.castled.apps.connectors.marketo.MarketoAppConnector;
 import io.castled.apps.connectors.mixpanel.MixpanelAppConnector;
 import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
+import io.castled.events.CastledEventType;
+import io.castled.events.CastledEventsHandler;
+import io.castled.events.NewInstallationEventsHandler;
+import io.castled.events.appevents.AppCreateEventsHandler;
 import io.castled.events.pipelineevents.*;
+import io.castled.events.warehousevents.WarehouseCreateEventsHandler;
 import io.castled.interceptors.Retry;
 import io.castled.interceptors.RetryInterceptor;
 import io.castled.jarvis.DummyTaskExecutor;
@@ -74,6 +79,7 @@ public class CastledModule extends AbstractModule {
         bindPipelineEventHandlers();
         bindInterceptors();
         bindAppSyncOptions();
+        bindCastledEventHandlers();
     }
 
     private void bindAppSyncOptions() {
@@ -92,6 +98,14 @@ public class CastledModule extends AbstractModule {
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_CREATED).to(PipelineCreateEventsHandler.class);
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_DELETED).to(PipelineDeleteEventsHandler.class);
         pipelineEventHandlers.addBinding(PipelineEventType.PIPELINE_SCHEDULE_CHANGED).to(PipelineScheduleChangeEventsHandler.class);
+    }
+
+    private void bindCastledEventHandlers() {
+        MapBinder<CastledEventType, CastledEventsHandler> castledEventHandlers = MapBinder.newMapBinder(binder(),
+                CastledEventType.class, CastledEventsHandler.class);
+        castledEventHandlers.addBinding(CastledEventType.APP_CREATED).to(AppCreateEventsHandler.class);
+        castledEventHandlers.addBinding(CastledEventType.WAREHOUSE_CREATED).to(WarehouseCreateEventsHandler.class);
+        castledEventHandlers.addBinding(CastledEventType.NEW_INSTALLATION).to(NewInstallationEventsHandler.class);
     }
 
 
