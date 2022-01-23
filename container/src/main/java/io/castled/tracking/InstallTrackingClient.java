@@ -16,7 +16,7 @@ public class InstallTrackingClient {
     }
 
     public void trackEvent(InstallTrackingEvent trackingEvent) {
-        this.client.target("https://app.castled.io/backend/v1/tracking/installs")
+        this.client.target("https://test.castled.io/backend/v1/tracking/installs")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(trackingEvent));
     }
