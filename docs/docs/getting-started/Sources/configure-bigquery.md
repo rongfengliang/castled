@@ -39,6 +39,8 @@ Refer this **[link](https://cloud.google.com/bigquery/docs/access-control )** fo
     - **[Identifier](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)** for your project.
 - **GCS Bucket Name**
   - **[Name](https://cloud.google.com/storage/docs/key-terms#buckets)** of the bucket to be used for the sync
+- **Dataset Location**
+  - Location of your bucket.When you create a bucket, you permanently define its geographic location, which is the physical place where object data in the bucket resides.
 
 When using the Castled recommended permissions, once you enter the above mentioned configuration details, you will be prompted the three commands to be mandatorily run in your Google Cloud Shell in the Google Cloud Console before clicking the Submit button of the Configuration screen.
 
