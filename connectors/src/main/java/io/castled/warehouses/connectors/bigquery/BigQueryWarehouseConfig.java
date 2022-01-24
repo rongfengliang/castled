@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@CodeBlock(title = "Run the following commands on the.g.oogle cloud console",
+@CodeBlock(title = "Run the following commands on the google cloud console",
         dependencies = {"projectId", "bucketName", "serviceAccount"}
         , snippets = {@CodeSnippet(title = "BQ Data Viewer Role", ref = "bq_data_viewer_access"),
         @CodeSnippet(title = "BQ User Role", ref = "bq_data_user_access"),
