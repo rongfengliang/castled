@@ -3,6 +3,7 @@ package io.castled.dtomappers;
 import io.castled.dtos.WarehouseDTO;
 import io.castled.models.Warehouse;
 import io.castled.models.WarehouseAggregate;
+import io.castled.utils.DocUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -25,7 +26,7 @@ public interface WarehouseDTOMapper {
     default WarehouseDTO toDTO(Warehouse warehouse, int pipelines) {
         WarehouseDTO warehouseDTO = toDTO(warehouse);
         warehouseDTO.setLogoUrl(warehouse.getType().getLogoUrl());
-        warehouseDTO.setDocUrl(warehouse.getType().getDocUrl());
+        warehouseDTO.setDocUrl(DocUtils.constructDocUrl(warehouse.getType().getDocUrl()));
         warehouseDTO.setPipelines(pipelines);
         warehouseDTO.setAccessType(warehouse.getType().getAccessType());
         if (warehouse.isDemo()) {

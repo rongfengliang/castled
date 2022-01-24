@@ -19,12 +19,14 @@ public enum ExternalAppType {
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.OAUTH)
             .put(ConnectorConstants.TITLE, "Salesforce")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/salesforce.png")
+            .put(ConnectorConstants.DOC_URL,"getting-started/Destinations/configure-salesforce")
             .put(ConnectorConstants.OAUTH_SERVICE, OAuthServiceType.SALESFORCE)
             .build()),
     HUBSPOT(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.OAUTH)
             .put(ConnectorConstants.TITLE, "Hubspot")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/hubspot.svg")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Destinations/configure-hubspot")
             .put(ConnectorConstants.OAUTH_SERVICE, OAuthServiceType.HUBSPOT)
             .build()),
     INTERCOM(ImmutableMap.<String, Object>builder()
@@ -48,17 +50,18 @@ public enum ExternalAppType {
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)
             .put(ConnectorConstants.TITLE, "Sendgrid")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/sendgrid.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Destinations/configure-sendgrid")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Destinations/configure-sendgrid")
             .build()),
     MARKETO(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)
             .put(ConnectorConstants.TITLE, "Marketo")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/marketo.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Destinations/configure-marketo")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Destinations/configure-marketo")
             .build()),
     ACTIVECAMPAIGN(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)
             .put(ConnectorConstants.TITLE, "ActiveCampaign")
+            .put(ConnectorConstants.DOC_URL,"getting-started/Destinations/configure-activecampaign")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/active_campaign.png")
             .build()),
     KAFKA(ImmutableMap.<String, Object>builder()
@@ -70,6 +73,7 @@ public enum ExternalAppType {
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)
             .put(ConnectorConstants.TITLE, "Customer.io")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/customerio.png")
+            .put(ConnectorConstants.DOC_URL,"getting-started/Destinations/configure-customerio")
             .build()),
     GOOGLEPUBSUB(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)

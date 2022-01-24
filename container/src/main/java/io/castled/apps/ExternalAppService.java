@@ -31,6 +31,7 @@ import io.castled.optionsfetchers.appsync.AppSyncOptionsFetcher;
 import io.castled.pubsub.MessagePublisher;
 import io.castled.pubsub.registry.ExternalAppUpdatedMessage;
 import io.castled.resources.validators.ResourceAccessController;
+import io.castled.utils.DocUtils;
 import io.castled.utils.JsonUtils;
 import io.castled.utils.OAuthStateStore;
 import io.castled.warehouses.WarehouseConfig;
@@ -243,9 +244,10 @@ public class ExternalAppService {
     public List<ExternalAppTypeDTO> listExternalAppTypes(User user) {
         List<ExternalApp> externalApps = this.externalAppDAO.listExternalApps(user.getTeamId());
         return Arrays.stream(ExternalAppType.values()).map(appType -> new ExternalAppTypeDTO(appType,
-                appType.title(), appType.getAccessType(), appType.logoUrl(), appType.docUrl(),
+                appType.title(), appType.getAccessType(), appType.logoUrl(), DocUtils.constructDocUrl(appType.docUrl()),
                 externalApps.stream().filter(externalApp -> externalApp.getType().equals(appType)).count())).collect(Collectors.toList());
     }
+
 
     public FieldOptionsDTO getAppSyncOptions(AppSyncConfigDTO appSyncConfig, String optionsReference) {
         ExternalApp externalApp = getExternalApp(appSyncConfig.getAppId(), true);

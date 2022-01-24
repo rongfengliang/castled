@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.castled.apps.connectors.salesforce.SalesforceSinkConfig;
+import io.castled.configuration.DocConfiguration;
 import io.castled.jarvis.scheduler.models.JarvisSchedulerConfig;
 import io.castled.kafka.KafkaApplicationConfig;
 import io.castled.models.JarvisTaskConfiguration;
@@ -39,6 +40,9 @@ public class CastledConfiguration extends Configuration {
     private WarehouseConnectorConfig warehouseConnectorConfig = new WarehouseConnectorConfig();
 
     private SalesforceSinkConfig salesforceSinkConfig = new SalesforceSinkConfig();
+
+    @NotNull
+    private DocConfiguration docConfiguration;
 
 
 }

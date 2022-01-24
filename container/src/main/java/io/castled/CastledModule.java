@@ -22,6 +22,7 @@ import io.castled.apps.connectors.marketo.MarketoAppConnector;
 import io.castled.apps.connectors.mixpanel.MixpanelAppConnector;
 import io.castled.apps.connectors.salesforce.SalesforceAppConnector;
 import io.castled.apps.connectors.sendgrid.SendgridAppConnector;
+import io.castled.configuration.DocConfiguration;
 import io.castled.events.CastledEventType;
 import io.castled.events.CastledEventsHandler;
 import io.castled.events.NewInstallationEventsHandler;
@@ -192,5 +193,11 @@ public class CastledModule extends AbstractModule {
     @Singleton
     public KafkaApplicationConfig kafkaApplicationConfig() {
         return castledConfiguration.getKafkaConfig();
+    }
+
+    @Provides
+    @Singleton
+    public DocConfiguration providesDocConfiguration(){
+        return castledConfiguration.getDocConfiguration();
     }
 }

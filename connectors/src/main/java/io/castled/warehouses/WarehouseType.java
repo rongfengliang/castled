@@ -12,26 +12,26 @@ public enum WarehouseType {
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.PASSWORD)
             .put(ConnectorConstants.TITLE, "Redshift")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/warehouses/redshift.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Sources/configure-redshift")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Sources/configure-redshift")
 
             .build()),
     SNOWFLAKE(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.PASSWORD)
             .put(ConnectorConstants.TITLE, "Snowflake")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/warehouses/snowflake.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Sources/configure-snowflake")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Sources/configure-snowflake")
             .build()),
     POSTGRES(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.PASSWORD)
             .put(ConnectorConstants.TITLE, "Postgres")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/warehouses/postgres.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Sources/configure-postgres")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Sources/configure-postgres")
             .build()),
     BIGQUERY(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.PASSWORD)
             .put(ConnectorConstants.TITLE, "BigQuery")
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/warehouses/bigquery.png")
-            .put(ConnectorConstants.DOC_URL, "https://docs.castled.io/getting-started/Sources/configure-bigquery")
+            .put(ConnectorConstants.DOC_URL, "getting-started/Sources/configure-bigquery")
             .build());
 
 

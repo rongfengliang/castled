@@ -3,6 +3,7 @@ package io.castled.dtomappers;
 import io.castled.apps.ExternalApp;
 import io.castled.dtos.ExternalAppDTO;
 import io.castled.models.AppAggregate;
+import io.castled.utils.DocUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -21,7 +22,7 @@ public interface ExternalAppDTOMapper {
         externalAppDTO.setPipelines(pipelines);
         externalAppDTO.setAccessType(externalApp.getType().getAccessType());
         externalAppDTO.setConfig(externalApp.getConfig());
-        externalAppDTO.setDocUrl(externalApp.getType().docUrl());
+        externalAppDTO.setDocUrl(DocUtils.constructDocUrl(externalApp.getType().docUrl()));
         return externalAppDTO;
     }
 

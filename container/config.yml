@@ -166,3 +166,6 @@ email_configuration:
   smtp_host: xx
   smtp_port: 00
   email_enabled: false
+
+doc_configuration:
+  docUrl: https://oss-docs.castled.io

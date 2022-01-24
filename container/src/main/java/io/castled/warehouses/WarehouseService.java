@@ -29,6 +29,7 @@ import io.castled.pubsub.MessagePublisher;
 import io.castled.pubsub.registry.WarehouseUpdatedMessage;
 import io.castled.resources.validators.ResourceAccessController;
 import io.castled.schema.models.RecordSchema;
+import io.castled.utils.DocUtils;
 import io.castled.utils.JsonUtils;
 import io.castled.utils.TimeUtils;
 import io.castled.warehouses.dtos.WarehouseAttributes;
@@ -209,7 +210,7 @@ public class WarehouseService {
     public List<WarehouseTypeDTO> listWarehouseTypes(User user) {
         List<Warehouse> warehouses = this.warehouseDAO.listWarehouses(user.getTeamId());
         return Arrays.stream(WarehouseType.values()).map(warehouseType -> new WarehouseTypeDTO(warehouseType, warehouseType.title(),
-                        warehouseType.getAccessType(), warehouseType.getLogoUrl(), warehouseType.getDocUrl(),
+                        warehouseType.getAccessType(), warehouseType.getLogoUrl(), DocUtils.constructDocUrl(warehouseType.getDocUrl()),
                         warehouses.stream().filter(warehouse -> warehouse.getType().equals(warehouseType)).count()))
                 .collect(Collectors.toList());
     }
