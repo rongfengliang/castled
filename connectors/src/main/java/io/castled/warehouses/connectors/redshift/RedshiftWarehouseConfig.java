@@ -36,7 +36,7 @@ public class RedshiftWarehouseConfig extends TunneledWarehouseConfig {
     @FormField(description = "S3 Access Key Secret", title = "S3 Access Key Secret", placeholder = "e.g. wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private String accessKeySecret;
 
-    @FormField(description = "S3 Bucket Location", title = "S3 Bucket Location", placeholder = "e.g. sa-east-1", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "S3 Bucket Location", title = "S3 Bucket Location", placeholder = "e.g. US_EAST_1", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
     private Regions region;
 
 }
