@@ -86,7 +86,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
 :::note
 1. If the sync involves more than one schema in your database GRANT mentioned above needs to be given for each of those schemas.
 2. If the views in your schema references tables of another schema in your database, GRANT needs to be given for those schemas as well.
-3. Castled connects to Postgres from the ip address **3.108.138.187**. Please make sure the ip is allowed inbound traffic to the Redshift port.
 :::
 
 ## Connecting to SSH Tunnel
