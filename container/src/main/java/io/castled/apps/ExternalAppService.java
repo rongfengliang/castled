@@ -16,6 +16,8 @@ import io.castled.dtos.ExternalAppOauthState;
 import io.castled.dtos.ExternalAppTypeDTO;
 import io.castled.dtos.OAuthAppAttributes;
 import io.castled.encryption.EncryptionManager;
+import io.castled.events.CastledEventsClient;
+import io.castled.events.appevents.ExternalAppCreatedEvent;
 import io.castled.exceptions.CastledRuntimeException;
 import io.castled.exceptions.connect.ConnectException;
 import io.castled.forms.dtos.FieldOptionsDTO;
@@ -56,6 +58,7 @@ public class ExternalAppService {
     private final Map<ExternalAppType, ExternalAppConnector> appConnectors;
     private final ExternalAppCache externalAppCache;
     private final MessagePublisher messagePublisher;
+    private final CastledEventsClient castledEventsClient;
     private final Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers;
     private final OAuthAccessProviderFactory oAuthAccessProviderFactory;
     private final Map<String, AppOptionsFetcher> appOptionsFetchers;
@@ -65,7 +68,7 @@ public class ExternalAppService {
     public ExternalAppService(Jdbi jdbi, Map<ExternalAppType, ExternalAppConnector> appConnectors,
                               EncryptionManager encryptionManager, ExternalAppCache externalAppCache,
                               ResourceAccessController accessController, MessagePublisher messagePublisher,
-                              Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers,
+                              Map<String, AppSyncOptionsFetcher> appSyncOptionsFetchers, CastledEventsClient castledEventsClient,
                               OAuthAccessProviderFactory oAuthAccessProviderFactory, Map<String, AppOptionsFetcher> appOptionsFetchers) {
         this.externalAppDAO = jdbi.onDemand(ExternalAppDAO.class);
         this.pipelineDAO = jdbi.onDemand(PipelineDAO.class);
@@ -77,6 +80,7 @@ public class ExternalAppService {
         this.appSyncOptionsFetchers = appSyncOptionsFetchers;
         this.oAuthAccessProviderFactory = oAuthAccessProviderFactory;
         this.appOptionsFetchers = appOptionsFetchers;
+        this.castledEventsClient = castledEventsClient;
 
     }
 
@@ -85,7 +89,9 @@ public class ExternalAppService {
             this.appConnectors.get(appConfig.getType()).validateAppConfig(appConfig);
             AppConfig enrichedAppConfig = this.appConnectors.get(appConfig.getType()).enrichAppConfig(appConfig);
             String configText = this.encryptionManager.encryptText(JsonUtils.objectToString(enrichedAppConfig), user.getTeamId());
-            return this.externalAppDAO.createExternalApp(name, appConfig.getType(), configText, user.getTeamId());
+            Long appId = this.externalAppDAO.createExternalApp(name, appConfig.getType(), configText, user.getTeamId());
+            this.castledEventsClient.publishCastledEvent(new ExternalAppCreatedEvent(appId));
+            return appId;
         } catch (ConnectException e) {
             throw new BadRequestException(e.getMessage());
         } catch (Exception e) {

@@ -7,7 +7,7 @@ import { useSession } from "@/app/common/context/sessionContext";
 const Welcome = () => {
   const { isOss } = useSession();
   return (
-    <Layout title="Welcome" hideHeader>
+    <Layout title="Welcome" subTitle={undefined} hideHeader>
       <div className="welcome-wrapper">
         <p className="mb-0">Welcome to Castled!</p>
         <h2 className="mb-4">Get started with your first pipeline.</h2>

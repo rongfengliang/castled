@@ -9,6 +9,8 @@ import io.castled.caches.WarehouseCache;
 import io.castled.constants.CommonConstants;
 import io.castled.daos.PipelineDAO;
 import io.castled.encryption.EncryptionManager;
+import io.castled.events.CastledEventsClient;
+import io.castled.events.warehousevents.WarehouseCreatedEvent;
 import io.castled.exceptions.CastledException;
 import io.castled.exceptions.CastledRuntimeException;
 import io.castled.exceptions.connect.ConnectException;
@@ -53,11 +55,13 @@ public class WarehouseService {
     private final MessagePublisher messagePublisher;
     private final ResourceAccessController accessController;
     private final Map<String, WarehouseOptionsFetcher> warehouseOptionsFetchers;
+    private final CastledEventsClient castledEventsClient;
 
     @Inject
     public WarehouseService(Map<WarehouseType, WarehouseConnector> warehouseConnectors,
                             EncryptionManager encryptionManager, Jdbi jdbi, WarehouseCache warehouseCache,
                             MessagePublisher messagePublisher, ResourceAccessController accessController,
+                            CastledEventsClient castledEventsClient,
                             Map<String, WarehouseOptionsFetcher> warehouseOptionsFetchers) {
         this.warehouseConnectors = warehouseConnectors;
         this.encryptionManager = encryptionManager;
@@ -67,6 +71,7 @@ public class WarehouseService {
         this.messagePublisher = messagePublisher;
         this.accessController = accessController;
         this.warehouseOptionsFetchers = warehouseOptionsFetchers;
+        this.castledEventsClient = castledEventsClient;
     }
 
     public void testConnection(WarehouseType warehouseType, WarehouseConfig warehouseConfig) throws ConnectException {
@@ -83,8 +88,10 @@ public class WarehouseService {
         try {
             testConnection(warehouseConfig.getType(), warehouseConfig);
             String config = this.encryptionManager.encryptText(JsonUtils.objectToString(warehouseConfig), user.getTeamId());
-            return warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(),
+            Long warehouseId = warehouseDAO.createWarehouse(warehouseAttributes.getName(), warehouseConfig.getType(),
                     config, user.getTeamId(), false);
+            this.castledEventsClient.publishCastledEvent(new WarehouseCreatedEvent(warehouseId));
+            return warehouseId;
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {

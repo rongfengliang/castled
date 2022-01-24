@@ -6,7 +6,7 @@ import MembersTab from "./members";
 const Settings = () => {
   const [key, setKey] = useState("members");
   return (
-    <Layout title={""}>
+    <Layout title={""} subTitle={undefined}>
       <Tabs
         id="controlled-tab-example"
         activeKey={key}
@@ -16,9 +16,6 @@ const Settings = () => {
         <Tab eventKey="members" title="Members">
           <MembersTab />
         </Tab>
-        {/* <Tab eventKey="integrations" title="Integrations">
-          Integrations
-        </Tab> */}
       </Tabs>
     </Layout>
   );

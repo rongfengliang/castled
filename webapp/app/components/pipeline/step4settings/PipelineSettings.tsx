@@ -57,12 +57,14 @@ const PipelineSettings = ({
   return (
     <Layout
       title={steps[curWizardStep].title}
+      subTitle={steps[curWizardStep].description}
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
     >
       <PipelineSettingsForm
         initialValues={defaultPipelineSettings}
+        submitLabel="Create Pipeline"
         onSubmit={(
           name: string,
           pipelineSchedule: PipelineSchedule,

@@ -25,4 +25,11 @@ public class CastledEventsClient {
         this.castledKafkaProducer.publish(producerRecord);
     }
 
+    public void publishCastledEvent(CastledEvent castledEvent) {
+        ProducerRecord<byte[], byte[]> producerRecord = new ProducerRecord<>(KafkaApplicationConstants.CASTLED_EVENTS_TOPIC, null,
+                String.valueOf(castledEvent.entityId()).getBytes(),
+                JsonUtils.objectToString(castledEvent).getBytes());
+        this.castledKafkaProducer.publish(producerRecord);
+    }
+
 }

@@ -10,6 +10,7 @@ import { usePipelineWizContext } from "@/app/common/context/pipelineWizardContex
 import Loading from "@/app/components/common/Loading";
 import _ from "lodash";
 import IntegratedDoc from "../layout/IntegratedDoc";
+import ConnectorHelpSubTitle from "./ConnectorHelpSubTitle";
 
 interface ConnectorWizardProps {
   appBaseUrl: string;
@@ -54,6 +55,13 @@ const ConnectorWizard = ({
   return (
     <Layout
       title={steps[curWizardStep].title}
+      subTitle={
+        <ConnectorHelpSubTitle
+          description={steps[curWizardStep].description}
+          curWizardStep={curWizardStep}
+          docUrl={typeOption?.docUrl}
+        />
+      }
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
@@ -98,7 +106,6 @@ const ConnectorWizard = ({
             category={category}
             connectorType={typeOption.value}
             accessType={typeOption.accessType}
-            docUrl={typeOption.docUrl}
             onFinish={onFinish}
           />
         )}

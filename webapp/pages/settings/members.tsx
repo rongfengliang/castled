@@ -84,8 +84,8 @@ const MembersTab = () => {
       .then(() => {
         bannerNotificationService.success("Resent invitation");
       })
-      .catch((err: any) => {
-        console.log(err.response);
+      .catch((err) => {
+        console.error(err.response);
         if (
           err &&
           err.response &&
@@ -129,7 +129,7 @@ const MembersTab = () => {
         const activeMembers = teamMembers?.activeMembers || [];
         setTeamMembers({ ...teamMembers, activeMembers } as any);
       })
-      .catch((err: any) => {
+      .catch((err) => {
         console.log(err);
         bannerNotificationService.error(err.message);
       });
@@ -160,7 +160,7 @@ const MembersTab = () => {
         bannerNotificationService.success("Role Updated Successfully");
         setUpdateRoleFlag(undefined);
       })
-      .catch((err: any) => {
+      .catch((err) => {
         console.log(err);
         bannerNotificationService.error(err.message);
       });

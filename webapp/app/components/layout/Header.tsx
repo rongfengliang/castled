@@ -14,6 +14,7 @@ import buttonHandler from "@/app/common/utils/buttonHandler";
 
 export interface HeaderProps {
   title: string | JSX.Element;
+  subTitle: string | JSX.Element | undefined;
   pageTitle?: string;
   centerTitle?: boolean;
   navLinks?: {
@@ -34,6 +35,7 @@ export interface HeaderProps {
 
 const Header = ({
   title,
+  subTitle,
   centerTitle,
   navLinks,
   rightBtn,
@@ -113,6 +115,7 @@ const Header = ({
               </div>
             </div>
           )}
+          {subTitle && <p className="text-center fs-4 px-5">{subTitle}</p>}
           {navLinks?.length && (
             <Nav variant="tabs" defaultActiveKey={navLinks[0].href}>
               {navLinks.map((navLink, i) => (

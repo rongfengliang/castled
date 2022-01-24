@@ -7,7 +7,7 @@ export interface PipelineCreateRequestDto {
   appId?: number;
   warehouseId?: number;
   sourceQuery?: string;
-  queryMode? : QueryMode;
+  queryMode?: QueryMode;
   appSyncConfig: {
     appType?: string;
     [key: string]: string | undefined;

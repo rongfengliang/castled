@@ -99,6 +99,7 @@ const PipelineMapping = ({
   return (
     <Layout
       title={steps[curWizardStep].title}
+      subTitle={steps[curWizardStep].description}
       centerTitle={true}
       steps={steps}
       stepGroups={stepGroups}
@@ -135,6 +136,7 @@ const PipelineMapping = ({
                     {!pipelineSchema?.pkEligibles.autoDetect && (
                       <th>Primary Key</th>
                     )}
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -221,7 +223,7 @@ const PipelineMapping = ({
                       )}
                 </tbody>
               </Table>
-              <ButtonSubmit submitting={isSubmitting} />
+              <ButtonSubmit submitting={isSubmitting}>Continue</ButtonSubmit>
             </Form>
           )}
         </Formik>
