@@ -9,6 +9,16 @@ import java.util.stream.Collectors;
 @Data
 public class CastledDataMapping {
 
+    private String type;
+
+    private String URL;
+
+    private String method;
+
+    private Map<String,String> headers;
+
+    private String template;
+    
     private List<String> primaryKeys;
 
     private List<FieldMapping> fieldMappings;
