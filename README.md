@@ -48,7 +48,7 @@ You can access castled app at http://localhost:3000. Happy castling!!!
 
 ## Documentation
 
-You can access the documentation at: https://docs.castled.io/
+You can access the documentation at: https://oss-docs.castled.io/
 
 ## Community Support
 
