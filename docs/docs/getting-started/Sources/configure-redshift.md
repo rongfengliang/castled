@@ -74,12 +74,17 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
   - The port on which your Amazon Redshift server is listening for connections. Default value: 5439.
 - **Database name**
   - Name of database you created for your cluster
-- **Schema Name**
-  - Schema in your database to be used for the sync.
-- **Database Username**
+- **Database User**
   - Database username
 - **Database Password**
   - Database password
+- **S3 Bucket**
+  - A unique name for the bucket.S3 Bucket names are global and cannot have a name which is already in for another user.
+- **S3 Bucket Location**
+  - AWS Location or region where your S3 Bucket resides. e.g. us-east-1
+- **S3 Access Key Id**
+  - Access key is a combination of the access key Id and secret access key.You need to use this Access Key Id and Secret Access Key to connect to your AWS Connect and access the S3 Bucket.
+- **S3 Access Key Secret**
 - **Enable SSH Tunnel**
   - Enable this option to connect Redshift database host to Castled Data using a SSH Tunnel.This is done to provide an additional level of security and avoid exposing the Redshift setup to the public.
   - On enabling this option, you will have to enter the below details.Please refer [Connecting through SSH Tunnel](../Appendix/ssh-tunnel.md) for more details
@@ -94,17 +99,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
 1. If the sync involves more than one schema in your database GRANT mentioned above needs to be given for each of those schemas.
 2. If the views in your schema references tables of another schema in your database, GRANT needs to be given for those schemas as well.
 :::
-
-## Whitelisting Castled IP Address
-
-Castled connects to Redshift from the following ip adresses. Please make sure these ips are allowed inbound traffic to the Redshift port. You can choose a set of ips to allow inbound traffic based on the Castled cluster location you are using.
-
-   |  US cluster   | India cluster  |
-   | :-----------: | :------------: |
-   | 3.238.101.134 | 15.206.163.162 |
-   | 3.235.238.174 |  3.110.46.16   |
-   | 44.200.47.23  | 13.233.183.147 |
-   | 18.215.16.193 |   65.2.131.7   |
 
 ## Connecting to SSH Tunnel
 

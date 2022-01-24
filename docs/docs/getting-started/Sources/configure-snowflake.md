@@ -87,24 +87,27 @@ GRANT USAGE ON FUTURE FUNCTIONS IN SCHEMA "<your_database>"."<your_schema>" TO R
 **For configuring a new connector for Snowflake the following fields needs to be captured**
 - **Name**
     - A name to uniquely qualify the warehouse source created 
+- **Account Name**
+    - Name of the warehouse
 - **Warehouse Name**
     - Name of the warehouse 
-- **Account Locator**
-    - An account locator is an identifier assigned by Snowflake when the account is created
-- **Region**
-    - Cloud region dictated by the Cloud Platform
-- **Cloud**
-    - Cloud Platform identifier
-- **Database name**
-    - Name of database connected
+- **Database Name**
+    - Database name.
 - **Schema Name**
     - Schema name to be used.If the schema is mentioned here it can be avoided in the query
-- **Database username**
+- **Database User**
     - Database username
 - **Database Password**
     - Database password
+- **S3 Bucket**
+  - A unique name for the bucket.S3 Bucket names are global and cannot have a name which is already in for another user.
+- **S3 Bucket Location**
+  - AWS Location or region where your S3 Bucket resides. e.g. us-east-1
+- **S3 Access Key Id**
+  - Access key is a combination of the access key Id and secret access key.You need to use this Access Key Id and Secret Access Key to connect to your AWS Connect and access the S3 Bucket.
+- **S3 Access Key Secret**
 
-![Docusaurus](/img/screens/sources/snowflake/config_snowflake.png)
+![Docusaurus](/img/screens/sources/snowflake/wh_snowflake_config.png)
 
 
 
