@@ -81,7 +81,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
 - **S3 Bucket**
   - A unique name for the bucket.S3 Bucket names are global and cannot have a name which is already in for another user.
 - **S3 Bucket Location**
-  - AWS Location or region where your S3 Bucket resides. e.g. us-east-1
+  - AWS Location or region where your S3 Bucket resides.Please refer [S3 Bucket Location](../Appendix/s3-location.md) for the list of possible values for S3 Bucket locations.e.g. US_EAST_1
 - **S3 Access Key Id**
   - Access key is a combination of the access key Id and secret access key.You need to use this Access Key Id and Secret Access Key to connect to your AWS Connect and access the S3 Bucket.
 - **S3 Access Key Secret**
