@@ -70,7 +70,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA "<your schema>" GRANT EXECUTE ON FUNCTIONS TO
     - Name of database you created for your cluster
 - **Schema Name**
     - Schema in your database to be used for the sync.
-- **Database Username**
+- **Database User**
     - Database username
 - **Database Password**
     - Database password
