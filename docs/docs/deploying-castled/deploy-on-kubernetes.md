@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# On Kubernetes
+# On Kubernetes(Beta)
 
 Castled supports launching it services as a kubernetes deployment. This provides the flexibility of scaling the services horizontally based on requirement.
 In this doc we cover the steps to setup a basic deployment on various Kubernetes cluster environments.

@@ -32,17 +32,29 @@ Some of our key offerings include
 
 ## Getting Started
 
+Quick link: https://oss-docs.castled.io/deploying-castled/deploy-local
+
 ```
 git clone https://github.com/castledio/castled.git
 cd castled
-docker compose up
+docker-compose up
 ```
 
 You can access castled app at http://localhost:3000. Happy castling!!!
 
+- Quick startup demo
+
 <p align="center">
   <a href="https://www.loom.com/embed/71bf33acbb4a41cab7c96a3460a84e5f">
-      <img style="max-width:600px;" src="https://cdn.loom.com/sessions/thumbnails/2a611aef2bfb454fa026cb1489d5a859-with-play.gif">
+      <img style="max-width:600px;" src="https://cdn.loom.com/sessions/thumbnails/2a611aef2bfb454fa026cb1489d5a859-with-play.gif"/>
+  </a>
+</p>
+
+- Creating a pipeline with Castled
+
+<p align="center">
+  <a href="https://www.loom.com/embed/17bd25ed06cd4ca7a7215440606e2041">
+      <img style="max-width:600px;" src="https://cdn.loom.com/sessions/thumbnails/17bd25ed06cd4ca7a7215440606e2041-with-play.gif"/>
   </a>
 </p>
 
