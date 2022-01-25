@@ -10,7 +10,7 @@ sidebar_position: 2
 
 Follow the below steps to create a new EC2 instance fairly quickly
 
-1. Login to you AWS web console
+1. Login to your AWS web console
 2. Select EC2 service
 
    ![ec2 service](/img/screens/deploying/ec2/ec2-service.png)
