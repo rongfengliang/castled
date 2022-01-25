@@ -4,10 +4,10 @@
 </p>
 
 <p align="center">
-  <a href="https://docs.castled.io/deploying-castled/deploy-local">
+  <a href="https://oss-docs.castled.io/deploying-castled/deploy-local">
     <img src="https://cdn.castled.io/content/readme/deploy_locally.svg" alt="deply locally" />
   </a>
-  <a href="https://docs.castled.io/deploying-castled/deploy-on-aws-ec2">
+  <a href="https://oss-docs.castled.io/deploying-castled/deploy-on-aws-ec2">
     <img src="https://cdn.castled.io/content/readme/deploy_aws.svg" alt="deploy on aws" />
   </a>
 </p>
