@@ -66,7 +66,7 @@ public class CastledS3Client implements ObjectStoreClient {
 
     private AmazonS3 getAmazonS3(AWSCredentialsProvider awsCredentialsProvider, String encryptionKey,
                                  Regions region) {
-        if (encryptionKey == null) {
+        if (encryptionKey == null || encryptionKey.trim().isEmpty()) {
             return AmazonS3ClientBuilder.standard().withCredentials(awsCredentialsProvider).withRegion(region).build();
         }
         SecretKey secretKey = new SecretKeySpec(Base64.getDecoder().decode(encryptionKey),
