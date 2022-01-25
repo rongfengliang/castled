@@ -32,17 +32,19 @@ Some of our key offerings include
 
 ## Getting Started
 
+Quick link: https://oss-docs.castled.io/deploying-castled/deploy-local
+
 ```
 git clone https://github.com/castledio/castled.git
 cd castled
-docker compose up
+docker-compose up
 ```
 
 You can access castled app at http://localhost:3000. Happy castling!!!
 
 <p align="center">
   <a href="https://www.loom.com/embed/71bf33acbb4a41cab7c96a3460a84e5f">
-      <img style="max-width:600px;" src="https://cdn.loom.com/sessions/thumbnails/2a611aef2bfb454fa026cb1489d5a859-with-play.gif">
+      <img style="max-width:600px;" src="https://cdn.loom.com/sessions/thumbnails/2a611aef2bfb454fa026cb1489d5a859-with-play.gif"/>
   </a>
 </p>
 
