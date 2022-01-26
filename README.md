@@ -1,6 +1,11 @@
 <p align="center">
-  <img src="https://cdn.castled.io/logo/castled_original_on_black.svg" alt="Castled-logo" width="300" />
-  <p align="center">Open source reverse-ETL platform to operationalise your data warehouse</p>
+  <a href="https://castled.io/#gh-light-mode-only">
+    <img src="https://cdn.castled.io/logo/castled_logo_light_mode.png" width="318px" alt="Castled logo" />
+  </a>
+  <a href="https://castled.io/#gh-dark-mode-only">
+    <img src="https://cdn.castled.io/logo/castled_logo_dark_mode.png" width="318px" alt="Castled logo" />
+    <p align="center">Open source reverse-ETL platform to operationalise your data warehouse</p>
+  </a>
 </p>
 
 <p align="center">
@@ -19,7 +24,7 @@
 Castled is a [Reverse ETL](https://medium.com/castled/reverse-etl-opening-the-floodgates-for-operational-analytics-b09610c1120d) solution which enables you to make the valuable customer insights lying in your data warehouse actionable by moving them to sales, markerting and support tools of your choice. We currently support all major data warehouses incluing **Snowflake**, **BigQuery**, **Redshift** and **Postgres** as the data source and some of the most popular sales, marketing and support solutions such as **Salesforce**, **Hubspot**, **Intercom**, **Google Ads** etc as the destination.
 
 <p align="center">
-  <img src="https://cdn.castled.io/content/readme/castled_overview.svg" alt="Castled-logo" width="800" />
+  <img src="https://cdn.castled.io/flow/castled_flow_diagram_half.png" alt="Castled Flow" width="800" />
 </p>
 
 Some of our key offerings include
