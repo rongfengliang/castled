@@ -78,13 +78,13 @@ const IntercomLoader = () => {
     // Shutdown Intercom in OSS mode.
     if (isOss) {
       hardShutdown();
-    } else {
+    } else if (user) {
       boot({
-        email: user?.email,
-        name: user?.name,
+        email: user.email,
+        name: user.name,
       });
     }
-  }, [user, isOss]);
+  }, [user?.email, isOss]);
   return null;
 };
 
