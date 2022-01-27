@@ -28,6 +28,6 @@ public interface WarehouseConnector<CONFIG extends WarehouseConfig> {
 
     FormFieldsDTO getFormFields();
 
-    default CONFIG checkAndRemoveCredentials(CONFIG config){return config;};
+    default CONFIG filterRestrictedConfigDetails(CONFIG config){return config;};
 
 }

@@ -131,7 +131,7 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
         return BigQueryWarehouseConfig.class;
     }
 
-    public BigQueryWarehouseConfig checkAndRemoveCredentials(BigQueryWarehouseConfig bigQueryWarehouseConfig){
+    public BigQueryWarehouseConfig filterRestrictedConfigDetails(BigQueryWarehouseConfig bigQueryWarehouseConfig){
         return bigQueryWarehouseConfig;
     }
 }

@@ -122,7 +122,7 @@ public class RedshiftConnector extends JdbcWarehouseConnector<RedshiftWarehouseC
         return RedshiftWarehouseConfig.class;
     }
 
-    public RedshiftWarehouseConfig checkAndRemoveCredentials(RedshiftWarehouseConfig redshiftWarehouseConfig) {
+    public RedshiftWarehouseConfig filterRestrictedConfigDetails(RedshiftWarehouseConfig redshiftWarehouseConfig) {
         redshiftWarehouseConfig.setDbPassword(null);
         return redshiftWarehouseConfig;
     }
