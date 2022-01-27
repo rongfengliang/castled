@@ -133,4 +133,9 @@ public class SnowflakeConnector extends JdbcWarehouseConnector<SnowflakeWarehous
     public Class<SnowflakeWarehouseConfig> getConfigType() {
         return SnowflakeWarehouseConfig.class;
     }
+
+    public SnowflakeWarehouseConfig filterRestrictedConfigDetails(SnowflakeWarehouseConfig snowflakeWarehouseConfig) {
+        snowflakeWarehouseConfig.setDbPassword(null);
+        return snowflakeWarehouseConfig;
+    }
 }

@@ -131,6 +131,15 @@ public class WarehouseService {
         return getWarehouse(warehouseId, false);
     }
 
+    public Warehouse getUnrestrictedWarehouseDetails(Long warehouseId) {
+        return filterRestrictedConfigDetails(this.warehouseDAO.getWarehouse(warehouseId));
+    }
+
+    public Warehouse filterRestrictedConfigDetails(Warehouse warehouse) {
+        this.warehouseConnectors.get(warehouse.getType()).filterRestrictedConfigDetails(warehouse.getConfig());
+        return warehouse;
+    }
+
     public void deleteWarehouse(Long warehouseId, Long teamId) {
         Warehouse warehouse = getWarehouse(warehouseId, true);
         accessController.validateWarehouseAccess(warehouse, teamId);
@@ -141,8 +150,10 @@ public class WarehouseService {
     }
 
     public List<Warehouse> getAllWarehouses(WarehouseType warehouseType, Long teamId) {
-        return this.warehouseDAO.listWarehouses(teamId).stream().filter(warehouse -> (warehouseType == null || warehouse.getType() == warehouseType))
+        List<Warehouse> warehouseList = this.warehouseDAO.listWarehouses(teamId).stream().filter(warehouse -> (warehouseType == null || warehouse.getType() == warehouseType))
                 .collect(Collectors.toList());
+        warehouseList.forEach(this::filterRestrictedConfigDetails);
+        return warehouseList;
     }
 
     public Warehouse getWarehouse(Long warehouseId, boolean cached) {

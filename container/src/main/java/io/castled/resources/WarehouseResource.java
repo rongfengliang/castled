@@ -72,7 +72,7 @@ public class WarehouseResource {
     @Path("/{id}")
     public WarehouseDTO getWarehouse(@PathParam("id") Long warehouseId,
                                      @Auth User user) {
-        Warehouse warehouse = this.warehouseService.getWarehouse(warehouseId);
+        Warehouse warehouse = this.warehouseService.getUnrestrictedWarehouseDetails(warehouseId);
         this.resourceAccessController.validateWarehouseAccess(warehouse, user.getTeamId());
         return WarehouseDTOMapper.INSTANCE.toDTO(warehouse, this.pipelineService.getWarehousePipelines(warehouseId));
     }

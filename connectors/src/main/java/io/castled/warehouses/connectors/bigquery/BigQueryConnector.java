@@ -130,4 +130,8 @@ public class BigQueryConnector extends BaseWarehouseConnector<BigQueryWarehouseC
     public Class<BigQueryWarehouseConfig> getConfigType() {
         return BigQueryWarehouseConfig.class;
     }
+
+    public BigQueryWarehouseConfig filterRestrictedConfigDetails(BigQueryWarehouseConfig bigQueryWarehouseConfig){
+        return bigQueryWarehouseConfig;
+    }
 }

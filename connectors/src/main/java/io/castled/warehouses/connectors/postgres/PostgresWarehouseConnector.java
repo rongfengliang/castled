@@ -115,4 +115,10 @@ public class PostgresWarehouseConnector extends JdbcWarehouseConnector<PostgresW
             }
         }
     }
+
+    public PostgresWarehouseConfig filterRestrictedConfigDetails(PostgresWarehouseConfig postgresWarehouseConfig) {
+        postgresWarehouseConfig.setDbPassword(null);
+        postgresWarehouseConfig.setPrivateKey(null);
+        return postgresWarehouseConfig;
+    }
 }
