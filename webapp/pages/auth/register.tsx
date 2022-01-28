@@ -19,12 +19,13 @@ import bannerNotificationService from "@/app/services/bannerNotificationService"
 import { GetServerSidePropsContext } from "next";
 import { UserRegistrationResponse } from "@/app/common/dtos/UserRegistrationResponse";
 import { AxiosResponse } from "axios";
+import { ClusterLocationUrl } from "@/app/common/enums/ClusterLocation";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      appBaseUrl: process.env.APP_BASE_URL
-    }
+      appBaseUrl: process.env.APP_BASE_URL,
+    },
   };
 }
 
@@ -40,8 +41,11 @@ function Register(props: serverSideProps) {
     password: Yup.string().required("This field is required"),
     confirmPassword: Yup.string().when("password", {
       is: (val: string) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf([Yup.ref("password")], "Passwords need to match")
-    })
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "Passwords need to match"
+      ),
+    }),
   });
 
   useEffect(() => {
@@ -102,7 +106,8 @@ function Register(props: serverSideProps) {
               name="clusterLocation"
             />
             <ButtonSubmit className="form-control" />
-          </Form>)}
+          </Form>
+        )}
       </Formik>
       {/* <div className="mt-3 text-center">
         <Button
@@ -134,22 +139,33 @@ const handleRegisterUser = async (
   router: NextRouter
 ) => {
   if (process.browser) {
-    await authService.register({
+    let formData = {
       token: router.query.token as string,
       firstName: registerForm.firstName,
       lastName: registerForm.lastName,
       password: registerForm.password,
       clusterLocation: registerForm.clusterLocation,
-    }).then((res: AxiosResponse<UserRegistrationResponse>) => {
-      router.push(`${res.data.clusterUrl}/auth/login`);
+    };
+    registerUser(
+      formData,
+      ClusterLocationUrl[formData.clusterLocation] + "/backend/v1/users/register"
+    ).then(async (result) => {
+      const res = await authService.whoAmI();
+      setUser(res.data);
+      window.location.assign(ClusterLocationUrl[formData.clusterLocation]);
     });
   }
 };
 
-const redirectHome = async (setUser: any, router: any) => {
-  const res = await authService.whoAmI();
-  setUser(res.data);
-  await router.push("/");
-}
+
+const registerUser = async (formData: any, url: string) => {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+};
 
 export default Register;
