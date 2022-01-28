@@ -69,7 +69,6 @@ const InputSelect = ({
     }
   }, [optionsRef, ...depValues]);
   return (
-<<<<<<< HEAD
     <div className={props.className}>
       {optionsLoading && props.hidden && (
         <div className="mb-1">
@@ -119,41 +118,6 @@ const InputSelect = ({
           <div className="error">{meta.error}</div>
         ) : null}
       </div>
-=======
-    <div className={cn("mb-3", { "d-none": props.hidden })}>
-      {title && (
-        <label htmlFor={props.id || props.name} className="form-label">
-          {required && <span className="required-icon">*</span>}
-          {title}
-        </label>
-      )}
-      <Select
-        {...props}
-        options={
-          !optionsDynamic
-            ? [{ label: "Loading.." }]
-            : optionsDynamic.map((o) => ({
-                value: o.value,
-                label: o.title,
-              }))
-        }
-        onChange={(v) => setFieldValue?.(field.name, v?.value)}
-        onBlur={() => setFieldTouched?.(field.name, true)}
-        value={
-          optionsLoading || !optionsDynamic
-            ? { label: "Loading..." }
-            : {
-                value: field.value,
-                label: optionsDynamic
-                  .filter((o) => ObjectUtils.objectEquals(o.value, field.value))
-                  .map((o) => o.title),
-              }
-        }
-      />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
->>>>>>> 34894421344a76fd34748f13bf0c351c4a50f264
     </div>
   );
 };

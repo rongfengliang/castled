@@ -46,7 +46,7 @@ const InputField = ({
           {title}
         </label>
       )}
-      {getInput(field, meta, onChange, props, optionsRef)}
+      {getInput(field, meta, onChange, props, optionsRef, required)}
       {loading && !isHidden && (
         <div className="spinner-border spinner-border-sm"></div>
       )}
@@ -62,7 +62,8 @@ function getInput(
   meta: FieldMetaProps<any>,
   onChange: ((value: string) => void) | undefined,
   props: any,
-  optionsRef?: string
+  optionsRef?: string,
+  required?: boolean
 ) {
   if (props.type === "textarea") {
     return (
@@ -77,6 +78,7 @@ function getInput(
           "required-field": meta.touched && meta.error,
         })}
         defaultValue={field.value}
+        required={required}
       />
     );
   } else {
@@ -93,6 +95,7 @@ function getInput(
         })}
         value={field.value}
         disabled={optionsRef}
+        required={required}
       />
     );
   }
