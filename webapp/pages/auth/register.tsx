@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import authService from "@/app/services/authService";
 import InputField from "@/app/components/forminputs/InputField";
@@ -19,6 +19,7 @@ import bannerNotificationService from "@/app/services/bannerNotificationService"
 import { GetServerSidePropsContext } from "next";
 import { UserRegistrationResponse } from "@/app/common/dtos/UserRegistrationResponse";
 import { AxiosResponse } from "axios";
+import { ClusterLocation } from "@/app/common/enums/ClusterLocation";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
@@ -34,6 +35,7 @@ interface serverSideProps {
 }
 
 function Register(props: serverSideProps) {
+  const [initialValues, setInitialValues] = useState<any>(null);
   const { setUser } = useSession();
   const router = useRouter();
   const formSchema = Yup.object().shape({
@@ -45,23 +47,45 @@ function Register(props: serverSideProps) {
   });
 
   useEffect(() => {
+    if (router.query.firstName || router.query.lastName) {
+      const obj = {...router.query};
+      delete obj.token;
+      const host = window.location.host;
+      const subDomain = host.substring(0, host.indexOf('.'));
+      obj.password = "";
+      obj.confirmPassword = "";
+      obj.clusterLocation = '';
+      if (subDomain) {
+        obj.clusterLocation = subDomain === 'app' ? AppCluster.INDIA : AppCluster.US;
+      }
+      setInitialValues(obj);
+    }
     if (!router.isReady) return;
-
     if (router.query.failure_message) {
       bannerNotificationService.error(router.query.failure_message);
     }
   }, [router.isReady]);
 
+  const setClusterValue = (name: any, value: any, values: any) => {
+    const loc = window.location;
+    var result = loc.host.replace(/^[^.]+\./g, "");
+    if (value === ClusterLocation.US) {
+      window.open(`${loc.protocol}//${value}.${result+loc.pathname}?token=${router.query.token}&firstName=${values.firstName}&lastName=${values.lastName}`, '_self');
+    } else {
+      window.open(`${loc.protocol}//app.${result+loc.pathname}?token=${router.query.token}&firstName=${values.firstName}&lastName=${values.lastName}`, '_self');
+    }
+  }
   return (
     <GuestLayout>
       <Formik
-        initialValues={{
+        initialValues={initialValues || {
           firstName: "",
           lastName: "",
           password: "",
           confirmPassword: "",
-          clusterLocation: AppCluster.US,
+          clusterLocation: ""
         }}
+        enableReinitialize
         validationSchema={formSchema}
         onSubmit={(values) => handleRegisterUser(values, setUser, router!)}
       >
@@ -97,7 +121,10 @@ function Register(props: serverSideProps) {
               title="Cluster Location"
               options={renderUtils.selectOptions(AppClusterLabel)}
               values={values}
-              setFieldValue={setFieldValue}
+              setFieldValue={(name, value) => {
+                setFieldValue(name, value);
+                setClusterValue(name, value, values);
+              }}
               setFieldTouched={setFieldTouched}
               name="clusterLocation"
             />
