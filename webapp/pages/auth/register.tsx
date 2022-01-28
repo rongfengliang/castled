@@ -162,6 +162,7 @@ const registerUser = async (formData: any, url: string) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: 'include',
     body: JSON.stringify(formData),
   });
 };
