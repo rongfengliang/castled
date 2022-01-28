@@ -44,10 +44,10 @@ public class RestApiObjectSync extends BufferedObjectSink<Message> {
     private long lastProcessedOffset = 0;
 
     public RestApiObjectSync(DataSinkRequest dataSinkRequest) {
-        String apiURL = ((RestApiAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiURL();
-        String apiKey = ((RestApiAppConfig) dataSinkRequest.getExternalApp().getConfig()).getApiKey();
+        String apiURL = "";
+        String apiKey = "";
         this.batchSize = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getBatchSize()).orElse(1);
-        this.payloadProperty = ((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getPropertyName();
+        this.payloadProperty = "";
         this.restApiRestClient = new RestApiClient(apiURL, apiKey);
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.restApiErrorParser = ObjectRegistry.getInstance(RestApiErrorParser.class);
