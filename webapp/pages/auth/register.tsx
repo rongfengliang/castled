@@ -24,8 +24,8 @@ import { ClusterLocation } from "@/app/common/enums/ClusterLocation";
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      appBaseUrl: process.env.APP_BASE_URL
-    }
+      appBaseUrl: process.env.APP_BASE_URL,
+    },
   };
 }
 
@@ -42,21 +42,25 @@ function Register(props: serverSideProps) {
     password: Yup.string().required("This field is required"),
     confirmPassword: Yup.string().when("password", {
       is: (val: string) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf([Yup.ref("password")], "Passwords need to match")
-    })
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "Passwords need to match"
+      ),
+    }),
   });
 
   useEffect(() => {
     if (router.query.firstName || router.query.lastName) {
-      const obj = {...router.query};
+      const obj = { ...router.query };
       delete obj.token;
       const host = window.location.host;
-      const subDomain = host.substring(0, host.indexOf('.'));
+      const subDomain = host.substring(0, host.indexOf("."));
       obj.password = "";
       obj.confirmPassword = "";
-      obj.clusterLocation = '';
+      obj.clusterLocation = "";
       if (subDomain) {
-        obj.clusterLocation = subDomain === 'app' ? AppCluster.INDIA : AppCluster.US;
+        obj.clusterLocation =
+          subDomain === "app" ? AppCluster.INDIA : AppCluster.US;
       }
       setInitialValues(obj);
     }
@@ -70,21 +74,33 @@ function Register(props: serverSideProps) {
     const loc = window.location;
     var result = loc.host.replace(/^[^.]+\./g, "");
     if (value === ClusterLocation.US) {
-      window.open(`${loc.protocol}//${value}.${result+loc.pathname}?token=${router.query.token}&firstName=${values.firstName}&lastName=${values.lastName}`, '_self');
+      window.open(
+        `${loc.protocol}//${value}.${result + loc.pathname}?token=${
+          router.query.token
+        }&firstName=${values.firstName}&lastName=${values.lastName}`,
+        "_self"
+      );
     } else {
-      window.open(`${loc.protocol}//app.${result+loc.pathname}?token=${router.query.token}&firstName=${values.firstName}&lastName=${values.lastName}`, '_self');
+      window.open(
+        `${loc.protocol}//app.${result + loc.pathname}?token=${
+          router.query.token
+        }&firstName=${values.firstName}&lastName=${values.lastName}`,
+        "_self"
+      );
     }
-  }
+  };
   return (
     <GuestLayout>
       <Formik
-        initialValues={initialValues || {
-          firstName: "",
-          lastName: "",
-          password: "",
-          confirmPassword: "",
-          clusterLocation: ""
-        }}
+        initialValues={
+          initialValues || {
+            firstName: "",
+            lastName: "",
+            password: "",
+            confirmPassword: "",
+            clusterLocation: "",
+          }
+        }
         enableReinitialize
         validationSchema={formSchema}
         onSubmit={(values) => handleRegisterUser(values, setUser, router!)}
@@ -129,7 +145,8 @@ function Register(props: serverSideProps) {
               name="clusterLocation"
             />
             <ButtonSubmit className="form-control" />
-          </Form>)}
+          </Form>
+        )}
       </Formik>
       {/* <div className="mt-3 text-center">
         <Button
@@ -161,15 +178,38 @@ const handleRegisterUser = async (
   router: NextRouter
 ) => {
   if (process.browser) {
-    await authService.register({
-      token: router.query.token as string,
-      firstName: registerForm.firstName,
-      lastName: registerForm.lastName,
-      password: registerForm.password,
-      clusterLocation: registerForm.clusterLocation,
-    }).then((res: AxiosResponse<UserRegistrationResponse>) => {
-      router.push(`${res.data.clusterUrl}/auth/login`);
-    });
+    fetch("https://us.castled.io//v1/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: router.query.token as string,
+        firstName: registerForm.firstName,
+        lastName: registerForm.lastName,
+        password: registerForm.password,
+        clusterLocation: registerForm.clusterLocation,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    // await authService
+    //   .register({
+    //     token: router.query.token as string,
+    //     firstName: registerForm.firstName,
+    //     lastName: registerForm.lastName,
+    //     password: registerForm.password,
+    //     clusterLocation: registerForm.clusterLocation,
+    //   })
+    //   .then((res: AxiosResponse<UserRegistrationResponse>) => {
+    //     router.push(`${res.data.clusterUrl}/auth/login`);
+    //   });
   }
 };
 
@@ -177,6 +217,6 @@ const redirectHome = async (setUser: any, router: any) => {
   const res = await authService.whoAmI();
   setUser(res.data);
   await router.push("/");
-}
+};
 
 export default Register;
