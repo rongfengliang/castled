@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class DataMappingUtils {
 
-    public Map<String, String> getMappingForAppFields(CastledDataMapping castledDataMapping, List<String> appFields) {
+    public static Map<String, String> getMappingForAppFields(CastledDataMapping castledDataMapping, List<String> appFields) {
         if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
             return null;
         }
@@ -20,7 +20,7 @@ public class DataMappingUtils {
                 .collect(Collectors.toMap(FieldMapping::getAppField, FieldMapping::getWarehouseField));
     }
 
-    public Map<String, String> appWarehouseMapping(CastledDataMapping castledDataMapping) {
+    public static Map<String, String> appWarehouseMapping(CastledDataMapping castledDataMapping) {
         if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
             return null;
         }
@@ -29,12 +29,25 @@ public class DataMappingUtils {
                 .collect(Collectors.toMap(FieldMapping::getAppField, FieldMapping::getWarehouseField));
     }
 
-    public Map<String, String> warehouseAppMapping(CastledDataMapping castledDataMapping) {
+    public static Map<String, String> warehouseAppMapping(CastledDataMapping castledDataMapping) {
         if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
             return null;
         }
         TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
         return targetFieldMapping.getFieldMappings().stream().filter(fieldMapping -> !fieldMapping.isSkipped())
                 .collect(Collectors.toMap(FieldMapping::getWarehouseField, FieldMapping::getAppField));
+    }
+
+    public static List<String> getMappedAppFields(CastledDataMapping castledDataMapping) {
+        if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
+            return null;
+        }
+        TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
+        return targetFieldMapping.getFieldMappings().stream().filter(mapping -> !mapping.isSkipped())
+                .map(FieldMapping::getAppField).collect(Collectors.toList());
+    }
+
+    public static void addAdditionalMappings(TargetFieldsMapping targetFieldsMapping, List<FieldMapping> additionalMappings) {
+        targetFieldsMapping.getFieldMappings().addAll(additionalMappings);
     }
 }
