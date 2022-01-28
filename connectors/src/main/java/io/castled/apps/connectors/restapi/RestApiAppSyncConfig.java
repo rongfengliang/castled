@@ -14,7 +14,7 @@ public class RestApiAppSyncConfig extends AppSyncConfig {
     @FormField(required = false,type = FormFieldType.TEXT_BOX, title = "Batch Size", description = "Batch Size")
     private Integer batchSize;
 
-    @FormField(required = false,type = FormFieldType.TEXT_BOX, title = "Parallel Invocation Count", description = "Parallel Invocation Count")
-    private Integer parallelThreads;
+    @FormField(required = false,type = FormFieldType.TEXT_BOX, title = "Parallelism", description = "Parallelism")
+    private Integer parallelism;
 
 }
