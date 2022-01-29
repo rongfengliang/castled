@@ -1,16 +1,11 @@
 package io.castled.migrations;
 
-import io.castled.apps.syncconfigs.AppSyncConfig;
 import io.castled.constants.TableFields;
 import io.castled.migrations.models.PipelineAndMapping;
-import io.castled.models.*;
-import io.castled.models.jobschedule.JobSchedule;
 import io.castled.utils.JsonUtils;
-import org.jdbi.v3.core.argument.AbstractArgumentFactory;
-import org.jdbi.v3.core.argument.Argument;
-import org.jdbi.v3.core.config.ConfigRegistry;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -19,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@RegisterRowMapper(MigrationsDAO.PipelineAndMappingRowMapper.class)
 public interface MigrationsDAO {
 
     @SqlQuery("select id, mapping from pipelines where is_deleted =0")
