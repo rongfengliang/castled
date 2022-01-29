@@ -9,8 +9,8 @@ import java.util.Map;
 @Setter
 public class TargetTemplateMapping extends CastledDataMapping {
 
+    private RestMethod method;
     private String url;
     private String template;
     private Map<String, String> headers;
-
 }
