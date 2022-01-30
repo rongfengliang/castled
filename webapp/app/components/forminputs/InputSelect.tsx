@@ -12,6 +12,7 @@ import { Spinner } from "react-bootstrap";
 import { DataFetcherResponseDto } from "@/app/common/dtos/DataFetcherResponseDto";
 import Select from "react-select";
 import cn from "classnames";
+import { IconRefresh } from "@tabler/icons";
 
 export interface InputSelectOptions extends InputBaseProps {
   options: SelectOptionDto[] | undefined;
@@ -50,6 +51,7 @@ const InputSelect = ({
   const [field, meta] = useField(props);
   const [optionsDynamic, setOptionsDynamic] = useState(options);
   const [optionsLoading, setOptionsLoading] = useState(false);
+  const [key, setKey] = useState<number>(1);
   const depValues = dValues ? dValues : [];
   useEffect(() => {
     if (optionsRef) {
@@ -67,7 +69,7 @@ const InputSelect = ({
       }
       setOptionsDynamic(options);
     }
-  }, [optionsRef, ...depValues]);
+  }, [key, optionsRef, ...depValues]);
   return (
     <div className={props.className}>
       {optionsLoading && props.hidden && (
@@ -82,38 +84,50 @@ const InputSelect = ({
           <span className="ml-2">{props.loadingText}</span>
         </div>
       )}
-      <div className={cn("mb-3", { "d-none": props.hidden })}>
+      <div
+        className={cn("mb-3", {
+          "d-none": props.hidden,
+        })}
+      >
         {title && (
           <label htmlFor={props.id || props.name} className="form-label">
             {title}
             {required && "*"}
           </label>
         )}
-        <Select
-          {...props}
-          options={
-            !optionsDynamic
-              ? [{ label: "Loading.." }]
-              : optionsDynamic.map((o) => ({
-                  value: o.value,
-                  label: o.title,
-                }))
-          }
-          onChange={(v) => setFieldValue?.(field.name, v?.value)}
-          onBlur={() => setFieldTouched?.(field.name, true)}
-          value={
-            optionsLoading || !optionsDynamic
-              ? { label: "Loading..." }
-              : {
-                  value: field.value,
-                  label: optionsDynamic
-                    .filter((o) =>
-                      ObjectUtils.objectEquals(o.value, field.value)
-                    )
-                    .map((o) => o.title),
-                }
-          }
-        />
+        <div className="row">
+          <Select
+            {...props}
+            options={
+              !optionsDynamic
+                ? [{ label: "Loading.." }]
+                : optionsDynamic.map((o) => ({
+                    value: o.value,
+                    label: o.title,
+                  }))
+            }
+            className={cn({ "col-11": !!dataFetcher, col: !dataFetcher })}
+            onChange={(v) => setFieldValue?.(field.name, v?.value)}
+            onBlur={() => setFieldTouched?.(field.name, true)}
+            value={
+              optionsLoading || !optionsDynamic
+                ? { label: "Loading..." }
+                : {
+                    value: field.value,
+                    label: optionsDynamic
+                      .filter((o) =>
+                        ObjectUtils.objectEquals(o.value, field.value)
+                      )
+                      .map((o) => o.title),
+                  }
+            }
+          />
+          {dataFetcher && (
+            <div className="col-1 my-auto">
+              <IconRefresh size={24} onClick={() => setKey(key + 1)} />
+            </div>
+          )}
+        </div>
         {meta.touched && meta.error ? (
           <div className="error">{meta.error}</div>
         ) : null}
