@@ -17,6 +17,12 @@ export default {
     return http.post("/v1/users/redirect", request);
   },
 
+  registerV2: (
+    request: RegisterUserDTO
+  ): Promise<AxiosResponse<UserRegistrationResponse>> => {
+    return http.post("/v1/users/register", request);
+  },
+
   activateUser: (request: ActivateUserDTO): Promise<AxiosResponse<any>> => {
     return http.post("/v1/users/activate-user", request);
   },
