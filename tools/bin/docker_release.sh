@@ -15,8 +15,13 @@ fi
 
 docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
 
-NEW_VERSION=$(grep VERSION .env | cut -d"=" -f2)
+if [[ -z "${NEW_VERSION}" ]]; then
+  NEW_VERSION=$(grep VERSION .env | cut -d"=" -f2)
+fi
+
 GIT_REVISION=$(git rev-parse HEAD)
+
+[[ -z "$NEW_VERSION" ]] && echo "Couldn't get the new version..." && exit 1
 [[ -z "$GIT_REVISION" ]] && echo "Couldn't get the git revision..." && exit 1
 
 echo "Building and publishing docker images $NEW_VERSION for git revision $GIT_REVISION..."
