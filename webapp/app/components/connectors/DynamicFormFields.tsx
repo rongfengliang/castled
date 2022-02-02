@@ -10,6 +10,7 @@ import { DataFetcherResponseDto } from "@/app/common/dtos/DataFetcherResponseDto
 import _ from "lodash";
 import { FormFieldType } from "@/app/common/enums/FormFieldType";
 import { FieldMetaProps } from "formik";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 export interface DynamicFormFieldsProps {
   namePrefix?: string;
@@ -87,22 +88,12 @@ const DynamicFormFields = ({
     // Skip if group activator is present but dependency not met
     if (field.group in formFields.groupActivators) {
       const groupActivator = formFields.groupActivators[field.group];
-      let skip = false;
-      for (const dependency of groupActivator?.dependencies) {
-        const dependencyName = namePrefix
-          ? `${namePrefix}.${dependency}`
-          : dependency;
-        const depValue: any = _.get(values, dependencyName);
-        if (!depValue) {
-          skip = true;
-          break;
-        }
-        depValues.push(JSON.stringify(depValue));
-      }
-      if (groupActivator?.condition) {
-        skip = !jexl.evalSync(groupActivator.condition!, values);
-      }
-
+      const skip = dynamicFormUtils.isFieldHidden(
+        groupActivator,
+        namePrefix,
+        values,
+        depValues
+      );
       if (skip) continue;
     }
     const { renderer: Input, props } = fieldRenderer;

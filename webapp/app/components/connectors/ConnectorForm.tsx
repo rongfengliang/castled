@@ -18,6 +18,9 @@ import { ConnectorDto } from "@/app/common/dtos/ConnectorDto";
 import stringUtils from "@/app/common/utils/stringUtils";
 import { useSession } from "@/app/common/context/sessionContext";
 import ReactMarkdown from "react-markdown";
+import * as yup from "yup";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
+import { valueEventAriaMessage } from "react-select/src/accessibility";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -185,9 +188,11 @@ const ConnectorForm = ({
       initialValues={
         editConnector || { name: "", config: { type: connectorType } }
       }
-      // validationSchema={dynamicFormUtils.getValidation(formFields, "config", {
-      //   name: yup.string().required("Name is required"),
-      // })}
+      validate={(values: any) =>
+        dynamicFormUtils.getValidationErrors(formFields, "config", values, {
+          name: yup.string().required("Name is required"),
+        })
+      }
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting, setFieldValue }) => (

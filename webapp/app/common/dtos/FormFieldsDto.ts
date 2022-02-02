@@ -9,11 +9,13 @@ export interface FormFieldsDto {
   helpText?: HelpText;
   codeBlock?: CodeBlock;
   groupActivators: {
-    [key: string]: {
-      dependencies: string[];
-      condition?: string;
-    };
+    [key: string]: GroupActivator;
   };
+}
+
+export interface GroupActivator {
+  dependencies: string[];
+  condition?: string;
 }
 
 export interface FormFieldMeta {
