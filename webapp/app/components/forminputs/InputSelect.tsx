@@ -124,7 +124,11 @@ const InputSelect = ({
           />
           {dataFetcher && (
             <div className="col-1 my-auto">
-              <IconRefresh size={24} onClick={() => setKey(key + 1)} />
+              <IconRefresh
+                size={24}
+                role="button"
+                onClick={() => setKey(key + 1)}
+              />
             </div>
           )}
         </div>
