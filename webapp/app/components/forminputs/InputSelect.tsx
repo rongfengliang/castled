@@ -106,6 +106,7 @@ const InputSelect = ({
                     label: o.title,
                   }))
             }
+            isClearable
             className={cn({ "col-11": !!dataFetcher, col: !dataFetcher })}
             onChange={(v) => setFieldValue?.(field.name, v?.value)}
             onBlur={() => setFieldTouched?.(field.name, true)}
