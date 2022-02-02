@@ -19,13 +19,13 @@ export interface GroupActivator {
 }
 
 export enum FormFieldSchema {
-  STRING,
-  NUMBER,
-  DATE,
-  BOOLEAN,
-  ENUM,
-  OBJECT,
-  ARRAY,
+  STRING = "STRING",
+  NUMBER = "NUMBER",
+  DATE = "DATE",
+  BOOLEAN = "BOOLEAN",
+  ENUM = "ENUM",
+  OBJECT = "OBJECT",
+  ARRAY = "ARRAY",
 }
 
 export interface FormFieldValidation {
