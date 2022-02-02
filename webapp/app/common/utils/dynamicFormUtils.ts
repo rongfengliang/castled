@@ -35,6 +35,13 @@ const isFieldHidden = (
   return skip;
 };
 
+const emptyStringToNull = (value: any, originalValue: any): any => {
+  if (typeof originalValue === "string" && originalValue === "") {
+    return null;
+  }
+  return value;
+};
+
 const getFieldValidator = (field: FormFieldMeta) => {
   const { validations, errorMessages } = field;
   let { schema } = field;
@@ -49,7 +56,11 @@ const getFieldValidator = (field: FormFieldMeta) => {
     }
   }
   if (schema === FormFieldSchema.NUMBER) {
-    let validator: yup.NumberSchema<any> = yup.number();
+    let validator: yup.NumberSchema<any> = yup
+      .number()
+      .typeError("Must be a number")
+      .transform(emptyStringToNull)
+      .nullable();
     if (validations.required) {
       validator = validator.required(errorMessages?.required || `Required`);
     }
@@ -120,7 +131,7 @@ const getValidationSchema = (
   values: any,
   moreValidations: StringAnyMap
 ) => {
-  if (!formFields) return null;
+  if (!formFields) return yup.object().shape(moreValidations);
   const configShape: StringAnyMap = {};
   let shape: StringAnyMap = {};
   _.map(formFields.fields, (field, key) => {
@@ -138,7 +149,7 @@ const getValidationSchema = (
   } else {
     shape = configShape;
   }
-  return yup.object().shape({ ...shape, ...moreValidations });
+  return yup.object().shape(_.merge(shape, moreValidations));
 };
 
 const getValidationErrors = (
@@ -166,8 +177,23 @@ const getValidationErrors = (
   return errors;
 };
 
+const getInitialValues = (
+  formFields: FormFieldsDto | undefined,
+  namePrefix: string | undefined,
+  moreInitialValues?: StringAnyMap
+): any => {
+  const initialValues = {};
+  if (!formFields) return moreInitialValues;
+  _.map(formFields.fields, (field, key) => {
+    const fullKey = (namePrefix ? `${namePrefix}.` : "") + key;
+    _.set(initialValues, fullKey, undefined);
+  });
+  return _.merge(initialValues, moreInitialValues);
+};
+
 export default {
+  isFieldHidden,
   getValidationSchema,
   getValidationErrors,
-  isFieldHidden,
+  getInitialValues,
 };

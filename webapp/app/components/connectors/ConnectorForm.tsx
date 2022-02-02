@@ -21,6 +21,7 @@ import ReactMarkdown from "react-markdown";
 import * as yup from "yup";
 import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 import { valueEventAriaMessage } from "react-select/src/accessibility";
+import { ConnectorCategoryLabel } from "@/app/common/enums/ConnectorCategory";
 
 const API_BASE = process.env.API_BASE || "";
 
@@ -182,15 +183,18 @@ const ConnectorForm = ({
       </div>
     );
   };
-
   return (
     <Formik
-      initialValues={
-        editConnector || { name: "", config: { type: connectorType } }
-      }
+      key={`fields-${!!formFields}`}
+      initialValues={dynamicFormUtils.getInitialValues(formFields, "config", {
+        name: "",
+        config: {
+          type: connectorType,
+        },
+      })}
       validate={(values: any) =>
         dynamicFormUtils.getValidationErrors(formFields, "config", values, {
-          name: yup.string().required("Name is required"),
+          name: yup.string().required("Required"),
         })
       }
       onSubmit={onSubmit}
@@ -200,8 +204,8 @@ const ConnectorForm = ({
           <InputField
             type="text"
             name="name"
-            title="Name"
-            placeholder="Enter name"
+            title={`${ConnectorCategoryLabel[category]} ${category} Name`}
+            placeholder={`Enter a name`}
             required
           />
           <InputField type="hidden" name="config.type" title="Type" />

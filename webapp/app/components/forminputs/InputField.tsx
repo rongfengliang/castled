@@ -95,7 +95,6 @@ function getInput(
         })}
         value={field.value}
         disabled={optionsRef}
-        required={required}
       />
     );
   }
