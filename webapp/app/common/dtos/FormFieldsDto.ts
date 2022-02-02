@@ -18,6 +18,23 @@ export interface GroupActivator {
   condition?: string;
 }
 
+export enum FormFieldSchema {
+  STRING,
+  NUMBER,
+  DATE,
+  BOOLEAN,
+  ENUM,
+  OBJECT,
+  ARRAY,
+}
+
+export interface FormFieldValidation {
+  required: boolean;
+  min: number;
+  max: number;
+  regex: string;
+}
+
 export interface FormFieldMeta {
   group: string;
   fieldProps: {
@@ -27,12 +44,8 @@ export interface FormFieldMeta {
     placeholder?: string;
     optionsRef?: string;
   };
-  validations: {
-    required: boolean;
-    min: number;
-    max: number;
-    regex: string;
-  };
+  validations: FormFieldValidation;
+  schema: FormFieldSchema;
   errorMessages?: {
     required: string;
     min: string;

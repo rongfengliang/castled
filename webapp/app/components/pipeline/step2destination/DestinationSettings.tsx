@@ -10,6 +10,7 @@ import ButtonSubmit from "@/app/components/forminputs/ButtonSubmit";
 import bannerNotificationService from "@/app/services/bannerNotificationService";
 import Loading from "@/app/components/common/Loading";
 import _ from "lodash";
+import dynamicFormUtils from "@/app/common/utils/dynamicFormUtils";
 
 const DestinationSettings = ({
   curWizardStep,
@@ -51,6 +52,12 @@ const DestinationSettings = ({
         validate={(values) => {
           _.set(pipelineWizContext, "values.appSyncConfig", values);
           setPipelineWizContext(pipelineWizContext);
+          return dynamicFormUtils.getValidationErrors(
+            formFields,
+            undefined,
+            values,
+            {}
+          );
         }}
       >
         {({ setFieldValue, setFieldTouched, isSubmitting, isValid }) => (
