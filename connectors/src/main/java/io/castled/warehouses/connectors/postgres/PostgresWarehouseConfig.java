@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class PostgresWarehouseConfig extends TunneledWarehouseConfig {
 
-    @FormField(description = "Database Server Host", title = "Database Server Host", placeholder = "e.g. example.mydomain.com", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX)
+    @FormField(description = "Database Server Host", title = "Database Server Host", placeholder = "e.g. example.mydomain.com", schema = FormFieldSchema.STRING, type = FormFieldType.TEXT_BOX, required = true)
     private String serverHost;
 
     @FormField(description = "Database Server Port", title = "Database Server Port", placeholder = "e.g. 5432", schema = FormFieldSchema.NUMBER, type = FormFieldType.TEXT_BOX)
