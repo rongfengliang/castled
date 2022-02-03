@@ -30,29 +30,27 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class RestApiObjectSyncV2 extends BufferedObjectSink<Message> {
+public class RestApiObjectSync extends BufferedObjectSink<Message> {
 
-    private final TargetTemplateMapping targetTemplateMapping;
 
-    private final RestApiClient restApiRestClient;
+    private final RestApiTemplateClient restApiRestClient;
     private final RestApiErrorParser restApiErrorParser;
     private final ErrorOutputStream errorOutputStream;
     private final AtomicLong processedRecords = new AtomicLong(0);
     private final Integer batchSize;
-    private final String payloadProperty;
     private final CastledOffsetListQueue<Message> requestsBuffer;
     private long lastProcessedOffset = 0;
 
-    public RestApiObjectSyncV2(DataSinkRequest dataSinkRequest) {
-        this.targetTemplateMapping = (TargetTemplateMapping) dataSinkRequest.getMapping();
-        this.batchSize = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getBatchSize()).orElse(1);
-        this.payloadProperty = "";
-        this.restApiRestClient = new RestApiClient(targetTemplateMapping);
+    public RestApiObjectSync(DataSinkRequest dataSinkRequest) {
+        RestApiAppSyncConfig restApiAppSyncConfig = (RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig();
+        this.batchSize = Optional.ofNullable(restApiAppSyncConfig.getBatchSize()).orElse(1);
+        this.restApiRestClient = new RestApiTemplateClient((TargetTemplateMapping) dataSinkRequest.getMapping(),
+                (RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig());
         this.errorOutputStream = dataSinkRequest.getErrorOutputStream();
         this.restApiErrorParser = ObjectRegistry.getInstance(RestApiErrorParser.class);
 
-        int parallelThreads = Optional.ofNullable(((RestApiAppSyncConfig) dataSinkRequest.getAppSyncConfig()).getParallelism()).orElse(1);
-        this.requestsBuffer = new CastledOffsetListQueue<>(new UpsertRestApiObjectConsumer(), parallelThreads, parallelThreads, true);
+        this.requestsBuffer = new CastledOffsetListQueue<>(new UpsertRestApiObjectConsumer(), restApiAppSyncConfig.getParallelism()
+                , restApiAppSyncConfig.getParallelism(), true);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class RestApiObjectSyncV2 extends BufferedObjectSink<Message> {
 
     @Override
     public long getMaxBufferedObjects() {
-        return 0;
+        return batchSize;
     }
 
     public MessageSyncStats getSyncStats() {
@@ -98,7 +96,8 @@ public class RestApiObjectSyncV2 extends BufferedObjectSink<Message> {
     }
 
     private void upsertRestApiObjects(List<Message> messages) {
-        ErrorObject errorObject = this.restApiRestClient.upsertDetails(messages.stream().map(Message::getRecord).map(this::constructProperties).collect(Collectors.toList()));
+        ErrorAndCode errorObject = this.restApiRestClient.upsertDetails(messages.stream()
+                .map(Message::getRecord).map(this::constructProperties).collect(Collectors.toList()));
 
         Optional.ofNullable(errorObject).ifPresent((objectAndErrorRef) -> messages.
                 forEach(message -> this.errorOutputStream.writeFailedRecord(message, restApiErrorParser.getPipelineError(objectAndErrorRef.getCode(), objectAndErrorRef.getMessage()))));

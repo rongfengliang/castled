@@ -13,17 +13,16 @@ import java.util.Map;
 @Slf4j
 public class MustacheUtils {
 
-    public static Object constructPayload(String payloadTemplate ,Map<String, Object> inputMap) {
+    public static Map<String, Object> constructPayload(String payloadTemplate, Map<String, Object> inputMap) throws IOException {
         try {
             MustacheFactory mf = new DefaultMustacheFactory();
-            Mustache m = mf.compile(new StringReader(payloadTemplate),"template.output");
+            Mustache m = mf.compile(new StringReader(payloadTemplate), "template.output");
             StringWriter writer = new StringWriter();
             m.execute(writer, inputMap).flush();
             return JsonUtils.jsonStringToMap(writer.toString());
-
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException ie) {
+            log.error(String.format("Constructing payload from mustache template %s failed", payloadTemplate));
+            throw ie;
         }
-        return null;
     }
 }

@@ -8,7 +8,7 @@ import io.castled.commons.errors.errorclassifications.ExternallyCategorizedError
 @Singleton
 public class RestApiErrorParser {
 
-    public CastledError getPipelineError(String errorCode, String description) {
-        return new ExternallyCategorizedError(errorCode, description);
+    public CastledError getPipelineError(RestApiErrorCode errorCode, String description) {
+        return new ExternallyCategorizedError(errorCode.name(), description);
     }
 }
