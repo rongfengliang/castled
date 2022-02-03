@@ -89,7 +89,7 @@ public enum ExternalAppType {
     RESTAPI(ImmutableMap.<String, Object>builder()
             .put(ConnectorConstants.ACCESS_TYPE, AccessType.API_KEY)
             .put(ConnectorConstants.TITLE, "Rest API")
-            .put(ConnectorConstants.MAPPING_TYPE, DataMappingType.TARGET_TEMPLATE_MAPPING)
+            .put(ConnectorConstants.MAPPING_TYPE, DataMappingType.TARGET_REST_MAPPING)
             .put(ConnectorConstants.LOGO_URL, "https://cdn.castled.io/apps/restapi.png")
             .build());
 

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class DataMappingUtils {
 
     public static Map<String, String> getMappingForAppFields(CastledDataMapping castledDataMapping, List<String> appFields) {
-        if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
+        if (castledDataMapping.getType() == DataMappingType.TARGET_REST_MAPPING) {
             return null;
         }
         TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
@@ -21,7 +21,7 @@ public class DataMappingUtils {
     }
 
     public static Map<String, String> appWarehouseMapping(CastledDataMapping castledDataMapping) {
-        if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
+        if (castledDataMapping.getType() == DataMappingType.TARGET_REST_MAPPING) {
             return null;
         }
         TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
@@ -30,7 +30,7 @@ public class DataMappingUtils {
     }
 
     public static Map<String, String> warehouseAppMapping(CastledDataMapping castledDataMapping) {
-        if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
+        if (castledDataMapping.getType() == DataMappingType.TARGET_REST_MAPPING) {
             return null;
         }
         TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
@@ -39,7 +39,7 @@ public class DataMappingUtils {
     }
 
     public static List<String> getMappedAppFields(CastledDataMapping castledDataMapping) {
-        if (castledDataMapping.getType() == DataMappingType.TARGET_TEMPLATE_MAPPING) {
+        if (castledDataMapping.getType() == DataMappingType.TARGET_REST_MAPPING) {
             return null;
         }
         TargetFieldsMapping targetFieldMapping = (TargetFieldsMapping) castledDataMapping;
