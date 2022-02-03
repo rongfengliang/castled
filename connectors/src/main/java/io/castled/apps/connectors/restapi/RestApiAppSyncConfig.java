@@ -1,13 +1,10 @@
 package io.castled.apps.connectors.restapi;
 
-import io.castled.OptionsReferences;
 import io.castled.apps.syncconfigs.AppSyncConfig;
-import io.castled.commons.models.AppSyncMode;
 import io.castled.forms.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import static io.castled.forms.FormGroups.TUNNEL_GROUP;
 
 @Getter
 @Setter
