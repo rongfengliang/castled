@@ -91,8 +91,8 @@ const InputSelect = ({
       >
         {title && (
           <label htmlFor={props.id || props.name} className="form-label">
-            {title}
             {required && "*"}
+            {title}
           </label>
         )}
         <div className="row">
@@ -106,6 +106,7 @@ const InputSelect = ({
                     label: o.title,
                   }))
             }
+            isClearable
             className={cn({ "col-11": !!dataFetcher, col: !dataFetcher })}
             onChange={(v) => setFieldValue?.(field.name, v?.value)}
             onBlur={() => setFieldTouched?.(field.name, true)}

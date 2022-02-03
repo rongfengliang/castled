@@ -45,7 +45,12 @@ const DestinationSettings = ({
       stepGroups={stepGroups}
     >
       <Formik
-        initialValues={pipelineWizContext.values?.appSyncConfig as any}
+        key={`fields-${!!formFields}`}
+        initialValues={dynamicFormUtils.getInitialValues(
+          formFields,
+          undefined,
+          pipelineWizContext.values?.appSyncConfig as any
+        )}
         onSubmit={({ values }) => {
           setCurWizardStep(undefined, "mapping");
         }}
